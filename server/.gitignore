@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+
+# Environment variables — NEVER commit real .env
+.env
+.env.local
+.env.production
+
+# Uploads (user files)
+uploads/
+
+# Build & dist
+dist/
+build/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Prisma generated
+prisma/generated/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Test coverage
+coverage/
+
+# Temp files
+fix-imports.js

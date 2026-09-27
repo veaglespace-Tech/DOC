@@ -69,7 +69,7 @@ const errorHandler = (err, req, res, next) => {
 
   // Zod validation errors (if thrown manually)
   if (err.name === 'ZodError') {
-    const errors = err.errors.map((e) => ({ field: e.path.join('.'), message: e.message }));
+    const errors = (err.issues || err.errors || []).map((e) => ({ field: e.path.join('.'), message: e.message }));
     return sendError(res, 'Validation failed', 422, errors);
   }
 

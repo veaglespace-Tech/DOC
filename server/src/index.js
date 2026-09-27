@@ -116,12 +116,6 @@ const startServer = async () => {
     await prisma.$connect();
     logger.info('Database (MySQL): Connected via Prisma ✅');
 
-    try {
-      await redis.connect();
-    } catch (redisErr) {
-      logger.warn(`Redis: Could not connect — ${redisErr.message}. Continuing without Redis cache.`);
-    }
-
     startWorkers();
 
     const httpServer = http.createServer(app);
@@ -139,7 +133,6 @@ const startServer = async () => {
       logger.info(`${signal} received — shutting down gracefully...`);
       httpServer.close(async () => {
         await prisma.$disconnect();
-        redis.disconnect();
         logger.info('Server shut down cleanly. Goodbye.');
         process.exit(0);
       });
