@@ -1,15 +1,19 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import authReducer from './slices/authSlice';
+import searchReducer from './slices/searchSlice';
+import { doctorApi } from './api/doctorApi';
 
 // Redux Store Setup
 export const store = configureStore({
   reducer: {
     auth: authReducer,
-    // Add other reducers here
+    search: searchReducer,
+    [doctorApi.reducerPath]: doctorApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(/* Add API middlewares here */),
+    getDefaultMiddleware().concat(doctorApi.middleware),
 });
 
 setupListeners(store.dispatch);
+
