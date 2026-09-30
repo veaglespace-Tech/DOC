@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { 
   Stethoscope, 
   HeartPulse, 
@@ -10,78 +11,60 @@ import {
   ArrowRight,
   User,
   Phone,
-  CheckCircle
+  CheckCircle,
+  Star,
+  MapPin,
+  CalendarCheck,
+  Video
 } from 'lucide-react';
+import Navbar from '@/components/shared/Navbar';
+import Footer from '@/components/shared/Footer';
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-zinc-50 font-sans text-zinc-900 selection:bg-indigo-500 selection:text-white overflow-x-hidden">
+    <div className="min-h-screen bg-slate-50 font-sans text-slate-900 selection:bg-teal-500 selection:text-white overflow-x-hidden">
       
-      {/* Navbar */}
-      <nav className="fixed top-0 w-full z-50 bg-white/70 backdrop-blur-md border-b border-white/20 shadow-sm">
-        <div className="mx-auto max-w-7xl px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-md">
-              <Activity className="h-6 w-6 text-white" />
-            </div>
-            <span className="text-xl font-extrabold tracking-tight text-zinc-900">
-              Care<span className="text-indigo-600">Connect</span>
-            </span>
-          </div>
-          
-          <div className="hidden md:flex items-center gap-8 text-sm font-medium text-zinc-600">
-            <Link href="#services" className="hover:text-indigo-600 transition-colors">Services</Link>
-            <Link href="#doctors" className="hover:text-indigo-600 transition-colors">For Doctors</Link>
-            <Link href="#clinics" className="hover:text-indigo-600 transition-colors">For Clinics</Link>
-          </div>
-          
-          <div className="flex items-center gap-3">
-            <Link 
-              href="/patient" 
-              className="hidden md:flex items-center gap-2 text-sm font-medium text-zinc-600 hover:text-indigo-600 transition-colors px-4 py-2"
-            >
-              Log in
-            </Link>
-            <Link 
-              href="/patient" 
-              className="flex items-center gap-2 rounded-full bg-zinc-900 px-5 py-2.5 text-sm font-semibold text-white transition-all hover:bg-zinc-800 hover:shadow-lg hover:-translate-y-0.5"
-            >
-              Book Appointment <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
+      {/* 🌟 LUXURIOUS NAVBAR */}
+      <Navbar />
+
+      {/* 🌟 HERO SECTION (Cinematic & Luxurious) */}
+      <section className="relative pt-32 pb-32 lg:pt-48 lg:pb-48 overflow-hidden bg-slate-900 flex items-center justify-center text-center">
+        {/* Background Image with Overlay */}
+        <div className="absolute inset-0 z-0">
+          <Image 
+            src="/images/about-hospital.jpg" 
+            alt="Futuristic CareConnect Hospital Exterior" 
+            fill 
+            className="object-cover opacity-70"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-slate-900/10"></div>
         </div>
-      </nav>
 
-      {/* Hero Section */}
-      <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-100/40 via-purple-50/20 to-white"></div>
-        <div className="absolute right-0 top-0 -z-10 h-[600px] w-[600px] translate-x-1/3 -translate-y-1/4 rounded-full bg-gradient-to-br from-indigo-400/20 to-purple-400/20 blur-3xl"></div>
-        <div className="absolute left-0 bottom-0 -z-10 h-[500px] w-[500px] -translate-x-1/3 translate-y-1/4 rounded-full bg-gradient-to-tr from-pink-400/20 to-orange-400/20 blur-3xl"></div>
-
-        <div className="mx-auto max-w-7xl px-6 text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-indigo-50/50 px-4 py-1.5 text-sm font-medium text-indigo-600 mb-6 backdrop-blur-sm animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <HeartPulse className="h-4 w-4" />
-            24/7 Premium Healthcare Access
+        <div className="relative z-10 mx-auto max-w-5xl px-6 flex flex-col items-center">
+          <div className="inline-flex items-center gap-2 rounded-full border border-teal-500/30 bg-teal-500/20 px-5 py-2 text-sm font-bold text-teal-300 mb-6 backdrop-blur-md animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <ShieldCheck className="h-4 w-4" />
+            India's #1 Premium Healthcare Network
           </div>
           
-          <h1 className="mx-auto max-w-4xl text-5xl font-extrabold tracking-tight text-zinc-900 sm:text-7xl animate-in fade-in slide-in-from-bottom-6 duration-700 delay-100">
-            Healthcare that comes to <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">your doorstep.</span>
+          <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-7xl leading-tight animate-in fade-in slide-in-from-bottom-6 duration-700 delay-100">
+            Healthcare that comes to <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-emerald-300">your doorstep.</span>
           </h1>
           
-          <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-zinc-600 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-200">
-            Instantly book top-rated doctors for home visits, online consultations, or emergency dispatches. A unified healthcare platform built for you.
+          <p className="mt-6 max-w-2xl text-xl leading-8 text-slate-300 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-200">
+            Experience world-class medical care from the comfort of your home. Instantly book top-rated specialists, arrange emergency dispatches, and consult via HD video.
           </p>
           
-          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-300">
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-5 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-300 w-full sm:w-auto">
             <Link 
               href="/patient" 
-              className="flex w-full sm:w-auto items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 px-8 py-4 text-base font-semibold text-white shadow-xl shadow-indigo-600/20 transition-all hover:shadow-2xl hover:shadow-indigo-600/30 hover:-translate-y-1"
+              className="flex w-full sm:w-auto items-center justify-center gap-2 rounded-2xl bg-teal-500 px-10 py-5 text-lg font-bold text-white shadow-xl shadow-teal-500/20 transition-all hover:bg-teal-400 hover:shadow-2xl hover:shadow-teal-500/40 hover:-translate-y-1"
             >
               <User className="h-5 w-5" /> Patient Portal
             </Link>
             <Link 
               href="/doctor" 
-              className="flex w-full sm:w-auto items-center justify-center gap-2 rounded-2xl bg-white px-8 py-4 text-base font-semibold text-zinc-900 shadow-lg shadow-zinc-200/50 ring-1 ring-zinc-200 transition-all hover:bg-zinc-50 hover:shadow-xl hover:-translate-y-1"
+              className="flex w-full sm:w-auto items-center justify-center gap-2 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 px-10 py-5 text-lg font-bold text-white transition-all hover:bg-white/20 hover:-translate-y-1 hover:shadow-xl"
             >
               <Stethoscope className="h-5 w-5" /> I am a Doctor
             </Link>
@@ -89,121 +72,222 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Access Portals / Roles */}
-      <section className="py-20 bg-white">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold tracking-tight text-zinc-900 sm:text-4xl">Unified Platform For Everyone</h2>
-            <p className="mt-4 text-lg text-zinc-600">Role-based dedicated environments tailored for your specific needs.</p>
+      {/* 🌟 STATS SECTION */}
+      <section className="relative -mt-16 z-20 mx-auto max-w-7xl px-6">
+        <div className="rounded-3xl bg-white p-8 shadow-2xl shadow-slate-200/50 border border-slate-100 grid grid-cols-2 md:grid-cols-4 gap-8 divide-x divide-slate-100 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-500">
+          <div className="text-center px-4">
+            <p className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-teal-500 to-emerald-400">50k+</p>
+            <p className="mt-2 text-sm font-semibold text-slate-500 uppercase tracking-wider">Patients Treated</p>
+          </div>
+          <div className="text-center px-4">
+            <p className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-teal-500 to-emerald-400">2,500+</p>
+            <p className="mt-2 text-sm font-semibold text-slate-500 uppercase tracking-wider">Verified Doctors</p>
+          </div>
+          <div className="text-center px-4">
+            <p className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-teal-500 to-emerald-400">10 min</p>
+            <p className="mt-2 text-sm font-semibold text-slate-500 uppercase tracking-wider">Avg. Response Time</p>
+          </div>
+          <div className="text-center px-4">
+            <div className="flex justify-center items-center gap-1 text-4xl font-extrabold">
+              <span className="text-transparent bg-clip-text bg-gradient-to-br from-teal-500 to-emerald-400">4.9</span> 
+              <Star className="h-8 w-8 fill-emerald-400 text-emerald-400 drop-shadow-sm" />
+            </div>
+            <p className="mt-2 text-sm font-semibold text-slate-500 uppercase tracking-wider">App Rating</p>
+          </div>
+        </div>
+      </section>
+
+      {/* 🌟 SERVICES HIGHLIGHT (Premium Cards) */}
+      <section id="services" className="py-32 bg-slate-50 relative overflow-hidden">
+        {/* Soft glowing background shapes */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-teal-500/10 blur-[100px] rounded-full pointer-events-none"></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-emerald-500/10 blur-[100px] rounded-full pointer-events-none"></div>
+
+        <div className="relative z-10 mx-auto max-w-7xl px-6">
+          <div className="text-center mb-20">
+            <h2 className="text-sm font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-emerald-500 uppercase tracking-widest mb-3">Our Services</h2>
+            <h3 className="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">Comprehensive Medical Care</h3>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Patient Card */}
-            <div className="group relative overflow-hidden rounded-3xl bg-zinc-50 p-8 ring-1 ring-zinc-200 transition-all hover:shadow-2xl hover:shadow-indigo-500/10 hover:ring-indigo-500/50 hover:-translate-y-1">
-              <div className="absolute right-0 top-0 h-32 w-32 translate-x-8 -translate-y-8 rounded-full bg-indigo-500/10 blur-2xl transition-all group-hover:bg-indigo-500/20"></div>
-              <User className="h-10 w-10 text-indigo-600 mb-6" />
-              <h3 className="text-2xl font-bold text-zinc-900">Patients</h3>
-              <p className="mt-4 text-zinc-600 line-clamp-3">Book appointments, request emergency visits, track doctor arrivals, and manage your complete medical history securely.</p>
-              <Link href="/patient" className="mt-8 inline-flex items-center gap-2 font-semibold text-indigo-600 group-hover:text-indigo-700">
-                Enter Portal <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </Link>
-            </div>
-
-            {/* Doctor Card */}
-            <div className="group relative overflow-hidden rounded-3xl bg-zinc-50 p-8 ring-1 ring-zinc-200 transition-all hover:shadow-2xl hover:shadow-purple-500/10 hover:ring-purple-500/50 hover:-translate-y-1">
-              <div className="absolute right-0 top-0 h-32 w-32 translate-x-8 -translate-y-8 rounded-full bg-purple-500/10 blur-2xl transition-all group-hover:bg-purple-500/20"></div>
-              <Stethoscope className="h-10 w-10 text-purple-600 mb-6" />
-              <h3 className="text-2xl font-bold text-zinc-900">Doctors</h3>
-              <p className="mt-4 text-zinc-600 line-clamp-3">Manage schedule, accept appointments and emergency requests, track earnings, and streamline your entire practice.</p>
-              <Link href="/doctor" className="mt-8 inline-flex items-center gap-2 font-semibold text-purple-600 group-hover:text-purple-700">
-                Enter Portal <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </Link>
-            </div>
-
-            {/* Clinic Card */}
-            <div className="group relative overflow-hidden rounded-3xl bg-zinc-50 p-8 ring-1 ring-zinc-200 transition-all hover:shadow-2xl hover:shadow-pink-500/10 hover:ring-pink-500/50 hover:-translate-y-1">
-              <div className="absolute right-0 top-0 h-32 w-32 translate-x-8 -translate-y-8 rounded-full bg-pink-500/10 blur-2xl transition-all group-hover:bg-pink-500/20"></div>
-              <Building2 className="h-10 w-10 text-pink-600 mb-6" />
-              <h3 className="text-2xl font-bold text-zinc-900">Clinics & SaaS</h3>
-              <p className="mt-4 text-zinc-600 line-clamp-3">Multi-tenant workspace to manage staff, multiple doctors, centralized billing, and organizational operations.</p>
-              <Link href="/clinic" className="mt-8 inline-flex items-center gap-2 font-semibold text-pink-600 group-hover:text-pink-700">
-                Enter Portal <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Features Showcase */}
-      <section className="py-24 bg-zinc-900 text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-indigo-900/40 via-zinc-900 to-zinc-900"></div>
-        <div className="relative mx-auto max-w-7xl px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div>
-              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">State of the art emergency response.</h2>
-              <p className="mt-6 text-lg text-zinc-400">
-                When time is critical, our intelligent routing system finds the nearest available specialist and dispatches them immediately to your location with real-time tracking.
-              </p>
-              
-              <ul className="mt-10 space-y-6">
-                <li className="flex gap-4">
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white/10 text-white">
-                    <Clock className="h-6 w-6" />
-                  </div>
-                  <div>
-                    <h4 className="text-xl font-semibold">Real-time Dispatch</h4>
-                    <p className="mt-1 text-zinc-400">Automated doctor matching within 60 seconds.</p>
-                  </div>
-                </li>
-                <li className="flex gap-4">
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white/10 text-white">
-                    <ShieldCheck className="h-6 w-6" />
-                  </div>
-                  <div>
-                    <h4 className="text-xl font-semibold">Verified Professionals</h4>
-                    <p className="mt-1 text-zinc-400">Every doctor goes through strict KYC and license verification.</p>
-                  </div>
-                </li>
-              </ul>
-            </div>
             
-            <div className="relative h-[500px] w-full rounded-3xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 ring-1 ring-white/10 overflow-hidden backdrop-blur-sm p-8 flex flex-col justify-center items-center text-center">
-              <div className="absolute inset-0 bg-white/5 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-20"></div>
-              <Phone className="h-20 w-20 text-indigo-400 mb-6 animate-pulse" />
-              <h3 className="text-2xl font-bold">Emergency Request</h3>
-              <p className="mt-4 text-zinc-300">Searching for nearest cardiologist...</p>
+            {/* Video Consultations Card */}
+            <div className="group relative rounded-3xl bg-white p-10 border border-slate-200/60 shadow-lg shadow-slate-200/50 transition-all duration-500 hover:shadow-2xl hover:shadow-teal-500/20 hover:-translate-y-2 overflow-hidden">
+              {/* Hover Dark Gradient Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-br from-slate-900 to-slate-800 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0"></div>
               
-              <div className="mt-8 w-full max-w-sm rounded-2xl bg-white/10 p-4 backdrop-blur-md border border-white/10 text-left">
-                <div className="flex items-center gap-4">
-                  <div className="h-12 w-12 rounded-full bg-green-500/20 flex items-center justify-center text-green-400">
-                    <CheckCircle className="h-6 w-6" />
-                  </div>
-                  <div>
-                    <p className="font-semibold">Dr. Ramesh Sharma</p>
-                    <p className="text-sm text-zinc-400">2.4 km away • Arriving in 12 mins</p>
-                  </div>
+              <div className="relative z-10">
+                <div className="h-16 w-16 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center mb-8 transition-all duration-500 group-hover:bg-teal-500 group-hover:text-white group-hover:shadow-[0_0_30px_rgba(20,184,166,0.5)]">
+                  <Video className="h-8 w-8" />
                 </div>
+                <h4 className="text-2xl font-extrabold text-slate-900 mb-4 transition-colors duration-500 group-hover:text-white">Video Consultations</h4>
+                <p className="text-slate-500 leading-relaxed transition-colors duration-500 group-hover:text-slate-300">Connect with top specialists instantly via HD WebRTC video calls. Receive digital prescriptions immediately after your session.</p>
               </div>
             </div>
+            
+            {/* Home Visits Card */}
+            <div className="group relative rounded-3xl bg-white p-10 border border-slate-200/60 shadow-lg shadow-slate-200/50 transition-all duration-500 hover:shadow-2xl hover:shadow-teal-500/20 hover:-translate-y-2 overflow-hidden">
+              {/* Hover Dark Gradient Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-br from-slate-900 to-slate-800 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0"></div>
+              
+              <div className="relative z-10">
+                <div className="h-16 w-16 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center mb-8 transition-all duration-500 group-hover:bg-teal-500 group-hover:text-white group-hover:shadow-[0_0_30px_rgba(20,184,166,0.5)]">
+                  <MapPin className="h-8 w-8" />
+                </div>
+                <h4 className="text-2xl font-extrabold text-slate-900 mb-4 transition-colors duration-500 group-hover:text-white">Home Visits</h4>
+                <p className="text-slate-500 leading-relaxed transition-colors duration-500 group-hover:text-slate-300">Book experienced doctors for in-person home visits. Real-time GPS tracking ensures you know exactly when they arrive.</p>
+              </div>
+            </div>
+
+            {/* Emergency SOS Card */}
+            <div className="group relative rounded-3xl bg-white p-10 border border-slate-200/60 shadow-lg shadow-slate-200/50 transition-all duration-500 hover:shadow-2xl hover:shadow-red-500/30 hover:-translate-y-2 hover:border-red-500/30 overflow-hidden">
+              {/* Hover Emergency Red Gradient Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-br from-red-600 to-rose-700 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0"></div>
+              
+              <div className="relative z-10">
+                <div className="h-16 w-16 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center mb-8 transition-all duration-500 group-hover:bg-white group-hover:text-red-600 group-hover:shadow-[0_0_30px_rgba(255,255,255,0.4)]">
+                  <HeartPulse className="h-8 w-8 group-hover:animate-pulse" />
+                </div>
+                <h4 className="text-2xl font-extrabold text-slate-900 mb-4 transition-colors duration-500 group-hover:text-white">Emergency SOS</h4>
+                <p className="text-slate-500 leading-relaxed transition-colors duration-500 group-hover:text-red-100">One-tap emergency trigger broadcasts your location to the nearest available doctors using advanced PostGIS spatial routing.</p>
+              </div>
+            </div>
+
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-zinc-200 bg-white py-12">
-        <div className="mx-auto max-w-7xl px-6 flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex items-center gap-2">
-            <Activity className="h-5 w-5 text-indigo-600" />
-            <span className="text-lg font-bold text-zinc-900">CareConnect</span>
-          </div>
-          <p className="text-sm text-zinc-500">© 2026 CareConnect Healthcare SaaS. All rights reserved.</p>
-          <div className="flex items-center gap-4 text-sm font-medium text-zinc-600">
-            <Link href="/admin" className="hover:text-indigo-600">Super Admin</Link>
-            <Link href="#" className="hover:text-indigo-600">Privacy Policy</Link>
-            <Link href="#" className="hover:text-indigo-600">Terms of Service</Link>
+      {/* 🌟 IMAGE & TEXT FEATURE 1 (Patient App) */}
+      <section className="py-32 bg-white relative overflow-hidden">
+        {/* Subtle background decoration */}
+        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-gradient-to-bl from-teal-50/50 to-transparent rounded-full -translate-y-1/2 translate-x-1/3"></div>
+        
+        <div className="relative z-10 mx-auto max-w-7xl px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+            
+            {/* Image Container with Glow */}
+            <div className="relative h-[600px] w-full rounded-[2.5rem] overflow-hidden shadow-[0_20px_60px_-15px_rgba(20,184,166,0.3)] ring-4 ring-slate-50">
+              <div className="absolute inset-0 bg-teal-500/10 mix-blend-overlay z-10 pointer-events-none"></div>
+              <Image 
+                src="/images/patient-app.jpg" 
+                alt="Patient using CareConnect App" 
+                fill 
+                className="object-cover hover:scale-105 transition-transform duration-1000"
+              />
+            </div>
+            
+            {/* Text Content */}
+            <div>
+              <div className="inline-flex items-center gap-2 rounded-full border border-teal-500/20 bg-teal-50 px-4 py-1.5 text-xs font-bold text-teal-600 uppercase tracking-widest mb-6">
+                <User className="h-4 w-4" /> Patient Experience
+              </div>
+              
+              <h3 className="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl mb-6 leading-tight">
+                Your health in the <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-emerald-400">palm of your hand.</span>
+              </h3>
+              
+              <p className="text-lg text-slate-500 mb-10 leading-relaxed font-medium">
+                The CareConnect patient app provides a luxurious, seamless experience. Manage your Electronic Health Records (EHR), track live ambulances, and securely chat with your assigned doctors.
+              </p>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
+                {[
+                  'Family Member Profiles',
+                  'Instant UPI Payments',
+                  'Encrypted Records Vault',
+                  'WhatsApp Reminders'
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center gap-3 bg-white border border-slate-100 shadow-sm shadow-slate-200/50 rounded-2xl p-4 transition-all hover:shadow-md hover:border-teal-100 group">
+                    <div className="h-8 w-8 rounded-full bg-teal-50 flex items-center justify-center shrink-0 group-hover:bg-teal-500 transition-colors">
+                      <CheckCircle className="h-4 w-4 text-teal-500 group-hover:text-white transition-colors" />
+                    </div>
+                    <span className="text-slate-700 font-bold text-sm">{item}</span>
+                  </div>
+                ))}
+              </div>
+              
+              <Link href="/login" className="inline-flex items-center justify-center gap-3 rounded-2xl bg-teal-500 px-8 py-4 text-base font-bold text-white shadow-xl shadow-teal-500/20 transition-all hover:bg-teal-400 hover:shadow-2xl hover:shadow-teal-500/40 hover:-translate-y-1">
+                Explore Patient Portal <ArrowRight className="h-5 w-5" />
+              </Link>
+            </div>
+            
           </div>
         </div>
-      </footer>
+      </section>
+
+      {/* 🌟 IMAGE & TEXT FEATURE 2 (Doctor Portal) */}
+      <section className="py-32 bg-slate-50 relative overflow-hidden">
+        <div className="absolute bottom-0 left-0 w-[800px] h-[800px] bg-gradient-to-tr from-slate-200/40 to-transparent rounded-full translate-y-1/2 -translate-x-1/3"></div>
+
+        <div className="relative z-10 mx-auto max-w-7xl px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center flex-col-reverse lg:flex-row-reverse">
+            
+            {/* Image Container with Glow */}
+            <div className="relative h-[600px] w-full rounded-[2.5rem] overflow-hidden shadow-[0_20px_60px_-15px_rgba(15,23,42,0.15)] ring-4 ring-white">
+              <Image 
+                src="/images/doctor-tablet.jpg" 
+                alt="Doctor using CareConnect" 
+                fill 
+                className="object-cover hover:scale-105 transition-transform duration-1000"
+              />
+            </div>
+            
+            {/* Text Content */}
+            <div>
+              <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-1.5 text-xs font-bold text-slate-600 uppercase tracking-widest mb-6 shadow-sm">
+                <Stethoscope className="h-4 w-4" /> Doctor Empowered
+              </div>
+              
+              <h3 className="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl mb-6 leading-tight">
+                Practice management, <span className="text-transparent bg-clip-text bg-gradient-to-r from-slate-600 to-slate-400">elevated.</span>
+              </h3>
+              
+              <p className="text-lg text-slate-500 mb-10 leading-relaxed font-medium">
+                Designed specifically for modern healthcare professionals. Manage your clinic availability, track earnings via double-entry ledger, and digitally sign prescriptions seamlessly.
+              </p>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
+                {[
+                  'Digital Prescription Builder',
+                  'Smart Vacation Blocks',
+                  'Real-time Escrow Payouts',
+                  'Instant Emergency Handovers'
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center gap-3 bg-white border border-slate-200/60 shadow-sm shadow-slate-200/50 rounded-2xl p-4 transition-all hover:shadow-md hover:border-slate-300 group">
+                    <div className="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center shrink-0 group-hover:bg-slate-800 transition-colors">
+                      <CheckCircle className="h-4 w-4 text-slate-500 group-hover:text-white transition-colors" />
+                    </div>
+                    <span className="text-slate-700 font-bold text-sm">{item}</span>
+                  </div>
+                ))}
+              </div>
+              
+              <Link href="/register" className="inline-flex items-center justify-center gap-3 rounded-2xl bg-slate-900 px-8 py-4 text-base font-bold text-white shadow-xl shadow-slate-900/20 transition-all hover:bg-slate-800 hover:shadow-2xl hover:shadow-slate-900/40 hover:-translate-y-1">
+                Join as a Doctor <ArrowRight className="h-5 w-5" />
+              </Link>
+            </div>
+            
+          </div>
+        </div>
+      </section>
+
+      {/* 🌟 CLINICS / SAAS SECTION */}
+      <section id="portals" className="py-24 bg-slate-900 text-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-teal-900/40 via-slate-900 to-slate-900"></div>
+        <div className="relative mx-auto max-w-7xl px-6 text-center">
+          <Building2 className="h-16 w-16 text-teal-400 mx-auto mb-6" />
+          <h2 className="text-4xl font-extrabold tracking-tight sm:text-5xl mb-6">Multi-tenant Clinic SaaS</h2>
+          <p className="mx-auto max-w-2xl text-xl text-slate-300 mb-10">
+            Scale your hospital with our premium Tier Plans (Starter, Pro, Hospital). Get custom domains, white-label branding, and executive KPI metrics out of the box.
+          </p>
+          <Link href="/register" className="inline-flex items-center justify-center gap-2 rounded-2xl bg-teal-500 px-8 py-4 text-lg font-bold text-white shadow-xl shadow-teal-500/20 transition-all hover:bg-teal-400 hover:shadow-2xl hover:shadow-teal-500/40 hover:-translate-y-1">
+            Register your Clinic <ArrowRight className="h-5 w-5" />
+          </Link>
+        </div>
+      </section>
+
+      {/* 🌟 FOOTER */}
+      <Footer />
     </div>
   );
 }

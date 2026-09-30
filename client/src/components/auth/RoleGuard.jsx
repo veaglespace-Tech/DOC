@@ -5,10 +5,6 @@ import { useRouter, usePathname } from 'next/navigation';
 import { useSelector } from 'react-redux';
 import { selectCurrentRole, selectIsAuthenticated, selectAuthLoading, ROLES } from '@/store/slices/authSlice';
 
-/**
- * RoleGuard is a Higher Order Component for Route Protection.
- * It checks if the user is authenticated and if they have the required role to access the wrapped content.
- */
 export default function RoleGuard({ children, allowedRoles }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -22,15 +18,21 @@ export default function RoleGuard({ children, allowedRoles }) {
     if (isLoading) return;
 
     if (!isAuthenticated) {
-      // Not authenticated, redirect to login
-      // optionally save the returnUrl in query params
-      router.push(`/login?returnUrl=${encodeURIComponent(pathname)}`);
+      // Direct Super Admin routes to /admin/login instead of /login
+      if (pathname.startsWith('/admin')) {
+        router.push(`/admin/login`);
+      } else if (pathname.startsWith('/doctor')) {
+        router.push(`/login/doctor`);
+      } else if (pathname.startsWith('/patient')) {
+        router.push(`/login/patient`);
+      } else {
+        router.push(`/login`);
+      }
       return;
     }
 
     if (allowedRoles && allowedRoles.length > 0) {
       if (!allowedRoles.includes(userRole)) {
-        // Authenticated but unauthorized, redirect based on role or to an unauthorized page
         handleUnauthorizedRedirect(userRole, router);
         return;
       }
@@ -40,10 +42,9 @@ export default function RoleGuard({ children, allowedRoles }) {
   }, [isAuthenticated, userRole, isLoading, router, pathname, allowedRoles]);
 
   if (isLoading || !isAuthorized) {
-    // Return a loading spinner or skeleton screen while checking
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+      <div className="flex min-h-screen items-center justify-center bg-slate-50">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-teal-500 border-t-transparent"></div>
       </div>
     );
   }
@@ -67,6 +68,5 @@ function handleUnauthorizedRedirect(role, router) {
       break;
     default:
       router.push('/');
-      break;
   }
 }

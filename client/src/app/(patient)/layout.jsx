@@ -1,7 +1,7 @@
 import RoleGuard from '@/components/auth/RoleGuard';
 import { ROLES } from '@/store/slices/authSlice';
 import Link from 'next/link';
-import { Activity, LayoutDashboard, Search, FileText, Bell, User, Settings, LogOut, HeartPulse } from 'lucide-react';
+import { Activity, LayoutDashboard, Search, FileText, Bell, User, Settings, LogOut, HeartPulse, Wallet, Bot } from 'lucide-react';
 
 export default function PatientLayout({ children }) {
   return (
@@ -37,6 +37,14 @@ export default function PatientLayout({ children }) {
               <Link href="/patient/records" className="group flex items-center gap-3 rounded-2xl px-4 py-3 font-medium text-slate-600 transition-all hover:bg-indigo-50 hover:text-indigo-600">
                 <FileText className="h-5 w-5 transition-transform group-hover:scale-110" />
                 Medical Records
+              </Link>
+              <Link href="/patient/wallet" className="group flex items-center gap-3 rounded-2xl px-4 py-3 font-medium text-slate-600 transition-all hover:bg-indigo-50 hover:text-indigo-600">
+                <Wallet className="h-5 w-5 transition-transform group-hover:scale-110" />
+                My Wallet
+              </Link>
+              <Link href="/patient/ai-chat" className="group flex items-center gap-3 rounded-2xl px-4 py-3 font-medium text-indigo-600 bg-indigo-50/50 transition-all hover:bg-indigo-50 hover:text-indigo-700 border border-indigo-100/50">
+                <Bot className="h-5 w-5 transition-transform group-hover:scale-110" />
+                AI Symptom Checker
               </Link>
             </nav>
 

@@ -7,6 +7,11 @@ const connection = {
   host: process.env.REDIS_HOST || '127.0.0.1',
   port: parseInt(process.env.REDIS_PORT || '6379'),
   password: process.env.REDIS_PASSWORD || undefined,
+  maxRetriesPerRequest: null,
+  retryStrategy: (times) => {
+    if (times > 2) return null; // Stop retrying after 2 attempts to prevent server crash
+    return 1000; 
+  }
 };
 
 // Queue definitions

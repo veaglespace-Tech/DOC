@@ -1,4 +1,4 @@
-// src/index.js
+// src/index.js 
 /**
  * CareConnect — Application Entry Point
  */
@@ -102,7 +102,8 @@ app.use('/api/v1/patients', require('./routes/patients.routes'));
 app.use('/api/v1/doctors', require('./routes/doctors.routes'));
 
 // Upcoming routes:
-// app.use('/api/v1/appointments',  require('./routes/appointments.routes'));
+app.use('/api/v1/appointments', require('./routes/appointment.routes'));
+app.use('/api/v1/payments', require('./routes/payment.routes'));
 // Error Handling
 // ============================================================
 app.use(notFound);
@@ -116,7 +117,12 @@ const startServer = async () => {
     await prisma.$connect();
     logger.info('Database (MySQL): Connected via Prisma ✅');
 
-    startWorkers();
+    try {
+      await redis.connect();
+      startWorkers(); // Only start BullMQ workers if Redis is available
+    } catch (redisErr) {
+      logger.warn(`Redis: Could not connect — ${redisErr.message}. Continuing without Redis cache and BullMQ workers.`);
+    }
 
     const httpServer = http.createServer(app);
     initSocket(httpServer);
