@@ -26,6 +26,17 @@ router.use(authorize('DOCTOR'));
 
 /**
  * @swagger
+ * /doctors/dashboard:
+ *   get:
+ *     summary: Get dashboard statistics
+ *     tags: [Doctors]
+ *     responses:
+ *       200: { description: Dashboard stats fetched }
+ */
+router.get('/dashboard', controller.getDashboardStats);
+
+/**
+ * @swagger
  * /doctors/profile:
  *   get:
  *     summary: Get current doctor profile

@@ -62,7 +62,16 @@ const mockDoctors = [
 
 export const doctorApi = createApi({
   reducerPath: 'doctorApi',
-  baseQuery: fetchBaseQuery({ baseUrl: '/api/v1' }),
+  baseQuery: fetchBaseQuery({ 
+    baseUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1',
+    prepareHeaders: (headers, { getState }) => {
+      const token = getState().auth.token;
+      if (token) {
+        headers.set('authorization', `Bearer ${token}`);
+      }
+      return headers;
+    }
+  }),
   endpoints: (builder) => ({
     searchDoctors: builder.query({
       // We simulate an API call here for UI scaffolding
@@ -84,7 +93,10 @@ export const doctorApi = createApi({
         return { data: filtered };
       },
     }),
+    getDoctorDashboard: builder.query({
+      query: () => '/doctors/dashboard',
+    }),
   }),
 });
 
-export const { useSearchDoctorsQuery } = doctorApi;
+export const { useSearchDoctorsQuery, useGetDoctorDashboardQuery } = doctorApi;

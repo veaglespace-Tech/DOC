@@ -32,7 +32,7 @@ export const authApi = createApi({
             }));
           }
         } catch (err) {
-          console.error("Login failed:", err);
+          // RTK Query handles error state in the hook; no need to log to console
         }
       }
     }),
@@ -54,7 +54,7 @@ export const authApi = createApi({
             }));
           }
         } catch (err) {
-          console.error("Admin Login failed:", err);
+          // RTK Query handles error state in the hook; no need to log to console
         }
       }
     }),
@@ -65,11 +65,10 @@ export const authApi = createApi({
         body: userData,
       }),
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
-        // Registration currently requires manual login afterwards in the backend
         try {
           await queryFulfilled;
         } catch (err) {
-          console.error("Registration failed:", err);
+          // Handled by UI component
         }
       }
     }),

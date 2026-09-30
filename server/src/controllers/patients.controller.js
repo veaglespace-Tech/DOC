@@ -41,6 +41,73 @@ const addMedicalRecord = asyncHandler(async (req, res) => {
   return sendSuccess(res, result, 'Medical record uploaded', 201);
 });
 
+const getDashboardStats = asyncHandler(async (req, res) => {
+  const patientId = req.user.patientId;
+  const prisma = require('../config/database');
+  
+  const now = new Date();
+
+  const [upcomingVisits, totalConsultations, newReports, upcomingAppointments, recentMedicalRecords] = await Promise.all([
+    prisma.appointment.count({
+      where: {
+        patientId,
+        scheduledAt: { gte: now },
+        status: { in: ['REQUESTED', 'CONFIRMED', 'IN_PROGRESS'] }
+      }
+    }),
+    prisma.appointment.count({
+      where: {
+        patientId,
+        status: 'COMPLETED'
+      }
+    }),
+    prisma.medicalRecord.count({
+      where: { patientId }
+    }),
+    prisma.appointment.findMany({
+      where: {
+        patientId,
+        scheduledAt: { gte: now },
+        status: { in: ['REQUESTED', 'CONFIRMED', 'IN_PROGRESS'] }
+      },
+      include: {
+        doctor: { select: { name: true, specializations: { select: { specialization: true }, take: 1 } } }
+      },
+      orderBy: { scheduledAt: 'asc' },
+      take: 3
+    }),
+    prisma.medicalRecord.findMany({
+      where: { patientId },
+      orderBy: { recordedAt: 'desc' },
+      take: 2,
+      include: {
+        doctor: { select: { name: true, specializations: { select: { specialization: true }, take: 1 } } }
+      }
+    })
+  ]);
+
+  return sendSuccess(res, {
+    upcomingVisits,
+    totalConsultations,
+    newReports,
+    upcomingAppointments: upcomingAppointments.map(apt => ({
+      id: apt.id,
+      doctorName: apt.doctor.name,
+      specialty: apt.doctor.specializations?.[0]?.specialization || 'General Physician',
+      time: new Intl.DateTimeFormat('en-US', { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' }).format(apt.scheduledAt),
+      location: apt.serviceType === 'VIRTUAL' ? 'Online' : 'City Heart Hospital',
+      status: apt.status === 'CONFIRMED' ? 'Confirmed' : apt.status === 'REQUESTED' ? 'Pending' : 'In Progress'
+    })),
+    recentMedicalRecords: recentMedicalRecords.map(record => ({
+      id: record.id,
+      doctorName: record.doctor?.name || 'Uploaded File',
+      specialty: record.doctor?.specializations?.[0]?.specialization || 'Clinical Document',
+      date: new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).format(record.recordedAt),
+      diagnosis: record.title || record.notes || 'Medical Record'
+    }))
+  }, 'Dashboard stats fetched');
+});
+
 module.exports = {
   getProfile,
   updateProfile,
@@ -49,4 +116,5 @@ module.exports = {
   deleteFamilyMember,
   getMedicalRecords,
   addMedicalRecord,
+  getDashboardStats,
 };

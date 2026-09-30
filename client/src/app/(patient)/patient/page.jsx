@@ -14,37 +14,23 @@ import {
   AlertCircle
 } from 'lucide-react';
 
+import { useGetPatientDashboardQuery } from '@/store/api/patientApi';
+
 export default function PatientDashboard() {
   const { user } = useSelector((state) => state.auth);
+  const { data: dashboardResponse, isLoading } = useGetPatientDashboardQuery();
+  const dashboardData = dashboardResponse?.data || {};
 
-  const upcomingAppointments = [
-    {
-      id: 1,
-      doctorName: 'Dr. Anjali Desai',
-      specialty: 'Cardiologist',
-      date: 'Tomorrow, 10:00 AM',
-      location: 'City Heart Hospital',
-      status: 'Confirmed'
-    },
-    {
-      id: 2,
-      doctorName: 'Dr. Rahul Sharma',
-      specialty: 'General Physician',
-      date: 'Oct 5, 04:30 PM',
-      location: 'CareConnect Clinic',
-      status: 'Pending'
-    }
-  ];
+  const upcomingAppointments = dashboardData.upcomingAppointments || [];
+  const recentVisits = dashboardData.recentMedicalRecords || [];
 
-  const recentVisits = [
-    {
-      id: 101,
-      doctorName: 'Dr. Sneha Patil',
-      specialty: 'Dermatologist',
-      date: 'Sep 15, 2026',
-      diagnosis: 'Mild Eczema'
-    }
-  ];
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-teal-500 border-t-transparent"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -80,7 +66,7 @@ export default function PatientDashboard() {
           </div>
           <div>
             <p className="text-sm font-bold text-slate-500">Upcoming Visits</p>
-            <p className="text-2xl font-extrabold text-slate-900">2</p>
+            <p className="text-2xl font-extrabold text-slate-900">{dashboardData.upcomingVisits || 0}</p>
           </div>
         </div>
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 flex items-center gap-4">
@@ -89,7 +75,7 @@ export default function PatientDashboard() {
           </div>
           <div>
             <p className="text-sm font-bold text-slate-500">Total Consultations</p>
-            <p className="text-2xl font-extrabold text-slate-900">14</p>
+            <p className="text-2xl font-extrabold text-slate-900">{dashboardData.totalConsultations || 0}</p>
           </div>
         </div>
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 flex items-center gap-4">
@@ -98,7 +84,7 @@ export default function PatientDashboard() {
           </div>
           <div>
             <p className="text-sm font-bold text-slate-500">New Reports</p>
-            <p className="text-2xl font-extrabold text-slate-900">1</p>
+            <p className="text-2xl font-extrabold text-slate-900">{dashboardData.newReports || 0}</p>
           </div>
         </div>
       </div>

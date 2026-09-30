@@ -25,4 +25,20 @@ const authenticate = (req, res, next) => {
   }
 };
 
-module.exports = { authenticate };
+/**
+ * Authorize roles — checks if req.user has one of the allowed roles
+ */
+const authorize = (...allowedRoles) => {
+  return (req, res, next) => {
+    if (!req.user || !req.user.roles) {
+      return sendError(res, 'Forbidden: No roles found', 403);
+    }
+    const hasRole = req.user.roles.some(role => allowedRoles.includes(role));
+    if (!hasRole) {
+      return sendError(res, 'Forbidden: Insufficient permissions', 403);
+    }
+    next();
+  };
+};
+
+module.exports = { authenticate, authorize };

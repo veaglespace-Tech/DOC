@@ -16,20 +16,18 @@ export default function DynamicLoginPage() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setErrorMsg('');
     
     try {
       await login({ email, password, role: roleParam }).unwrap();
       if (roleParam === ROLES.PATIENT) router.push('/patient');
       if (roleParam === ROLES.DOCTOR) router.push('/doctor');
     } catch (err) {
-      console.warn("API unavailable, proceeding with offline mock.");
-      setTimeout(() => {
-        if (roleParam === ROLES.PATIENT) router.push('/patient');
-        if (roleParam === ROLES.DOCTOR) router.push('/doctor');
-      }, 500);
+      setErrorMsg(err?.data?.message || 'Login failed. Please check your credentials.');
     }
   };
 
@@ -60,6 +58,12 @@ export default function DynamicLoginPage() {
           </p>
 
           <form className="space-y-6" onSubmit={handleLogin}>
+            {errorMsg && (
+              <div className="p-4 rounded-xl bg-red-50 border border-red-100 text-sm font-bold text-red-600 flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-red-500 animate-pulse"></div>
+                {errorMsg}
+              </div>
+            )}
             <div>
               <label className="block text-sm font-bold text-slate-700 mb-2">Email address</label>
               <div className="relative group">

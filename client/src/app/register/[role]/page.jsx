@@ -18,9 +18,11 @@ export default function DynamicRegisterPage() {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    setErrorMsg('');
     
     try {
       await register({
@@ -31,15 +33,10 @@ export default function DynamicRegisterPage() {
         role: roleParam
       }).unwrap();
 
-      if (roleParam === ROLES.PATIENT) router.push('/patient');
-      if (roleParam === ROLES.DOCTOR) router.push('/doctor');
+      if (roleParam === ROLES.PATIENT) router.push('/login/patient?registered=true');
+      if (roleParam === ROLES.DOCTOR) router.push('/login/doctor?registered=true');
     } catch (err) {
-      console.warn("API unavailable, proceeding with offline mock.");
-      // Simulated offline execution
-      setTimeout(() => {
-        if (roleParam === ROLES.PATIENT) router.push('/patient');
-        if (roleParam === ROLES.DOCTOR) router.push('/doctor');
-      }, 1500);
+      setErrorMsg(err?.data?.message || 'Registration failed. Please try again.');
     }
   };
 
@@ -70,6 +67,12 @@ export default function DynamicRegisterPage() {
           </p>
 
           <form className="space-y-5" onSubmit={handleRegister}>
+            {errorMsg && (
+              <div className="p-4 rounded-xl bg-red-50 border border-red-100 text-sm font-bold text-red-600 flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-red-500 animate-pulse"></div>
+                {errorMsg}
+              </div>
+            )}
             <div>
               <label className="block text-sm font-bold text-slate-700 mb-2">Full Name</label>
               <div className="relative group">

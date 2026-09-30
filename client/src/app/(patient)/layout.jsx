@@ -1,9 +1,22 @@
+'use client';
+
 import RoleGuard from '@/components/auth/RoleGuard';
-import { ROLES } from '@/store/slices/authSlice';
+import { ROLES, logout } from '@/store/slices/authSlice';
 import Link from 'next/link';
 import { Activity, LayoutDashboard, Search, FileText, Bell, User, Settings, LogOut, HeartPulse, Wallet, Bot } from 'lucide-react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useRouter } from 'next/navigation';
 
 export default function PatientLayout({ children }) {
+  const { user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const router = useRouter();
+
+  const handleLogout = () => {
+    dispatch(logout());
+    router.push('/login/patient');
+  };
+
   return (
     <RoleGuard allowedRoles={[ROLES.PATIENT]}>
       <div className="flex min-h-screen bg-slate-50 font-sans selection:bg-indigo-500 selection:text-white">
@@ -62,7 +75,7 @@ export default function PatientLayout({ children }) {
           </div>
 
           <div className="p-6">
-            <button className="group flex w-full items-center justify-center gap-2 rounded-2xl bg-slate-100 px-4 py-3 text-sm font-semibold text-slate-600 transition-all hover:bg-red-50 hover:text-red-600">
+            <button onClick={handleLogout} className="group flex w-full items-center justify-center gap-2 rounded-2xl bg-slate-100 px-4 py-3 text-sm font-semibold text-slate-600 transition-all hover:bg-red-50 hover:text-red-600">
               <LogOut className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
               Sign Out
             </button>
@@ -83,8 +96,8 @@ export default function PatientLayout({ children }) {
               </button>
               <div className="flex items-center gap-3 pl-6 border-l border-slate-200">
                 <div className="flex flex-col text-right">
-                  <span className="text-sm font-bold text-slate-900">Alex Johnson</span>
-                  <span className="text-xs font-medium text-slate-500">Premium Member</span>
+                  <span className="text-sm font-bold text-slate-900">{user?.name || 'Patient'}</span>
+                  <span className="text-xs font-medium text-slate-500">{user?.email || 'Premium Member'}</span>
                 </div>
                 <div className="h-11 w-11 overflow-hidden rounded-full border-2 border-indigo-100 bg-indigo-50 p-0.5">
                   <User className="h-full w-full rounded-full bg-indigo-100 text-indigo-500 p-1.5" />

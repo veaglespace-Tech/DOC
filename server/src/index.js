@@ -104,6 +104,7 @@ app.use('/api/v1/doctors', require('./routes/doctors.routes'));
 // Upcoming routes:
 app.use('/api/v1/appointments', require('./routes/appointment.routes'));
 app.use('/api/v1/payments', require('./routes/payment.routes'));
+app.use('/api/v1/billing', require('./routes/billing.routes'));
 // Error Handling
 // ============================================================
 app.use(notFound);

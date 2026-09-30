@@ -49,6 +49,83 @@ const uploadDocument = asyncHandler(async (req, res) => {
   return sendSuccess(res, result, 'KYC Document uploaded', 201);
 });
 
+const getDashboardStats = asyncHandler(async (req, res) => {
+  if (!req.user.doctorId) return sendError(res, 'Doctor profile not found', 404);
+  const doctorId = req.user.doctorId;
+  const prisma = require('../config/database');
+
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
+  const todayEnd = new Date();
+  todayEnd.setHours(23, 59, 59, 999);
+
+  const [todaysAppointments, pendingRequests, emergencyAlerts, schedule, latestEmergency] = await Promise.all([
+    prisma.appointment.count({
+      where: {
+        doctorId,
+        scheduledAt: { gte: todayStart, lte: todayEnd },
+        status: { notIn: ['CANCELLED', 'DECLINED'] }
+      }
+    }),
+    prisma.appointment.count({
+      where: {
+        doctorId,
+        status: 'REQUESTED'
+      }
+    }),
+    prisma.emergencyRequest.count({
+      where: {
+        status: 'PENDING'
+      }
+    }),
+    prisma.appointment.findMany({
+      where: {
+        doctorId,
+        scheduledAt: { gte: todayStart, lte: todayEnd },
+        status: { notIn: ['CANCELLED', 'DECLINED'] }
+      },
+      include: {
+        patient: { select: { name: true } }
+      },
+      orderBy: { scheduledAt: 'asc' }
+    }),
+    prisma.emergencyRequest.findFirst({
+      where: {
+        status: 'PENDING'
+      },
+      orderBy: { createdAt: 'desc' },
+      include: {
+        patient: { select: { name: true } }
+      }
+    })
+  ]);
+
+  // For earnings we check payments today (simplified)
+  const payments = await prisma.payment.aggregate({
+    _sum: { amount: true },
+    where: {
+      appointment: { doctorId },
+      status: 'COMPLETED',
+      createdAt: { gte: todayStart, lte: todayEnd }
+    }
+  });
+
+  return sendSuccess(res, {
+    todaysAppointments,
+    pendingRequests,
+    todaysEarnings: payments._sum.amount || 0,
+    emergencyAlerts,
+    latestEmergency,
+    schedule: schedule.map(apt => ({
+      id: apt.id,
+      patientName: apt.patient.name,
+      time: new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: 'numeric' }).format(apt.scheduledAt),
+      type: apt.serviceType === 'VIRTUAL' ? 'Virtual Consult' : 'Clinic Visit',
+      status: apt.status === 'COMPLETED' ? 'Completed' : apt.status === 'IN_PROGRESS' ? 'In Progress' : 'Upcoming'
+    }))
+  }, 'Dashboard stats fetched');
+});
+
 module.exports = {
   getProfile,
   updateProfile,
@@ -57,4 +134,5 @@ module.exports = {
   setAvailability,
   deleteAvailability,
   uploadDocument,
+  getDashboardStats,
 };

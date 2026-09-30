@@ -45,6 +45,7 @@ const buildTokenPayload = async (userId) => {
   return {
     id:          user.id,
     uuid:        user.uuid,
+    name:        user.patient?.name || user.doctor?.name || 'User',
     email:       user.email,
     phone:       user.phone,
     roles,

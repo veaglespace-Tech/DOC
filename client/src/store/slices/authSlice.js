@@ -12,7 +12,7 @@ const initialState = {
   role: null,
   token: null,
   isAuthenticated: false,
-  isLoading: false,
+  isLoading: true, // Start true to wait for hydration
 };
 
 const authSlice = createSlice({
@@ -26,6 +26,9 @@ const authSlice = createSlice({
       state.role = role || user?.role || null;
       state.isAuthenticated = true;
       state.isLoading = false;
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('careconnect_auth', JSON.stringify({ user: state.user, token: state.token, role: state.role }));
+      }
     },
     logout: (state) => {
       state.user = null;
@@ -33,6 +36,9 @@ const authSlice = createSlice({
       state.role = null;
       state.isAuthenticated = false;
       state.isLoading = false;
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('careconnect_auth');
+      }
     },
     setAuthLoading: (state, action) => {
       state.isLoading = action.payload;

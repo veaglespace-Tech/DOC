@@ -15,23 +15,30 @@ import {
   Power
 } from 'lucide-react';
 
+import { useGetDoctorDashboardQuery } from '@/store/api/doctorApi';
+
 export default function DoctorDashboard() {
   const { user } = useSelector((state) => state.auth);
   const [isAvailable, setIsAvailable] = useState(true);
+  const { data: dashboardResponse, isLoading } = useGetDoctorDashboardQuery();
+  const dashboardData = dashboardResponse?.data || {};
 
   const stats = [
-    { label: "Today's Appointments", value: '8', icon: Users, color: 'text-blue-600', bg: 'bg-blue-50' },
-    { label: 'Pending Requests', value: '3', icon: Clock, color: 'text-amber-600', bg: 'bg-amber-50' },
-    { label: "Today's Earnings", value: '₹ 4,500', icon: IndianRupee, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-    { label: 'Emergency Alerts', value: '1', icon: AlertTriangle, color: 'text-rose-600', bg: 'bg-rose-50' }
+    { label: "Today's Appointments", value: dashboardData.todaysAppointments || '0', icon: Users, color: 'text-blue-600', bg: 'bg-blue-50' },
+    { label: 'Pending Requests', value: dashboardData.pendingRequests || '0', icon: Clock, color: 'text-amber-600', bg: 'bg-amber-50' },
+    { label: "Today's Earnings", value: `₹ ${dashboardData.todaysEarnings || 0}`, icon: IndianRupee, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+    { label: 'Emergency Alerts', value: dashboardData.emergencyAlerts || '0', icon: AlertTriangle, color: 'text-rose-600', bg: 'bg-rose-50' }
   ];
 
-  const todayAppointments = [
-    { id: 1, patientName: 'Rahul Sharma', time: '10:00 AM', type: 'Clinic Visit', status: 'Completed' },
-    { id: 2, patientName: 'Neha Gupta', time: '11:30 AM', type: 'Virtual Consult', status: 'In Progress' },
-    { id: 3, patientName: 'Amit Verma', time: '02:00 PM', type: 'Clinic Visit', status: 'Upcoming' },
-    { id: 4, patientName: 'Suresh Patil', time: '04:15 PM', type: 'Home Visit', status: 'Upcoming' }
-  ];
+  const todayAppointments = dashboardData.schedule || [];
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-teal-500 border-t-transparent"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -135,21 +142,23 @@ export default function DoctorDashboard() {
 
         {/* Sidebar: Emergency & Actions */}
         <div className="space-y-6">
-          <div className="bg-gradient-to-br from-rose-500 to-red-600 rounded-2xl p-6 shadow-lg shadow-rose-500/20 text-white relative overflow-hidden">
-            <AlertTriangle className="absolute -bottom-6 -right-6 h-32 w-32 text-white opacity-10" />
-            <div className="relative z-10">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="h-2 w-2 bg-white rounded-full animate-ping"></div>
-                <h3 className="font-bold text-white uppercase tracking-wider text-sm">Emergency Request</h3>
-              </div>
-              <h4 className="text-xl font-extrabold mb-1">Cardiac Arrest Suspected</h4>
-              <p className="text-rose-100 font-medium text-sm mb-4">Location: 2.4 km away (Andheri East)</p>
-              <div className="flex gap-3 mt-6">
-                <button className="flex-1 bg-white text-rose-600 font-bold py-2.5 rounded-xl hover:bg-rose-50 transition-colors">Accept</button>
-                <button className="flex-1 bg-rose-700 text-white font-bold py-2.5 rounded-xl hover:bg-rose-800 transition-colors">Decline</button>
+          {dashboardData.latestEmergency && (
+            <div className="bg-gradient-to-br from-rose-500 to-red-600 rounded-2xl p-6 shadow-lg shadow-rose-500/20 text-white relative overflow-hidden">
+              <AlertTriangle className="absolute -bottom-6 -right-6 h-32 w-32 text-white opacity-10" />
+              <div className="relative z-10">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="h-2 w-2 bg-white rounded-full animate-ping"></div>
+                  <h3 className="font-bold text-white uppercase tracking-wider text-sm">Emergency Request</h3>
+                </div>
+                <h4 className="text-xl font-extrabold mb-1">{dashboardData.latestEmergency.emergencyType || 'Medical Emergency'}</h4>
+                <p className="text-rose-100 font-medium text-sm mb-4">Patient: {dashboardData.latestEmergency.patient?.name || 'Unknown'}</p>
+                <div className="flex gap-3 mt-6">
+                  <button className="flex-1 bg-white text-rose-600 font-bold py-2.5 rounded-xl hover:bg-rose-50 transition-colors">Accept</button>
+                  <button className="flex-1 bg-rose-700 text-white font-bold py-2.5 rounded-xl hover:bg-rose-800 transition-colors">Decline</button>
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
           <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
             <h3 className="font-bold text-slate-900 mb-4">Quick Actions</h3>

@@ -26,6 +26,17 @@ router.use(authorize('PATIENT'));
 
 /**
  * @swagger
+ * /patients/dashboard:
+ *   get:
+ *     summary: Get patient dashboard statistics
+ *     tags: [Patients]
+ *     responses:
+ *       200: { description: Dashboard stats fetched }
+ */
+router.get('/dashboard', controller.getDashboardStats);
+
+/**
+ * @swagger
  * /patients/profile:
  *   get:
  *     summary: Get current patient profile
