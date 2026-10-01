@@ -74,24 +74,10 @@ export const doctorApi = createApi({
   }),
   endpoints: (builder) => ({
     searchDoctors: builder.query({
-      // We simulate an API call here for UI scaffolding
-      queryFn: (arg) => {
-        const { specialty, maxDistance, maxFees } = arg;
-        
-        let filtered = [...mockDoctors];
-        
-        if (specialty && specialty !== 'All') {
-          filtered = filtered.filter(d => d.specialty === specialty);
-        }
-        if (maxDistance) {
-          filtered = filtered.filter(d => d.distance <= maxDistance);
-        }
-        if (maxFees) {
-          filtered = filtered.filter(d => d.fees <= maxFees);
-        }
-
-        return { data: filtered };
-      },
+      query: (params) => ({
+        url: '/search/doctors',
+        params: params // This will automatically append ?specialty=All&maxFees=1500 to the URL
+      })
     }),
     getDoctorDashboard: builder.query({
       query: () => '/doctors/dashboard',

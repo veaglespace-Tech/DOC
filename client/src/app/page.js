@@ -1,8 +1,8 @@
 'use client';
-import React from 'react';
+import React, { useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { 
   Stethoscope, 
   HeartPulse, 
@@ -13,10 +13,19 @@ import {
   CheckCircle,
   Star,
   MapPin,
-  Video
+  Video,
+  FileText,
+  Brain,
+  Pill
 } from 'lucide-react';
 import Navbar from '@/components/shared/Navbar';
 import Footer from '@/components/shared/Footer';
+import HeroSlider from '@/components/home/HeroSlider';
+import Marquee from '@/components/home/Marquee';
+import ServicesSlider from '@/components/home/ServicesSlider';
+import AboutSection from '@/components/home/AboutSection';
+import AwardsSection from '@/components/home/AwardsSection';
+import Testimonials from '@/components/home/Testimonials';
 
 // Framer Motion Variants
 const fadeUp = {
@@ -39,50 +48,39 @@ const cardVariant = {
 };
 
 export default function LandingPage() {
+  const containerRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"]
+  });
+
+  // Parallax values
+  const yStats = useTransform(scrollYProgress, [0, 1], [0, -300]);
+  const opacityStats = useTransform(scrollYProgress, [0, 0.2], [1, 0.8]);
+
+  const yGlobalBg = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
+
   return (
-    <div className="min-h-screen bg-slate-50 font-sans text-slate-900 selection:bg-teal-500 selection:text-white overflow-x-hidden">
+    <div ref={containerRef} className="min-h-screen font-sans text-slate-900 selection:bg-teal-500 selection:text-white overflow-x-hidden relative">
+      
+      {/* 🌟 GLOBAL STICKY PARALLAX BACKGROUND */}
+      <motion.div 
+        style={{ y: yGlobalBg }}
+        className="fixed inset-[-20%] z-[-2] w-[140%] h-[140%] bg-[url('https://images.unsplash.com/photo-1631549916768-4119b2e5f926?ixlib=rb-4.0.3&auto=format&fit=crop&w=3000&q=80')] bg-cover bg-center"
+      />
+      <div className="fixed inset-0 z-[-1] bg-slate-50/85 backdrop-blur-sm"></div>
+
       <Navbar />
 
-      {/* 🌟 HERO SECTION */}
-      <section className="relative pt-32 pb-32 lg:pt-48 lg:pb-48 overflow-hidden bg-gradient-to-br from-teal-50 via-white to-sky-50 flex items-center justify-center text-center">
-        {/* Abstract Medical Patterns */}
-        <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-          <div className="absolute -top-[20%] -right-[10%] w-[800px] h-[800px] rounded-full bg-gradient-to-bl from-teal-100/60 to-transparent blur-3xl"></div>
-          <div className="absolute top-[20%] -left-[10%] w-[600px] h-[600px] rounded-full bg-gradient-to-tr from-sky-100/60 to-transparent blur-3xl"></div>
-        </div>
+      <HeroSlider />
+      <Marquee />
+      <AboutSection />
 
-        <motion.div 
-          initial="hidden" 
-          animate="visible" 
-          variants={staggerContainer}
-          className="relative z-10 mx-auto max-w-5xl px-6 flex flex-col items-center"
-        >
-          <motion.div variants={fadeUp} className="inline-flex items-center gap-2 rounded-full border border-teal-200 bg-teal-50 px-5 py-2 text-sm font-bold text-teal-700 mb-6 shadow-sm">
-            <ShieldCheck className="h-4 w-4" />
-            India's #1 Premium Healthcare Network
-          </motion.div>
-          
-          <motion.h1 variants={fadeUp} className="text-5xl font-black tracking-tight text-slate-900 sm:text-7xl leading-tight">
-            Healthcare that comes to <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-emerald-500">your doorstep.</span>
-          </motion.h1>
-          
-          <motion.p variants={fadeUp} className="mt-6 max-w-2xl text-xl leading-8 text-slate-600 font-medium">
-            Experience world-class medical care from the comfort of your home. Instantly book top-rated specialists, arrange emergency dispatches, and consult via HD video.
-          </motion.p>
-          
-          <motion.div variants={fadeUp} className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-5 w-full sm:w-auto">
-            <Link href="/patient" className="flex w-full sm:w-auto items-center justify-center gap-2 rounded-2xl bg-teal-600 px-10 py-5 text-lg font-bold text-white shadow-xl shadow-teal-500/30 transition-all hover:bg-teal-500 hover:shadow-2xl hover:shadow-teal-500/40 hover:-translate-y-1">
-              <User className="h-5 w-5" /> Patient Portal
-            </Link>
-            <Link href="/doctor" className="flex w-full sm:w-auto items-center justify-center gap-2 rounded-2xl bg-white border border-slate-200 px-10 py-5 text-lg font-bold text-slate-700 shadow-md transition-all hover:bg-slate-50 hover:-translate-y-1 hover:shadow-lg">
-              <Stethoscope className="h-5 w-5" /> I am a Doctor
-            </Link>
-          </motion.div>
-        </motion.div>
-      </section>
-
-      {/* 🌟 STATS SECTION */}
-      <section className="bg-gradient-to-b from-sky-50 to-slate-50">
+      {/* 🌟 STATS SECTION with Parallax */}
+      <motion.section 
+        style={{ y: yStats, opacity: opacityStats }}
+        className="pt-24 pb-20 relative z-10"
+      >
         <div className="relative -mt-24 z-20 mx-auto max-w-7xl px-6">
           <motion.div 
             initial={{ opacity: 0, y: 50 }}
@@ -112,20 +110,22 @@ export default function LandingPage() {
             </div>
           </motion.div>
         </div>
-      </section>
+      </motion.section>
 
       {/* 🌟 SERVICES HIGHLIGHT */}
-      <section id="services" className="py-32 bg-slate-50 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-teal-500/10 blur-[120px] rounded-full pointer-events-none"></div>
-        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-emerald-500/10 blur-[120px] rounded-full pointer-events-none"></div>
+      <section id="services" className="pt-24 pb-12 relative overflow-hidden text-slate-900 bg-white/30 backdrop-blur-xl border-y border-white/50">
+        
+        {/* Deep glows */}
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-teal-500/10 blur-[150px] rounded-full pointer-events-none z-0"></div>
+        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-sky-500/10 blur-[150px] rounded-full pointer-events-none z-0"></div>
 
         <div className="relative z-10 mx-auto max-w-7xl px-6">
           <motion.div 
             initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeUp}
-            className="text-center mb-20"
+            className="text-center mb-24"
           >
-            <h2 className="text-sm font-extrabold text-teal-600 uppercase tracking-widest mb-3">Our Services</h2>
-            <h3 className="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">Comprehensive Medical Care</h3>
+            <h2 className="text-sm font-black text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-sky-400 uppercase tracking-[0.3em] mb-4">Our Services</h2>
+            <h3 className="text-4xl font-black tracking-tight text-slate-900 sm:text-6xl">Comprehensive Medical Care</h3>
           </motion.div>
           
           <motion.div 
@@ -133,20 +133,28 @@ export default function LandingPage() {
             className="grid grid-cols-1 md:grid-cols-3 gap-8"
           >
             {[
-              { icon: <Video className="h-8 w-8" />, title: 'Video Consultations', desc: 'Connect with top specialists instantly via HD WebRTC video calls.', color: 'from-teal-50 to-white', border: 'border-teal-100', iconBg: 'bg-teal-100 text-teal-700' },
-              { icon: <MapPin className="h-8 w-8" />, title: 'Home Visits', desc: 'Book experienced doctors for in-person home visits. Real-time GPS tracking.', color: 'from-emerald-50 to-white', border: 'border-emerald-100', iconBg: 'bg-emerald-100 text-emerald-700' },
-              { icon: <HeartPulse className="h-8 w-8 animate-pulse text-white" />, title: 'Emergency SOS', desc: 'One-tap emergency trigger broadcasts your location to the nearest doctors.', color: 'from-red-500 to-red-600', border: 'border-red-500', iconBg: 'bg-white/20 text-white', textColor: 'text-white' },
+              { icon: <Video className="h-8 w-8 text-teal-400" />, title: '24/7 Video Consults', desc: 'Connect instantly with top specialists via secure HD WebRTC video calls.', glow: 'group-hover:shadow-[0_0_50px_rgba(45,212,191,0.3)]' },
+              { icon: <MapPin className="h-8 w-8 text-sky-400" />, title: 'At-Home Medical Care', desc: 'Book experienced doctors, nurses, and physios for home visits with real-time GPS tracking.', glow: 'group-hover:shadow-[0_0_50px_rgba(56,189,248,0.3)]' },
+              { icon: <HeartPulse className="h-8 w-8 text-rose-400 animate-pulse" />, title: 'Emergency SOS & Ambulance', desc: 'One-tap emergency trigger dispatches the nearest advanced life support ambulance instantly.', glow: 'group-hover:shadow-[0_0_50px_rgba(251,113,133,0.3)]' },
+              { icon: <FileText className="h-8 w-8 text-indigo-400" />, title: 'Centralized EHR Vaults', desc: 'Secure, encrypted digital vaults for all your lab reports, prescriptions, and medical history.', glow: 'group-hover:shadow-[0_0_50px_rgba(99,102,241,0.3)]' },
+              { icon: <Brain className="h-8 w-8 text-purple-400" />, title: 'AI-Powered Diagnostics', desc: 'Preliminary symptom checking and scan analysis powered by advanced AI algorithms.', glow: 'group-hover:shadow-[0_0_50px_rgba(168,85,247,0.3)]' },
+              { icon: <Pill className="h-8 w-8 text-emerald-400" />, title: 'Pharmacy & Lab Delivery', desc: 'Order prescribed medicines and schedule at-home lab tests with digital report delivery.', glow: 'group-hover:shadow-[0_0_50px_rgba(16,185,129,0.3)]' },
             ].map((srv, idx) => (
               <motion.div 
                 key={idx} variants={cardVariant} whileHover={{ y: -15, scale: 1.02 }}
-                className={`group relative rounded-[2.5rem] bg-gradient-to-br ${srv.color} p-10 border ${srv.border} shadow-xl shadow-slate-200/50 overflow-hidden cursor-pointer backdrop-blur-xl`}
+                className={`group relative rounded-[2.5rem] bg-gradient-to-br from-white/95 to-slate-50/90 p-10 border border-white overflow-hidden cursor-pointer backdrop-blur-2xl transition-all duration-700 shadow-[0_20px_60px_-15px_rgba(13,148,136,0.12)] hover:border-teal-100 hover:shadow-[0_40px_100px_-20px_rgba(13,148,136,0.25)]`}
               >
+                {/* Luxurious inner glow */}
+                <div className="absolute inset-0 rounded-[2.5rem] shadow-[inset_0_0_40px_rgba(255,255,255,1)] pointer-events-none"></div>
+                
+                {/* Moving gradient hover background */}
+                <div className="absolute inset-0 bg-gradient-to-br from-teal-50/40 via-transparent to-sky-50/40 opacity-0 group-hover:opacity-100 transition-opacity duration-700 rounded-[2.5rem] -z-10"></div>
                 <div className="relative z-10">
-                  <div className={`h-20 w-20 rounded-[1.5rem] ${srv.iconBg} flex items-center justify-center mb-8 shadow-sm group-hover:scale-110 transition-transform duration-500`}>
+                  <div className={`h-20 w-20 rounded-[1.5rem] bg-white border border-slate-200 shadow-sm flex items-center justify-center mb-8 group-hover:scale-110 group-hover:bg-slate-50 transition-all duration-500`}>
                     {srv.icon}
                   </div>
-                  <h4 className={`text-3xl font-black ${srv.textColor || 'text-slate-900'} mb-4 tracking-tight`}>{srv.title}</h4>
-                  <p className={`text-lg leading-relaxed ${srv.textColor ? 'text-rose-50' : 'text-slate-500'}`}>{srv.desc}</p>
+                  <h4 className={`text-3xl font-black text-slate-900 mb-4 tracking-tight`}>{srv.title}</h4>
+                  <p className={`text-lg leading-relaxed text-slate-500`}>{srv.desc}</p>
                 </div>
               </motion.div>
             ))}
@@ -154,11 +162,15 @@ export default function LandingPage() {
         </div>
       </section>
 
+      <ServicesSlider />
+      <AwardsSection />
+      <Testimonials />
+
       {/* 🌟 PATIENT APP */}
-      <section className="py-32 bg-white relative overflow-hidden">
+      <section className="py-32 bg-white/20 backdrop-blur-lg border-y border-white/50 relative overflow-hidden">
         {/* Abstract shapes */}
-        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-teal-100/50 via-white to-white rounded-full -translate-y-1/2 translate-x-1/3"></div>
-        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-gradient-to-tr from-emerald-50 to-transparent rounded-full translate-y-1/3 -translate-x-1/4 blur-3xl"></div>
+        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-teal-200/40 via-transparent to-transparent rounded-full -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
+        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-gradient-to-tr from-emerald-200/30 to-transparent rounded-full translate-y-1/3 -translate-x-1/4 blur-3xl pointer-events-none"></div>
         
         <div className="relative z-10 mx-auto max-w-7xl px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
@@ -189,7 +201,7 @@ export default function LandingPage() {
                 Your health in the <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-emerald-400">palm of your hand.</span>
               </motion.h3>
               <motion.p variants={fadeUp} className="text-xl text-slate-500 mb-10 leading-relaxed font-medium">
-                The CareConnect patient app provides a luxurious, seamless experience. Manage your Electronic Health Records (EHR), track live ambulances, and securely chat with your assigned doctors.
+                The CareConnect patient ecosystem is built on a robust, HIPAA-compliant architecture. Effortlessly manage your Electronic Health Records (EHR), track live emergency ambulances via GPS, and seamlessly consult with top-tier specialists using enterprise-grade WebRTC video infrastructure.
               </motion.p>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-12">
@@ -215,10 +227,10 @@ export default function LandingPage() {
       </section>
 
       {/* 🌟 DOCTOR PORTAL (PRO THEME) */}
-      <section className="py-32 bg-sky-50 relative overflow-hidden text-slate-900">
+      <section className="py-32 bg-sky-50/40 backdrop-blur-lg border-y border-white/60 relative overflow-hidden text-slate-900">
         {/* Abstract shapes */}
-        <div className="absolute top-1/4 left-0 w-[500px] h-[500px] bg-sky-200/50 blur-[100px] rounded-full pointer-events-none"></div>
-        <div className="absolute bottom-0 right-0 w-[800px] h-[800px] bg-blue-100/80 blur-[120px] rounded-full pointer-events-none"></div>
+        <div className="absolute top-1/4 left-0 w-[500px] h-[500px] bg-sky-300/30 blur-[100px] rounded-full pointer-events-none"></div>
+        <div className="absolute bottom-0 right-0 w-[800px] h-[800px] bg-blue-300/20 blur-[120px] rounded-full pointer-events-none"></div>
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#0f172a05_1px,transparent_1px),linear-gradient(to_bottom,#0f172a05_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#fff_70%,transparent_100%)] pointer-events-none z-0"></div>
 
         <div className="relative z-10 mx-auto max-w-7xl px-6">
@@ -248,7 +260,7 @@ export default function LandingPage() {
                 Practice management, <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-600 to-blue-500">elevated.</span>
               </motion.h3>
               <motion.p variants={fadeUp} className="text-xl text-slate-600 mb-10 leading-relaxed font-medium">
-                Designed specifically for modern healthcare professionals. Manage your clinic availability, track earnings via double-entry ledger, and digitally sign prescriptions seamlessly.
+                Designed specifically for modern healthcare professionals. Optimize your clinic operations with smart scheduling, track granular revenue streams via a secure double-entry ledger, and issue cryptographically signed e-prescriptions seamlessly.
               </motion.p>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-12">
@@ -273,8 +285,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* 🌟 HOW IT WORKS */}
-      <section className="py-32 bg-white relative overflow-hidden">
+      <section className="py-32 bg-white/20 backdrop-blur-lg border-y border-white/50 relative overflow-hidden">
         <div className="relative z-10 mx-auto max-w-7xl px-6">
           <motion.div 
             initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeUp}
@@ -308,58 +319,23 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* 🌟 TESTIMONIALS */}
-      <section className="py-32 bg-slate-50 relative overflow-hidden text-slate-900">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-sky-100/50 via-slate-50 to-slate-50 z-0"></div>
-        <div className="relative z-10 mx-auto max-w-7xl px-6">
-          <motion.div 
-            initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}
-            className="text-center mb-20"
-          >
-            <h2 className="text-sm font-extrabold text-sky-600 uppercase tracking-widest mb-3">Testimonials</h2>
-            <h3 className="text-4xl font-extrabold tracking-tight sm:text-5xl">Loved by Thousands</h3>
-          </motion.div>
 
-          <motion.div 
-            initial="hidden" whileInView="visible" viewport={{ once: true }} variants={staggerContainer}
-            className="grid grid-cols-1 md:grid-cols-3 gap-8"
-          >
-            {[
-              { name: 'Rahul Sharma', role: 'Patient', review: 'The emergency SOS feature saved my father. A doctor was dispatched to our home within 15 minutes. Highly recommended.' },
-              { name: 'Dr. Sneha Desai', role: 'Cardiologist', review: 'Managing my clinic has never been easier. The dashboard and automated billing system is absolutely world-class.' },
-              { name: 'Priya Patel', role: 'Patient', review: 'I love how I can store all my medical records securely and show them to any specialist via the app. Fantastic UI!' }
-            ].map((t, idx) => (
-              <motion.div key={idx} variants={cardVariant} whileHover={{ y: -10 }} className="bg-white border border-slate-100 shadow-xl shadow-slate-200/50 p-8 rounded-[2rem] backdrop-blur-md">
-                <div className="flex gap-1 text-yellow-400 mb-6">
-                  {[...Array(5)].map((_, i) => <Star key={i} className="h-5 w-5 fill-current" />)}
-                </div>
-                <p className="text-slate-600 text-lg leading-relaxed mb-8">"{t.review}"</p>
-                <div className="flex items-center gap-4">
-                  <div className="h-12 w-12 rounded-full bg-gradient-to-br from-sky-400 to-blue-500 flex items-center justify-center text-white font-bold text-lg shadow-lg">
-                    {t.name.charAt(0)}
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-slate-900">{t.name}</h4>
-                    <p className="text-sky-600 text-sm">{t.role}</p>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
 
-      {/* 🌟 ENTERPRISE CLINICS CTA */}
-      <section className="py-24 bg-teal-500 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-teal-600 to-teal-400 opacity-90 z-0"></div>
+      <section className="py-32 relative overflow-hidden border-t border-slate-200/60 bg-gradient-to-br from-teal-950/90 to-sky-950/90 backdrop-blur-xl">
+        
+        {/* Rotating glowing orb */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-teal-400/20 blur-[150px] rounded-full animate-[spin_10s_linear_infinite] pointer-events-none z-0"></div>
+        
         <div className="relative z-10 mx-auto max-w-5xl px-6 text-center text-white">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
-            <Building2 className="h-20 w-20 mx-auto mb-8 opacity-80" />
-            <h2 className="text-4xl md:text-6xl font-black mb-6">Scale your Hospital instantly.</h2>
-            <p className="text-xl md:text-2xl font-medium opacity-90 mb-10 max-w-3xl mx-auto">
+            <div className="mx-auto w-24 h-24 mb-10 rounded-[2rem] bg-white/10 border border-white/20 flex items-center justify-center backdrop-blur-xl shadow-[0_0_50px_rgba(20,184,166,0.3)]">
+              <Building2 className="h-10 w-10 text-teal-400" />
+            </div>
+            <h2 className="text-5xl md:text-7xl font-black mb-6 tracking-tight">Scale your Hospital <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-sky-400">instantly.</span></h2>
+            <p className="text-xl md:text-2xl font-medium text-teal-50 mb-12 max-w-3xl mx-auto leading-relaxed">
               Get the CareConnect Enterprise Suite. Multi-doctor management, custom branding, and automated GST compliance.
             </p>
-            <Link href="/register/clinic" className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-10 py-5 text-lg font-black text-teal-600 shadow-2xl transition-transform hover:scale-105">
+            <Link href="/register/clinic" className="inline-flex items-center justify-center gap-3 rounded-full bg-white px-10 py-5 text-lg font-black text-black transition-all hover:bg-slate-200 hover:scale-105 shadow-[0_0_40px_rgba(255,255,255,0.3)]">
               Register your Clinic <ArrowRight className="h-5 w-5" />
             </Link>
           </motion.div>

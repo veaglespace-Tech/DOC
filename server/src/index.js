@@ -100,6 +100,7 @@ app.get('/api/health', (req, res) => res.status(200).json({
 app.use('/api/v1/auth', require('./routes/auth.routes'));
 app.use('/api/v1/patients', require('./routes/patients.routes'));
 app.use('/api/v1/doctors', require('./routes/doctors.routes'));
+app.use('/api/v1/search', require('./routes/search.routes'));
 
 // Upcoming routes:
 app.use('/api/v1/appointments', require('./routes/appointment.routes'));

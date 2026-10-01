@@ -52,8 +52,8 @@ export default function Navbar() {
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-emerald-400 text-white shadow-lg shadow-teal-500/20 group-hover:shadow-teal-500/40 transition-shadow">
             <HeartPulse className="h-6 w-6" />
           </div>
-          <span className={`text-2xl font-black tracking-tighter ${isScrolled ? 'text-slate-900' : 'text-slate-900'}`}>
-            Care<span className="text-teal-600">Connect</span>
+          <span className={`text-2xl font-black tracking-tighter ${isScrolled ? 'text-slate-900' : 'text-white'}`}>
+            Care<span className="text-teal-500">Connect</span>
           </span>
         </Link>
 
@@ -63,8 +63,8 @@ export default function Navbar() {
             <Link 
               key={link.name} 
               href={link.href}
-              className={`text-sm font-bold transition-colors hover:text-teal-600 ${
-                isScrolled ? 'text-slate-600' : 'text-slate-700'
+              className={`text-sm font-bold transition-colors hover:text-teal-500 ${
+                isScrolled ? 'text-slate-700' : 'text-white'
               }`}
             >
               {link.name}
@@ -76,13 +76,13 @@ export default function Navbar() {
         <div className="hidden md:flex items-center gap-4">
           {isAuthenticated ? (
             <div className="flex items-center gap-4">
-              <span className={`text-sm font-semibold ${isScrolled ? 'text-slate-700' : 'text-slate-800'}`}>
+              <span className={`text-sm font-semibold ${isScrolled ? 'text-slate-700' : 'text-white'}`}>
                 Hi, {user?.name || 'User'}
               </span>
               <button 
                 onClick={handleLogout}
                 className={`text-sm font-bold transition-colors ${
-                  isScrolled ? 'text-red-600 hover:text-red-700' : 'text-red-500 hover:text-red-600'
+                  isScrolled ? 'text-red-600 hover:text-red-700' : 'text-red-400 hover:text-red-300'
                 }`}
               >
                 Sign Out
@@ -99,7 +99,7 @@ export default function Navbar() {
               <Link 
                 href="/login" 
                 className={`text-sm font-bold transition-colors ${
-                  isScrolled ? 'text-slate-900 hover:text-teal-600' : 'text-slate-900 hover:text-teal-600'
+                  isScrolled ? 'text-slate-900 hover:text-teal-600' : 'text-white hover:text-teal-400'
                 }`}
               >
                 Log in
@@ -118,7 +118,7 @@ export default function Navbar() {
         <div className="md:hidden">
           <button 
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className={`p-2 rounded-lg ${isScrolled ? 'text-slate-900 bg-slate-100' : 'text-slate-900 bg-white/50 backdrop-blur-md'}`}
+            className={`p-2 rounded-lg ${isScrolled ? 'text-slate-900 bg-slate-100' : 'text-white bg-white/10 backdrop-blur-md border border-white/20'}`}
           >
             {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>

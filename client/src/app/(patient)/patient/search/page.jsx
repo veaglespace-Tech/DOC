@@ -10,7 +10,8 @@ import { Search } from 'lucide-react';
 
 export default function DoctorSearchPage() {
   const filters = useSelector(selectFilters);
-  const { data: doctors, isLoading, isError } = useSearchDoctorsQuery(filters);
+  const { data: response, isLoading, isError } = useSearchDoctorsQuery(filters);
+  const doctors = response?.data || [];
 
   return (
     <div className="mx-auto max-w-7xl animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out">
