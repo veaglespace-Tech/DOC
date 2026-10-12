@@ -293,6 +293,16 @@ export default function DoctorDashboard() {
               </div>
             </Link>
 
+            <Link href="/doctor/handovers" className="flex items-center gap-4 w-full p-4 hover:bg-amber-50 rounded-2xl transition-colors group">
+              <div className="h-12 w-12 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                <ArrowRightLeft className="h-5 w-5" />
+              </div>
+              <div className="text-left">
+                <div className="font-bold text-slate-900 group-hover:text-amber-700">Case Handovers</div>
+                <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mt-0.5">Transfer cases & incoming requests</div>
+              </div>
+            </Link>
+
             <Link href="/doctor/prescription" className="flex items-center gap-4 w-full p-4 hover:bg-purple-50 rounded-2xl transition-colors group">
               <div className="h-12 w-12 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
                 <FileText className="h-5 w-5" />

@@ -164,10 +164,10 @@ export default function AppointmentsPage() {
                     )}
 
                     <Link
-                      href={`/patient/appointments`}
-                      className="flex-1 sm:flex-none bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 px-4 py-2 rounded-xl text-xs font-bold transition-colors flex items-center justify-center gap-1"
+                      href={`/patient/consultation/${apt.id}`}
+                      className="flex-1 sm:flex-none bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition-colors flex items-center justify-center gap-1.5 shadow-sm"
                     >
-                      Token: {apt.tokenNumber || `#${apt.id}`}
+                      <Video className="h-3.5 w-3.5" /> Join Consultation
                     </Link>
                   </div>
                 </div>

@@ -22,6 +22,7 @@ export default function PrescriptionBuilder({ patientId }) {
   const [duration, setDuration] = useState('5 Days');
   const [instructions, setInstructions] = useState('After Food');
   const [diagnosis, setDiagnosis] = useState('');
+  const [isIssued, setIsIssued] = useState(false);
 
   const handleSelectDrug = (drug) => {
     setCurrentDrug(drug);
@@ -241,16 +242,36 @@ export default function PrescriptionBuilder({ patientId }) {
 
           </div>
           
-          <div className="rounded-b-2xl border-t border-gray-100 bg-gray-50 p-4 flex gap-3">
-            <button className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white py-3 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50">
-              <Save className="h-4 w-4" /> Save Draft
-            </button>
-            <button 
-              disabled={selectedDrugs.length === 0}
-              className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-indigo-600 py-3 text-sm font-semibold text-white shadow-md transition-colors hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <FileSignature className="h-4 w-4" /> Digitally Sign & Issue
-            </button>
+          <div className="rounded-b-2xl border-t border-gray-100 bg-gray-50 p-4 flex flex-col sm:flex-row gap-3">
+            {isIssued ? (
+              <div className="w-full flex items-center justify-between gap-4">
+                <span className="flex items-center gap-1.5 text-xs font-bold text-emerald-700 bg-emerald-100/80 px-3 py-2 rounded-xl">
+                  <FileSignature className="h-4 w-4" /> Digitally Signed & Synced to Patient Portal
+                </span>
+                <button
+                  onClick={() => window.print()}
+                  className="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-md transition-colors"
+                >
+                  Print / Export PDF
+                </button>
+              </div>
+            ) : (
+              <>
+                <button 
+                  onClick={() => alert('Draft saved locally.')}
+                  className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white py-3 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50"
+                >
+                  <Save className="h-4 w-4" /> Save Draft
+                </button>
+                <button 
+                  onClick={() => setIsIssued(true)}
+                  disabled={selectedDrugs.length === 0}
+                  className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-indigo-600 py-3 text-sm font-semibold text-white shadow-md transition-colors hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <FileSignature className="h-4 w-4" /> Digitally Sign & Issue
+                </button>
+              </>
+            )}
           </div>
         </div>
       </div>
