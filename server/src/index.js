@@ -101,11 +101,27 @@ app.use('/api/v1/auth', require('./routes/auth.routes'));
 app.use('/api/v1/patients', require('./routes/patients.routes'));
 app.use('/api/v1/doctors', require('./routes/doctors.routes'));
 app.use('/api/v1/search', require('./routes/search.routes'));
-
-// Upcoming routes:
 app.use('/api/v1/appointments', require('./routes/appointment.routes'));
 app.use('/api/v1/payments', require('./routes/payment.routes'));
 app.use('/api/v1/billing', require('./routes/billing.routes'));
+
+// Advanced Operations & System Routes (BRD Phases 2 & 3)
+app.use('/api/v1/emergency', require('./routes/emergency.routes'));
+app.use('/api/v1/wallet', require('./routes/wallet.routes'));
+app.use('/api/v1/handovers', require('./routes/handover.routes'));
+app.use('/api/v1/chat', require('./routes/chat.routes'));
+app.use('/api/v1/feedback', require('./routes/feedback.routes'));
+app.use('/api/v1/admin', require('./routes/admin.routes'));
+app.use('/api/v1/saas', require('./routes/saas.routes'));
+
+// Automated 24h Settlement Release Worker interval
+const { processMaturedSettlements } = require('./controllers/wallet.controller');
+setInterval(() => {
+  processMaturedSettlements({ body: {} }, { status: () => ({ json: () => {} }) }, (err) => {
+    if (err) logger.error('Error during auto-settlement release:', err);
+  });
+}, 10 * 60 * 1000); // Check every 10 minutes
+
 // Error Handling
 // ============================================================
 app.use(notFound);

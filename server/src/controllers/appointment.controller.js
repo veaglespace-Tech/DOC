@@ -163,10 +163,11 @@ exports.completeVisit = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { doctorNotes, followUpDate } = req.body;
+    const appointmentId = parseInt(id);
 
-    // Mark Visit as completed
+    // 1. Mark Visit as completed
     const visit = await prisma.visit.update({
-      where: { appointmentId: parseInt(id) },
+      where: { appointmentId },
       data: {
         completedAt: new Date(),
         doctorNotes,
@@ -174,16 +175,70 @@ exports.completeVisit = async (req, res, next) => {
       }
     });
 
-    // Mark Appointment as completed
-    await prisma.appointment.update({
-      where: { id: parseInt(id) },
-      data: { status: "COMPLETED" }
+    // 2. Mark Appointment as completed
+    const appointment = await prisma.appointment.update({
+      where: { id: appointmentId },
+      data: { status: "COMPLETED" },
+      include: { doctor: true, payment: true }
     });
+
+    // 3. Credit Doctor Wallet with 24-hour Settlement Hold (BRD Sec 11 & 12)
+    const doctorFee = appointment.payment?.doctorPayable 
+      ? parseFloat(appointment.payment.doctorPayable) 
+      : (parseFloat(appointment.doctor.consultationFee) || 500);
+
+    // Ensure doctor wallet exists
+    let wallet = await prisma.doctorWallet.findUnique({
+      where: { doctorId: appointment.doctorId }
+    });
+
+    if (!wallet) {
+      wallet = await prisma.doctorWallet.create({
+        data: {
+          doctorId: appointment.doctorId,
+          totalEarnings: 0,
+          pendingBalance: 0,
+          availableBalance: 0,
+          withdrawnAmount: 0
+        }
+      });
+    }
+
+    // 24-Hour Settlement Hold per BRD Sec 11
+    const holdUntil = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+    await prisma.$transaction([
+      prisma.doctorWallet.update({
+        where: { id: wallet.id },
+        data: {
+          totalEarnings: { increment: doctorFee },
+          pendingBalance: { increment: doctorFee }
+        }
+      }),
+      prisma.settlement.create({
+        data: {
+          walletId: wallet.id,
+          amount: doctorFee,
+          holdUntil,
+          status: 'HOLDING'
+        }
+      }),
+      prisma.walletTransaction.create({
+        data: {
+          walletId: wallet.id,
+          paymentId: appointment.payment?.id || null,
+          type: 'CREDIT',
+          amount: doctorFee,
+          description: `Consultation fee for Appointment #${appointment.id} (Token: ${appointment.tokenNumber || 'N/A'}) - 24h settlement hold applied`,
+          referenceId: `APP-${appointment.id}`
+        }
+      })
+    ]);
 
     res.status(200).json({
       success: true,
-      message: "Visit completed successfully",
-      data: visit
+      message: "Visit completed successfully. Doctor earnings credited to wallet under 24h settlement hold.",
+      data: { visit, appointment, creditedAmount: doctorFee, holdUntil }
     });
   } catch (error) {
     next(error);

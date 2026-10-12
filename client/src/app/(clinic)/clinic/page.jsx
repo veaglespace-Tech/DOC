@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { Users, Calendar, TrendingUp, Activity, Plus, ArrowUpRight, DollarSign, Clock, MapPin, Search } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -11,7 +13,7 @@ export default function ClinicDashboardPage() {
       <div className="absolute top-40 right-0 w-[400px] h-[400px] bg-emerald-400/10 blur-[120px] rounded-full pointer-events-none z-0"></div>
 
       {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12 relative z-10">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 relative z-10">
         <div>
           <h1 className="text-4xl font-black text-slate-900 tracking-tight mb-2">
             Clinic <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-emerald-500">Overview</span>
@@ -25,6 +27,37 @@ export default function ClinicDashboardPage() {
           <button className="flex items-center gap-2 bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-400 hover:to-emerald-400 text-white px-6 py-3 rounded-2xl font-bold transition-all shadow-lg shadow-teal-500/30 hover:-translate-y-1">
             <Plus className="h-5 w-5" /> Add Doctor
           </button>
+        </div>
+      </div>
+
+      {/* SaaS Subscription & Doctor Quota Tier Card (BRD Sec 17) */}
+      <div className="bg-gradient-to-r from-teal-900 via-slate-900 to-indigo-950 rounded-3xl p-6 text-white mb-10 shadow-2xl relative overflow-hidden z-10 border border-teal-800/40">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="px-3 py-1 rounded-full bg-teal-500/20 border border-teal-500/40 text-teal-300 text-xs font-black uppercase tracking-wider">
+                Multi-Tenant SaaS Active Plan
+              </span>
+              <span className="text-xs text-slate-400 font-semibold">Subdomain: citycare.careconnect.health</span>
+            </div>
+            <h3 className="text-2xl font-black mt-2">Clinic Professional Plan (₹2,999/mo)</h3>
+            <p className="text-xs text-slate-300 mt-1 max-w-xl">
+              Includes up to 15 Verified Doctors, Emergency PostGIS Routing, Custom Operating Hours, and Multi-Branch Management.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-6">
+            <div className="text-right">
+              <div className="text-xs uppercase tracking-wider text-slate-400 font-bold">Doctor Capacity</div>
+              <div className="text-2xl font-black text-teal-400">4 / 15 <span className="text-sm font-semibold text-slate-400">Allocated</span></div>
+            </div>
+            <button
+              onClick={() => alert('SaaS Tier: You are currently on Clinic Professional. Enterprise upgrade unlocks unlimited doctors.')}
+              className="px-5 py-3 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-black text-xs transition-colors shadow-lg"
+            >
+              Upgrade Tier
+            </button>
+          </div>
         </div>
       </div>
 

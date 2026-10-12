@@ -8,6 +8,8 @@ import { appointmentApi } from './api/appointmentApi';
 import { paymentApi } from './api/paymentApi';
 import { billingApi } from './api/billingApi';
 import { patientApi } from './api/patientApi';
+import { emergencyApi } from './api/emergencyApi';
+import { adminApi } from './api/adminApi';
 
 // Redux Store Setup
 export const store = configureStore({
@@ -20,6 +22,8 @@ export const store = configureStore({
     [paymentApi.reducerPath]: paymentApi.reducer,
     [billingApi.reducerPath]: billingApi.reducer,
     [patientApi.reducerPath]: patientApi.reducer,
+    [emergencyApi.reducerPath]: emergencyApi.reducer,
+    [adminApi.reducerPath]: adminApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -28,7 +32,9 @@ export const store = configureStore({
       appointmentApi.middleware,
       paymentApi.middleware,
       billingApi.middleware,
-      patientApi.middleware
+      patientApi.middleware,
+      emergencyApi.middleware,
+      adminApi.middleware
     ),
 });
 

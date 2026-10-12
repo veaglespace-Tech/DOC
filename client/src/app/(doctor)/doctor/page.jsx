@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { motion } from 'framer-motion';
+import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Users, 
   Calendar, 
@@ -14,22 +15,62 @@ import {
   ChevronRight,
   Stethoscope,
   Power,
-  FileText
+  FileText,
+  CreditCard,
+  ArrowRightLeft,
+  PhoneCall,
+  ShieldAlert
 } from 'lucide-react';
 
 import { useGetDoctorDashboardQuery } from '@/store/api/doctorApi';
+import { useRespondEmergencyMutation } from '@/store/api/emergencyApi';
+import { getClientSocket } from '@/utils/socket';
 
 export default function DoctorDashboard() {
   const { user } = useSelector((state) => state.auth);
   const [isAvailable, setIsAvailable] = useState(true);
   const { data: dashboardResponse, isLoading } = useGetDoctorDashboardQuery();
+  const [respondEmergency] = useRespondEmergencyMutation();
+  const [activeEmergencyAlert, setActiveEmergencyAlert] = useState(null);
+
   const dashboardData = dashboardResponse?.data || {};
+
+  useEffect(() => {
+    // Listen for live emergency dispatch via Socket.IO
+    const socket = getClientSocket();
+    if (socket) {
+      if (user?.id) {
+        socket.emit('join:user', user.id);
+      }
+
+      socket.on('emergency:new_dispatch', (alertData) => {
+        setActiveEmergencyAlert(alertData);
+      });
+    }
+  }, [user]);
+
+  const handleEmergencyResponse = async (action) => {
+    if (!activeEmergencyAlert) return;
+    try {
+      await respondEmergency({
+        assignmentId: activeEmergencyAlert.assignmentId,
+        action
+      }).unwrap();
+
+      if (action === 'ACCEPT') {
+        alert('Emergency accepted! Patient notified. Please head to patient coordinates immediately.');
+      }
+      setActiveEmergencyAlert(null);
+    } catch (err) {
+      alert(err?.data?.message || 'Error processing response');
+    }
+  };
 
   const stats = [
     { label: "Today's Appointments", value: dashboardData.todaysAppointments || '0', icon: Users, color: 'text-blue-600', bg: 'bg-blue-50/80' },
     { label: 'Pending Requests', value: dashboardData.pendingRequests || '0', icon: Clock, color: 'text-amber-600', bg: 'bg-amber-50/80' },
     { label: "Today's Earnings", value: `₹ ${dashboardData.todaysEarnings || 0}`, icon: IndianRupee, color: 'text-emerald-600', bg: 'bg-emerald-50/80' },
-    { label: 'Emergency Alerts', value: dashboardData.emergencyAlerts || '0', icon: AlertTriangle, color: 'text-rose-600', bg: 'bg-rose-50/80' }
+    { label: 'Emergency Alerts', value: activeEmergencyAlert ? '1 ACTIVE' : (dashboardData.emergencyAlerts || '0'), icon: AlertTriangle, color: 'text-rose-600', bg: 'bg-rose-50/80' }
   ];
 
   const todayAppointments = dashboardData.schedule || [];
@@ -47,6 +88,55 @@ export default function DoctorDashboard() {
       {/* Premium Background Blurs */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-sky-400/10 blur-[120px] rounded-full pointer-events-none"></div>
       <div className="absolute top-40 left-0 w-[400px] h-[400px] bg-teal-400/10 blur-[120px] rounded-full pointer-events-none"></div>
+
+      {/* Real-time Emergency SOS Alert Banner */}
+      <AnimatePresence>
+        {activeEmergencyAlert && (
+          <motion.div
+            initial={{ opacity: 0, y: -50, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+            className="mb-8 p-6 rounded-3xl bg-gradient-to-r from-red-600 via-rose-600 to-red-700 text-white shadow-2xl shadow-red-600/40 border border-red-400/40 relative z-20 overflow-hidden"
+          >
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div className="flex items-start gap-4">
+                <div className="p-3 bg-white/20 rounded-2xl animate-pulse">
+                  <ShieldAlert className="h-8 w-8 text-white" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="bg-white/20 text-xs px-2.5 py-0.5 rounded-full font-black uppercase tracking-wider">
+                      CRITICAL SOS ALERT
+                    </span>
+                    <span className="text-xs text-red-100 font-bold">
+                      {activeEmergencyAlert.distanceKm} km away from your location
+                    </span>
+                  </div>
+                  <h3 className="text-2xl font-black mt-1">Patient: {activeEmergencyAlert.patientName}</h3>
+                  <p className="text-red-100 text-sm mt-0.5 font-medium">
+                    Needs: <span className="underline">{activeEmergencyAlert.medicalNeeds}</span>
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => handleEmergencyResponse('REJECT')}
+                  className="px-5 py-3 rounded-xl bg-black/30 hover:bg-black/40 text-white font-bold text-sm transition-colors"
+                >
+                  Decline
+                </button>
+                <button
+                  onClick={() => handleEmergencyResponse('ACCEPT')}
+                  className="px-6 py-3 rounded-xl bg-white text-red-600 hover:bg-red-50 font-black text-sm shadow-xl transition-transform hover:scale-105"
+                >
+                  ACCEPT & DISPATCH NOW
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Header Section */}
       <motion.div 
@@ -114,7 +204,9 @@ export default function DoctorDashboard() {
             <h2 className="text-2xl font-black text-slate-900 flex items-center gap-2">
               <Calendar className="h-6 w-6 text-teal-500" /> Today's Schedule
             </h2>
-            <button className="text-sm font-bold text-teal-600 hover:text-teal-700 bg-teal-50 px-4 py-2 rounded-xl transition-colors">Manage Calendar</button>
+            <Link href="/doctor/availability" className="text-sm font-bold text-teal-600 hover:text-teal-700 bg-teal-50 px-4 py-2 rounded-xl transition-colors">
+              Manage Calendar
+            </Link>
           </div>
           
           <div className="bg-white/90 backdrop-blur-xl rounded-[2rem] shadow-xl shadow-slate-200/40 border border-white overflow-hidden">
@@ -156,7 +248,9 @@ export default function DoctorDashboard() {
                         </span>
                       </td>
                       <td className="p-6 text-right">
-                        <button className="text-sm font-bold text-white bg-slate-900 hover:bg-teal-600 px-4 py-2 rounded-xl transition-colors inline-flex items-center gap-1">Open <ChevronRight className="h-4 w-4 inline" /></button>
+                        <Link href={`/doctor/consultation/${apt.id}`} className="text-sm font-bold text-white bg-slate-900 hover:bg-teal-600 px-4 py-2 rounded-xl transition-colors inline-flex items-center gap-1">
+                          Open <ChevronRight className="h-4 w-4 inline" />
+                        </Link>
                       </td>
                     </tr>
                   ))}
@@ -173,49 +267,42 @@ export default function DoctorDashboard() {
           transition={{ delay: 0.3 }}
           className="space-y-6"
         >
-          {dashboardData.latestEmergency && (
-            <div className="bg-gradient-to-br from-rose-500 to-red-600 rounded-[2rem] p-8 shadow-2xl shadow-rose-500/30 text-white relative overflow-hidden group cursor-pointer hover:scale-[1.02] transition-transform">
-              <AlertTriangle className="absolute -bottom-6 -right-6 h-40 w-40 text-white opacity-10 group-hover:scale-110 transition-transform duration-500" />
-              <div className="relative z-10">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="h-3 w-3 bg-white rounded-full animate-ping"></div>
-                  <h3 className="font-black text-lg tracking-wide uppercase">Emergency SOS</h3>
-                </div>
-                <p className="font-medium text-rose-100 mb-1 opacity-80 uppercase text-xs tracking-wider">Patient</p>
-                <p className="font-black text-2xl mb-4">{dashboardData.latestEmergency.patientName}</p>
-                
-                <p className="font-medium text-rose-100 mb-1 opacity-80 uppercase text-xs tracking-wider">Location</p>
-                <p className="font-bold text-lg mb-6 truncate">{dashboardData.latestEmergency.location}</p>
-                
-                <button className="w-full bg-white text-rose-600 py-3 rounded-xl font-black hover:bg-rose-50 transition-colors shadow-lg">
-                  Acknowledge & Respond
-                </button>
-              </div>
-            </div>
-          )}
-
-          <h2 className="text-2xl font-black text-slate-900 flex items-center gap-2 pt-4">
-            <CheckCircle2 className="h-6 w-6 text-emerald-500" /> Quick Actions
+          {/* Quick Actions */}
+          <h2 className="text-2xl font-black text-slate-900 flex items-center gap-2">
+            <CheckCircle2 className="h-6 w-6 text-emerald-500" /> Core Modules
           </h2>
           <div className="bg-white rounded-[2rem] shadow-xl shadow-slate-200/40 border border-slate-100 p-4 flex flex-col gap-3">
-            <button className="flex items-center gap-4 w-full p-4 hover:bg-teal-50 rounded-2xl transition-colors group">
+            
+            <Link href="/doctor/wallet" className="flex items-center gap-4 w-full p-4 hover:bg-teal-50 rounded-2xl transition-colors group">
               <div className="h-12 w-12 bg-teal-100 text-teal-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                <FileText className="h-5 w-5" />
+                <CreditCard className="h-5 w-5" />
               </div>
               <div className="text-left">
-                <div className="font-bold text-slate-900 group-hover:text-teal-700">Write Prescription</div>
-                <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mt-1">Create new Rx</div>
+                <div className="font-bold text-slate-900 group-hover:text-teal-700">Wallet & Settlements</div>
+                <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mt-0.5">24h hold & bank payouts</div>
               </div>
-            </button>
-            <button className="flex items-center gap-4 w-full p-4 hover:bg-sky-50 rounded-2xl transition-colors group">
+            </Link>
+
+            <Link href="/doctor/availability" className="flex items-center gap-4 w-full p-4 hover:bg-sky-50 rounded-2xl transition-colors group">
               <div className="h-12 w-12 bg-sky-100 text-sky-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
                 <Calendar className="h-5 w-5" />
               </div>
               <div className="text-left">
                 <div className="font-bold text-slate-900 group-hover:text-sky-700">Update Availability</div>
-                <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mt-1">Set work hours</div>
+                <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mt-0.5">Working hours & leaves</div>
               </div>
-            </button>
+            </Link>
+
+            <Link href="/doctor/prescription" className="flex items-center gap-4 w-full p-4 hover:bg-purple-50 rounded-2xl transition-colors group">
+              <div className="h-12 w-12 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                <FileText className="h-5 w-5" />
+              </div>
+              <div className="text-left">
+                <div className="font-bold text-slate-900 group-hover:text-purple-700">Prescription Pad</div>
+                <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mt-0.5">Generate digital Rx PDF</div>
+              </div>
+            </Link>
+
           </div>
         </motion.div>
       </div>
