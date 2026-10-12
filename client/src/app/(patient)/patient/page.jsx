@@ -135,7 +135,7 @@ export default function PatientDashboard() {
                       <h3 className="text-xl font-black text-slate-900">{apt.doctorName}</h3>
                       <p className="text-sm font-bold text-teal-600 mb-2">{apt.specialty}</p>
                       <div className="flex flex-wrap items-center gap-4 text-sm text-slate-500 font-medium bg-slate-50 px-3 py-2 rounded-xl">
-                        <span className="flex items-center gap-1.5"><Clock className="h-4 w-4 text-slate-400" /> {apt.date}</span>
+                        <span className="flex items-center gap-1.5"><Clock className="h-4 w-4 text-slate-400" /> {apt.time}</span>
                         <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4 text-slate-400" /> {apt.location}</span>
                       </div>
                     </div>

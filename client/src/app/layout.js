@@ -12,6 +12,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
+  metadataBase: new URL('https://careconnect.health'),
   title: {
     default: "CareConnect | India's Premium Healthcare Network & SOS Dispatch",
     template: "%s | CareConnect Healthcare SaaS"

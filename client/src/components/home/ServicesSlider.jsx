@@ -5,8 +5,10 @@ import Link from 'next/link';
 const services = [
   {
     title: 'Pregnancy',
-    href: '/search?specialty=Obstetrics',
-    color: 'group-hover:shadow-[0_0_40px_rgba(13,148,136,0.3)]',
+    href: '/services/pregnancy',
+    shadowColor: 'shadow-teal-200/40 hover:shadow-teal-300/50 hover:border-teal-200',
+    innerGlow: 'shadow-[inset_0_0_30px_rgba(20,184,166,0.1)]',
+    gradientHover: 'from-teal-50/60 via-transparent to-teal-100/40',
     textHover: 'group-hover:text-teal-400',
     svg: (
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" className="w-16 h-16 stroke-current text-teal-500 fill-none" strokeWidth="8" strokeDasharray="3023.78" strokeDashoffset="0">
@@ -17,8 +19,10 @@ const services = [
   },
   {
     title: 'Cardiology',
-    href: '/search?specialty=Cardiologist',
-    color: 'group-hover:shadow-[0_0_40px_rgba(244,63,94,0.3)]',
+    href: '/services/cardiology',
+    shadowColor: 'shadow-rose-200/40 hover:shadow-rose-300/50 hover:border-rose-200',
+    innerGlow: 'shadow-[inset_0_0_30px_rgba(244,63,94,0.1)]',
+    gradientHover: 'from-rose-50/60 via-transparent to-rose-100/40',
     textHover: 'group-hover:text-rose-400',
     svg: (
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="w-16 h-16 stroke-current text-rose-500 fill-none" strokeWidth="8" strokeDasharray="3451.64" strokeDashoffset="0">
@@ -30,8 +34,10 @@ const services = [
   },
   {
     title: 'Orthopedics',
-    href: '/search?specialty=Orthopedics',
-    color: 'group-hover:shadow-[0_0_40px_rgba(14,165,233,0.3)]',
+    href: '/services/orthopedics',
+    shadowColor: 'shadow-sky-200/40 hover:shadow-sky-300/50 hover:border-sky-200',
+    innerGlow: 'shadow-[inset_0_0_30px_rgba(14,165,233,0.1)]',
+    gradientHover: 'from-sky-50/60 via-transparent to-sky-100/40',
     textHover: 'group-hover:text-sky-400',
     svg: (
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 122.88 122.88" className="w-16 h-16 stroke-current text-sky-500 fill-none" strokeWidth="2" strokeDasharray="1058.79" strokeDashoffset="0">
@@ -41,8 +47,10 @@ const services = [
   },
   {
     title: 'IVF',
-    href: '/search?specialty=IVF',
-    color: 'group-hover:shadow-[0_0_40px_rgba(168,85,247,0.3)]',
+    href: '/services/ivf',
+    shadowColor: 'shadow-purple-200/40 hover:shadow-purple-300/50 hover:border-purple-200',
+    innerGlow: 'shadow-[inset_0_0_30px_rgba(168,85,247,0.1)]',
+    gradientHover: 'from-purple-50/60 via-transparent to-purple-100/40',
     textHover: 'group-hover:text-purple-400',
     svg: (
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" className="w-16 h-16 stroke-current text-purple-500 fill-none" strokeWidth="2" strokeDasharray="289" strokeDashoffset="0">
@@ -53,8 +61,10 @@ const services = [
   },
   {
     title: 'Gynecology',
-    href: '/search?specialty=Gynecology',
-    color: 'group-hover:shadow-[0_0_40px_rgba(236,72,153,0.3)]',
+    href: '/services/gynecology',
+    shadowColor: 'shadow-pink-200/40 hover:shadow-pink-300/50 hover:border-pink-200',
+    innerGlow: 'shadow-[inset_0_0_30px_rgba(236,72,153,0.1)]',
+    gradientHover: 'from-pink-50/60 via-transparent to-pink-100/40',
     textHover: 'group-hover:text-pink-400',
     svg: (
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 122.88 96.17" className="w-16 h-16 stroke-current text-pink-500 fill-none" strokeWidth="2">
@@ -64,8 +74,10 @@ const services = [
   },
   {
     title: 'Robotic Surgery',
-    href: '/search?specialty=Robotic Surgery',
-    color: 'group-hover:shadow-[0_0_40px_rgba(99,102,241,0.3)]',
+    href: '/services/robotic-surgery',
+    shadowColor: 'shadow-indigo-200/40 hover:shadow-indigo-300/50 hover:border-indigo-200',
+    innerGlow: 'shadow-[inset_0_0_30px_rgba(99,102,241,0.1)]',
+    gradientHover: 'from-indigo-50/60 via-transparent to-indigo-100/40',
     textHover: 'group-hover:text-indigo-400',
     svg: (
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 493.395 493.395" className="w-16 h-16 stroke-current text-indigo-500 fill-none" strokeWidth="6">
@@ -80,33 +92,32 @@ export default function ServicesSlider() {
   const containerRef = useRef(null);
   
   return (
-    <section className="pt-12 pb-24 overflow-hidden relative text-slate-900 bg-white/30 backdrop-blur-xl border-y border-white/50">
+    <section className="pt-12 pb-24 overflow-hidden relative text-slate-900 bg-white border-y border-slate-100">
       
       <div className="max-w-7xl mx-auto px-6 mb-16 text-center relative z-10">
-        <h2 className="text-sm font-black text-teal-600 uppercase tracking-[0.3em] mb-4">Discover</h2>
-        <h3 className="text-5xl font-black text-slate-900 mb-6 tracking-tight">Our <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-sky-500">Specialities</span></h3>
-        <p className="text-slate-500 font-medium max-w-2xl mx-auto text-lg leading-relaxed">Explore our wide range of world-class medical services and specialities provided by top-tier professionals.</p>
+        <h2 className="text-sm font-bold text-slate-600 uppercase tracking-widest mb-4">Discover</h2>
+        <h3 className="text-4xl font-extrabold text-slate-900 mb-6 tracking-tight sm:text-5xl">Our <span className="text-slate-500">Specialities</span></h3>
+        <p className="text-slate-600 font-medium max-w-2xl mx-auto text-lg leading-relaxed">Explore our wide range of world-class medical services and specialities provided by top-tier professionals.</p>
       </div>
 
       <div className="relative w-full z-10">
-        {/* Slider Container - pure CSS horizontal scroll with snap */}
         <div 
           ref={containerRef}
-          className="flex overflow-x-auto gap-8 px-6 sm:px-24 pb-16 snap-x snap-mandatory scrollbar-hide"
+          className="flex overflow-x-auto gap-8 px-6 sm:px-24 xl:px-6 xl:justify-center pb-16 snap-x snap-mandatory scrollbar-hide"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
-          {services.map((service, idx) => (
+          {[...services, ...services].map((service, idx) => (
             <Link 
-              key={idx} 
+              key={`${service.title}-${idx}`} 
               href={service.href}
-              className={`snap-center shrink-0 w-72 group cursor-pointer transition-all duration-500 rounded-[2.5rem] ${service.color}`}
+              className="snap-center shrink-0 w-72 group cursor-pointer transition-all duration-500 rounded-[2.5rem]"
             >
-              <div className="bg-gradient-to-br from-white/95 to-slate-50/80 border border-white rounded-[2.5rem] p-10 h-full flex flex-col items-center justify-center gap-8 transition-all duration-700 hover:-translate-y-4 relative overflow-hidden backdrop-blur-2xl shadow-[0_20px_60px_-15px_rgba(13,148,136,0.15)] hover:shadow-[0_40px_100px_-20px_rgba(13,148,136,0.25)] hover:border-teal-100">
+              <div className={`bg-gradient-to-br from-white to-slate-50/80 border border-slate-100 rounded-[2.5rem] p-10 h-full flex flex-col items-center justify-center gap-8 transition-all duration-700 hover:-translate-y-4 relative overflow-hidden backdrop-blur-2xl shadow-xl ${service.shadowColor} ${service.innerGlow}`}>
                 {/* Luxurious inner glow */}
                 <div className="absolute inset-0 rounded-[2.5rem] shadow-[inset_0_0_40px_rgba(255,255,255,1)] pointer-events-none"></div>
                 
                 {/* Moving gradient hover background */}
-                <div className="absolute inset-0 bg-gradient-to-br from-teal-50/40 via-transparent to-purple-50/40 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                <div className={`absolute inset-0 bg-gradient-to-br ${service.gradientHover} opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none`}></div>
                 
                 {/* SVG Drawing Animation on Hover via CSS */}
                 <div className="svg-container transition-transform duration-500 group-hover:scale-110 relative z-10">

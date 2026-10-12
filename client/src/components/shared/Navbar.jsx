@@ -1,26 +1,18 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, HeartPulse } from 'lucide-react';
+import { Menu, X, HeartPulse, Phone, Clock, MapPin } from 'lucide-react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { logout } from '@/store/slices/authSlice';
 
 export default function Navbar() {
-  const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   const { user, isAuthenticated } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const router = useRouter();
-
-  // Scroll effect for dynamic styling
-  useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -29,164 +21,166 @@ export default function Navbar() {
 
   const navLinks = [
     { name: 'Home', href: '/' },
+    { name: 'About Us', href: '/#about' },
     { name: 'Services', href: '/#services' },
-    { name: 'Doctors', href: '/#doctors' },
+    { name: 'Our Specialist', href: '/#specialist' },
+    { name: 'Our App', href: '/#app' },
     { name: 'Contact', href: '/#contact' },
   ];
 
   return (
-    <motion.header 
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ type: "spring", stiffness: 300, damping: 30 }}
-      className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${
-        isScrolled 
-          ? 'bg-white/80 backdrop-blur-xl border-b border-slate-200/50 shadow-sm py-4' 
-          : 'bg-transparent py-6'
-      }`}
-    >
-      <div className="mx-auto max-w-7xl px-6 flex items-center justify-between">
-        
-        {/* LOGO */}
-        <Link href="/" className="group flex items-center gap-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-emerald-400 text-white shadow-lg shadow-teal-500/20 group-hover:shadow-teal-500/40 transition-shadow">
-            <HeartPulse className="h-6 w-6" />
-          </div>
-          <span className={`text-2xl font-black tracking-tighter ${isScrolled ? 'text-slate-900' : 'text-white'}`}>
-            Care<span className="text-teal-500">Connect</span>
-          </span>
-        </Link>
-
-        {/* DESKTOP LINKS */}
-        <nav className="hidden md:flex items-center gap-8">
-          {navLinks.map((link) => (
-            <Link 
-              key={link.name} 
-              href={link.href}
-              className={`text-sm font-bold transition-colors hover:text-teal-500 ${
-                isScrolled ? 'text-slate-700' : 'text-white'
-              }`}
-            >
-              {link.name}
-            </Link>
-          ))}
-        </nav>
-
-        {/* DESKTOP ACTIONS */}
-        <div className="hidden md:flex items-center gap-4">
-          {isAuthenticated ? (
-            <div className="flex items-center gap-4">
-              <span className={`text-sm font-semibold ${isScrolled ? 'text-slate-700' : 'text-white'}`}>
-                Hi, {user?.name || 'User'}
-              </span>
-              <button 
-                onClick={handleLogout}
-                className={`text-sm font-bold transition-colors ${
-                  isScrolled ? 'text-red-600 hover:text-red-700' : 'text-red-400 hover:text-red-300'
-                }`}
-              >
-                Sign Out
-              </button>
-              <Link 
-                href={user?.roles?.includes('PATIENT') ? '/patient' : user?.roles?.includes('DOCTOR') ? '/doctor' : '/admin/billing'}
-                className="rounded-full bg-slate-900 px-5 py-2.5 text-sm font-bold text-white transition-all hover:bg-slate-800 hover:shadow-lg hover:-translate-y-0.5"
-              >
-                Dashboard
-              </Link>
-            </div>
-          ) : (
-            <>
-              <Link 
-                href="/login" 
-                className={`text-sm font-bold transition-colors ${
-                  isScrolled ? 'text-slate-900 hover:text-teal-600' : 'text-white hover:text-teal-400'
-                }`}
-              >
-                Log in
-              </Link>
-              <Link 
-                href="/register" 
-                className="rounded-full bg-teal-600 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-teal-500/20 transition-all hover:bg-teal-500 hover:shadow-teal-500/40 hover:-translate-y-0.5"
-              >
-                Get Started
-              </Link>
-            </>
-          )}
+    <>
+      {/* Top Contact Bar */}
+      <div className="hidden md:flex bg-slate-800 text-slate-200 text-xs py-2 px-6 justify-between items-center">
+        <div className="flex gap-6 max-w-7xl mx-auto w-full">
+          <span className="flex items-center gap-2"><MapPin className="h-3 w-3 text-slate-400" /> 123 Healthcare Ave, Medical City</span>
+          <span className="flex items-center gap-2"><Clock className="h-3 w-3 text-slate-400" /> Mon - Sat: 8:00 AM - 9:00 PM</span>
         </div>
-
-        {/* MOBILE MENU TOGGLE */}
-        <div className="md:hidden">
-          <button 
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className={`p-2 rounded-lg ${isScrolled ? 'text-slate-900 bg-slate-100' : 'text-white bg-white/10 backdrop-blur-md border border-white/20'}`}
-          >
-            {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </button>
+        <div className="flex gap-4 items-center shrink-0 whitespace-nowrap">
+          <span className="flex items-center gap-2 font-semibold text-white"><Phone className="h-3 w-3 text-sky-400" /> 1-800-123-4567</span>
+          <div className="h-3 w-px bg-slate-600"></div>
+          <Link href="/login" className="hover:text-white transition-colors">Staff Login</Link>
         </div>
-
       </div>
 
-      {/* MOBILE MENU (Animated) */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <motion.div 
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-white border-t border-slate-100 shadow-2xl absolute top-full left-0 w-full overflow-hidden"
-          >
-            <div className="flex flex-col px-6 py-8 gap-6">
-              {navLinks.map((link) => (
-                <Link 
-                  key={link.name} 
-                  href={link.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="text-lg font-bold text-slate-800 hover:text-teal-600"
-                >
-                  {link.name}
-                </Link>
-              ))}
-              
-              <div className="h-px w-full bg-slate-100 my-2"></div>
-              
-              {isAuthenticated ? (
-                <>
-                  <Link 
-                    href={user?.roles?.includes('PATIENT') ? '/patient' : user?.roles?.includes('DOCTOR') ? '/doctor' : '/admin/billing'}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="rounded-xl bg-slate-900 px-5 py-3 text-center font-bold text-white"
-                  >
-                    Go to Dashboard
-                  </Link>
-                  <button 
-                    onClick={() => { handleLogout(); setMobileMenuOpen(false); }}
-                    className="text-center font-bold text-rose-600"
-                  >
-                    Sign Out
-                  </button>
-                </>
-              ) : (
-                <>
-                  <Link 
-                    href="/login" 
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="rounded-xl bg-slate-100 px-5 py-3 text-center font-bold text-slate-900"
-                  >
-                    Log in
-                  </Link>
-                  <Link 
-                    href="/register" 
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="rounded-xl bg-teal-500 px-5 py-3 text-center font-bold text-white shadow-lg shadow-teal-500/20"
-                  >
-                    Get Started
-                  </Link>
-                </>
-              )}
+      <header className="sticky top-0 z-50 bg-white border-b border-slate-100 shadow-sm">
+        <div className="mx-auto max-w-7xl px-6 flex items-center justify-between h-20">
+          
+          {/* LOGO */}
+          <Link href="/" className="flex items-center gap-2">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-800 text-white shadow-md">
+              <HeartPulse className="h-5 w-5" />
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.header>
+            <span className="text-2xl font-bold tracking-tight text-slate-800">
+              Viola<span className="text-slate-400 font-medium">Care</span>
+            </span>
+          </Link>
+
+          {/* DESKTOP LINKS */}
+          <nav className="hidden lg:flex items-center gap-8">
+            {navLinks.map((link) => (
+              <Link 
+                key={link.name} 
+                href={link.href}
+                className="text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors"
+              >
+                {link.name}
+              </Link>
+            ))}
+          </nav>
+
+          {/* DESKTOP ACTIONS */}
+          <div className="hidden lg:flex items-center gap-4">
+            {isAuthenticated ? (
+              <div className="flex items-center gap-4">
+                <span className="text-sm font-medium text-slate-600">
+                  Hi, {user?.name || 'User'}
+                </span>
+                <Link 
+                  href={user?.roles?.includes('PATIENT') ? '/patient' : user?.roles?.includes('DOCTOR') ? '/doctor' : '/admin/billing'}
+                  className="rounded-full bg-slate-800 px-6 py-2.5 text-sm font-semibold text-white transition-all hover:bg-slate-700 shadow-md"
+                >
+                  Dashboard
+                </Link>
+                <button 
+                  onClick={handleLogout}
+                  className="text-sm font-semibold text-slate-500 hover:text-red-500 transition-colors"
+                >
+                  Sign Out
+                </button>
+              </div>
+            ) : (
+              <>
+                <Link 
+                  href="/login" 
+                  className="text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors"
+                >
+                  Log in
+                </Link>
+                <Link 
+                  href="/register" 
+                  className="rounded-full bg-slate-800 px-6 py-2.5 text-sm font-semibold text-white shadow-md transition-all hover:bg-slate-700 hover:-translate-y-0.5"
+                >
+                  + Book Appointment
+                </Link>
+              </>
+            )}
+          </div>
+
+          {/* MOBILE MENU TOGGLE */}
+          <div className="lg:hidden">
+            <button 
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="p-2 rounded-lg text-slate-600 hover:bg-slate-50"
+            >
+              {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
+          </div>
+
+        </div>
+
+        {/* MOBILE MENU */}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div 
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="lg:hidden bg-white border-t border-slate-100 shadow-xl overflow-hidden"
+            >
+              <div className="flex flex-col px-6 py-6 gap-4">
+                {navLinks.map((link) => (
+                  <Link 
+                    key={link.name} 
+                    href={link.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="text-base font-semibold text-slate-700 hover:text-slate-900"
+                  >
+                    {link.name}
+                  </Link>
+                ))}
+                
+                <div className="h-px w-full bg-slate-100 my-2"></div>
+                
+                {isAuthenticated ? (
+                  <>
+                    <Link 
+                      href={user?.roles?.includes('PATIENT') ? '/patient' : user?.roles?.includes('DOCTOR') ? '/doctor' : '/admin/billing'}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="rounded-full bg-slate-800 px-5 py-3 text-center font-semibold text-white"
+                    >
+                      Go to Dashboard
+                    </Link>
+                    <button 
+                      onClick={() => { handleLogout(); setMobileMenuOpen(false); }}
+                      className="text-center font-semibold text-red-500"
+                    >
+                      Sign Out
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link 
+                      href="/login" 
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="text-center font-semibold text-slate-600 py-2"
+                    >
+                      Log in
+                    </Link>
+                    <Link 
+                      href="/register" 
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="rounded-full bg-slate-800 px-5 py-3 text-center font-semibold text-white shadow-md"
+                    >
+                      + Book Appointment
+                    </Link>
+                  </>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </header>
+    </>
   );
 }

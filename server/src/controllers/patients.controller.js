@@ -79,10 +79,7 @@ const getDashboardStats = asyncHandler(async (req, res) => {
     prisma.medicalRecord.findMany({
       where: { patientId },
       orderBy: { recordedAt: 'desc' },
-      take: 2,
-      include: {
-        doctor: { select: { name: true, specializations: { select: { specialization: true }, take: 1 } } }
-      }
+      take: 2
     })
   ]);
 
@@ -95,13 +92,13 @@ const getDashboardStats = asyncHandler(async (req, res) => {
       doctorName: apt.doctor.name,
       specialty: apt.doctor.specializations?.[0]?.specialization || 'General Physician',
       time: new Intl.DateTimeFormat('en-US', { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' }).format(apt.scheduledAt),
-      location: apt.serviceType === 'VIRTUAL' ? 'Online' : 'City Heart Hospital',
+      location: apt.serviceType === 'VIRTUAL' ? 'Online' : 'CareConnect Clinic',
       status: apt.status === 'CONFIRMED' ? 'Confirmed' : apt.status === 'REQUESTED' ? 'Pending' : 'In Progress'
     })),
     recentMedicalRecords: recentMedicalRecords.map(record => ({
       id: record.id,
-      doctorName: record.doctor?.name || 'Uploaded File',
-      specialty: record.doctor?.specializations?.[0]?.specialization || 'Clinical Document',
+      doctorName: 'Uploaded Record',
+      specialty: record.recordType || 'Clinical Document',
       date: new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).format(record.recordedAt),
       diagnosis: record.title || record.notes || 'Medical Record'
     }))

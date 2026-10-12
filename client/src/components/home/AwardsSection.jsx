@@ -9,28 +9,33 @@ const awards = [
     desc: "Recognized for high standards in healthcare quality and patient safety.",
     icon: <ShieldCheck className="h-10 w-10 text-emerald-500" />,
     color: "bg-emerald-50",
-    borderColor: "border-emerald-100"
+    borderColor: "border-emerald-200",
+    shadowColor: "shadow-emerald-200/60 hover:shadow-emerald-300/60",
+    innerGlow: "shadow-[inset_0_0_30px_rgba(16,185,129,0.15)]"
   },
   {
     title: "JCI Gold Seal",
     desc: "Global gold standard for healthcare quality and safety.",
     icon: <Award className="h-10 w-10 text-yellow-500" />,
     color: "bg-yellow-50",
-    borderColor: "border-yellow-100"
+    borderColor: "border-yellow-200",
+    shadowColor: "shadow-yellow-200/60 hover:shadow-yellow-300/60",
+    innerGlow: "shadow-[inset_0_0_30px_rgba(234,179,8,0.15)]"
   },
   {
     title: "Best Multispecialty 2025",
     desc: "Awarded by Times Health Survey for clinical excellence.",
     icon: <Star className="h-10 w-10 text-sky-500" />,
     color: "bg-sky-50",
-    borderColor: "border-sky-100"
+    borderColor: "border-sky-200",
+    shadowColor: "shadow-sky-200/60 hover:shadow-sky-300/60",
+    innerGlow: "shadow-[inset_0_0_30px_rgba(14,165,233,0.15)]"
   }
 ];
 
 export default function AwardsSection() {
   return (
-    <section className="py-24 bg-slate-50 relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-teal-500/5 blur-[120px] rounded-full pointer-events-none"></div>
+    <section className="py-24 bg-white relative overflow-hidden border-t border-slate-100">
       
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div className="text-center mb-16">
@@ -38,16 +43,16 @@ export default function AwardsSection() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-4xl font-black text-slate-900 mb-4"
+            className="text-4xl font-extrabold text-slate-900 mb-4 sm:text-5xl"
           >
-            Awards & <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-emerald-500">Accreditations</span>
+            Awards & <span className="text-slate-500">Accreditations</span>
           </motion.h2>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-slate-500 font-medium max-w-2xl mx-auto"
+            className="text-slate-600 font-medium max-w-2xl mx-auto text-lg"
           >
             Our commitment to clinical excellence is recognized by premier national and international healthcare bodies.
           </motion.p>
@@ -62,13 +67,14 @@ export default function AwardsSection() {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: idx * 0.15 }}
               whileHover={{ y: -10 }}
-              className={`p-10 rounded-[2.5rem] border ${award.borderColor} ${award.color} flex flex-col items-center text-center shadow-lg shadow-slate-200/50 cursor-pointer`}
+              className={`p-10 rounded-[2.5rem] border ${award.borderColor} ${award.color} flex flex-col items-center text-center shadow-xl ${award.shadowColor} ${award.innerGlow} transition-all duration-300 cursor-pointer relative overflow-hidden group`}
             >
-              <div className="mb-6 p-4 bg-white rounded-full shadow-sm">
+              <div className="absolute inset-0 bg-white/30 pointer-events-none rounded-[2.5rem]"></div>
+              <div className="mb-6 p-4 bg-white rounded-full shadow-sm relative z-10 group-hover:scale-110 transition-transform duration-300">
                 {award.icon}
               </div>
-              <h3 className="text-2xl font-black text-slate-900 mb-3">{award.title}</h3>
-              <p className="text-slate-600 font-medium leading-relaxed">{award.desc}</p>
+              <h3 className="text-2xl font-black text-slate-900 mb-3 relative z-10">{award.title}</h3>
+              <p className="text-slate-600 font-medium leading-relaxed relative z-10">{award.desc}</p>
             </motion.div>
           ))}
         </div>

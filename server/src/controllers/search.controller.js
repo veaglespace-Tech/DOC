@@ -6,8 +6,7 @@ const searchDoctors = asyncHandler(async (req, res) => {
   const { specialty, maxFees } = req.query;
 
   let whereClause = {
-    // We only want verified doctors
-    // Assuming verificationStatus is stored on Doctor model, or we just return all for now if no status field
+    verificationStatus: 'APPROVED',
   };
 
   if (specialty && specialty !== 'All') {
@@ -19,9 +18,10 @@ const searchDoctors = asyncHandler(async (req, res) => {
   }
 
   if (maxFees) {
-    whereClause.consultationFee = {
-      lte: parseFloat(maxFees)
-    };
+    whereClause.OR = [
+      { consultationFee: { lte: parseFloat(maxFees) } },
+      { consultationFee: null }
+    ];
   }
 
   const doctors = await prisma.doctor.findMany({
