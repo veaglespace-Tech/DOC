@@ -10,8 +10,8 @@ import { ShieldAlert, KeyRound, ArrowRight, Lock, Activity } from 'lucide-react'
 export default function AdminLoginPage() {
   const router = useRouter();
   const [adminLogin, { isLoading }] = useAdminLoginMutation();
-  const [email, setEmail] = useState('superadmin@careconnect.health');
-  const [password, setPassword] = useState('superadmin123');
+  const [email, setEmail] = useState('admin@careconnect.com');
+  const [password, setPassword] = useState('Veagle@123');
 
   const handleAdminLogin = async (e) => {
     e.preventDefault();

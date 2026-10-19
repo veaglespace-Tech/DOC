@@ -63,7 +63,6 @@ export const metadata = {
 };
 
 import StoreProvider from "@/store/StoreProvider";
-import QuickRoleSwitcher from "@/components/shared/QuickRoleSwitcher";
 
 export default function RootLayout({ children }) {
   return (
@@ -72,10 +71,7 @@ export default function RootLayout({ children }) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <StoreProvider>
-          {children}
-          <QuickRoleSwitcher />
-        </StoreProvider>
+        <StoreProvider>{children}</StoreProvider>
       </body>
     </html>
   );

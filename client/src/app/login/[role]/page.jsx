@@ -78,7 +78,10 @@ export default function DynamicLoginPage() {
                   type="email" 
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder={roleParam === ROLES.PATIENT ? "patient@careconnect.health" : "doctor@careconnect.health"}
+                  placeholder={
+                    roleParam === ROLES.PATIENT ? "patient@careconnect.com" :
+                    roleParam === ROLES.DOCTOR ? "doctor@careconnect.com" : "clinic@careconnect.com"
+                  }
                   className="block w-full pl-12 pr-4 py-3.5 bg-slate-50/50 border border-slate-200 rounded-2xl text-slate-900 focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 focus:bg-white outline-none transition-all font-medium" 
                   required 
                 />
