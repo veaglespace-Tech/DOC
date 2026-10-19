@@ -12,5 +12,6 @@ const controller = require('../controllers/search.controller');
  *       200: { description: List of doctors }
  */
 router.get('/doctors', controller.searchDoctors);
+router.get('/doctors/:id', controller.getDoctorById);
 
 module.exports = router;

@@ -56,4 +56,65 @@ const searchDoctors = asyncHandler(async (req, res) => {
   return sendSuccess(res, formattedDoctors, 'Doctors fetched successfully');
 });
 
-module.exports = { searchDoctors };
+const getDoctorById = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const doctorId = parseInt(id);
+
+  if (isNaN(doctorId)) {
+    return sendError(res, 'Invalid doctor ID', 400);
+  }
+
+  const doc = await prisma.doctor.findUnique({
+    where: { id: doctorId },
+    include: {
+      user: {
+        select: { email: true, phone: true }
+      },
+      specializations: true,
+      availability: true,
+      vacationBlocks: true,
+      reviews: {
+        include: {
+          patient: {
+            select: { name: true }
+          }
+        },
+        orderBy: { createdAt: 'desc' },
+        take: 10
+      }
+    }
+  });
+
+  if (!doc) {
+    return sendError(res, 'Doctor not found', 404);
+  }
+
+  const primarySpecialty = doc.specializations?.[0]?.specialization || 'General Physician';
+
+  const formattedDoctor = {
+    id: doc.id,
+    name: doc.name ? (doc.name.startsWith('Dr.') ? doc.name : `Dr. ${doc.name}`) : 'Doctor',
+    specialty: primarySpecialty,
+    specializations: doc.specializations.map(s => s.specialization),
+    qualifications: doc.bio && doc.bio.includes('\n') ? doc.bio.split('\n')[0] : 'MBBS, MD',
+    experience: doc.experienceYears ? `${doc.experienceYears} Years Experience` : '8+ Years Experience',
+    experienceYears: doc.experienceYears || 8,
+    location: 'Mumbai, MH',
+    address: 'CareConnect Clinic & Health Center',
+    fee: doc.consultationFee ? parseFloat(doc.consultationFee) : 600,
+    homeVisitFee: doc.homeVisitFee ? parseFloat(doc.homeVisitFee) : 1000,
+    emergencyFee: doc.emergencyFee ? parseFloat(doc.emergencyFee) : 1500,
+    rating: parseFloat(doc.rating) > 0 ? parseFloat(doc.rating) : 4.9,
+    reviews: doc.totalReviews || doc.reviews.length || 38,
+    about: doc.bio || `Dr. ${doc.name} is a certified specialist with extensive clinical experience dedicated to high-standard patient care, consultations, and personalized treatment plans.`,
+    avatar: doc.profileImage || `https://ui-avatars.com/api/?name=${encodeURIComponent(doc.name || 'Doctor')}&background=0D8ABC&color=fff&size=256`,
+    availability: doc.availability,
+    isAvailable: doc.isAvailable,
+    isEmergencyAvailable: doc.isEmergencyAvailable,
+    recentReviews: doc.reviews
+  };
+
+  return sendSuccess(res, formattedDoctor, 'Doctor profile fetched successfully');
+});
+
+module.exports = { searchDoctors, getDoctorById };

@@ -66,6 +66,10 @@ export const adminApi = createApi({
     getAdminAuditLogs: builder.query({
       query: () => '/admin/audit-logs'
     }),
+    getAdminEmergencyDispatches: builder.query({
+      query: () => '/admin/emergency',
+      providesTags: ['AdminStats']
+    }),
   }),
 });
 
@@ -78,4 +82,5 @@ export const {
   useGetAdminComplaintsQuery,
   useUpdateComplaintStatusMutation,
   useGetAdminAuditLogsQuery,
+  useGetAdminEmergencyDispatchesQuery,
 } = adminApi;

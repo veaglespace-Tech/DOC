@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ShieldAlert, 
@@ -14,38 +15,43 @@ import {
   CheckCircle2, 
   ArrowLeft,
   Activity,
-  Share2
+  Share2,
+  Stethoscope
 } from 'lucide-react';
 import { getClientSocket } from '@/utils/socket';
-import { useTriggerEmergencyMutation } from '@/store/api/emergencyApi';
+import { useGetEmergencyStatusQuery, useTriggerEmergencyMutation } from '@/store/api/emergencyApi';
 
-export default function EmergencyTrackingPage() {
+function EmergencyTrackingContent() {
+  const searchParams = useSearchParams();
+  const requestId = searchParams.get('requestId');
+
+  const { data: statusResponse } = useGetEmergencyStatusQuery(requestId, {
+    skip: !requestId,
+    pollingInterval: 3000
+  });
+
   const [triggerEmergency] = useTriggerEmergencyMutation();
-  const [status, setStatus] = useState('SEARCHING'); // 'SEARCHING', 'DOCTOR_ASSIGNED', 'ARRIVED'
-  const [assignedDoctor, setAssignedDoctor] = useState(null);
+  const [socketStatus, setSocketStatus] = useState('SEARCHING');
+  const [socketDoctor, setSocketDoctor] = useState(null);
   const [etaMinutes, setEtaMinutes] = useState(12);
   const [searchSeconds, setSearchSeconds] = useState(0);
 
+  const emData = statusResponse?.data;
+  const isAssignedFromDb = emData?.status === 'DOCTOR_ASSIGNED' && emData?.assignedDoctor;
+
+  const status = isAssignedFromDb ? 'DOCTOR_ASSIGNED' : socketStatus;
+  const assignedDoctor = isAssignedFromDb ? {
+    name: emData.assignedDoctor.name || 'Verified Emergency Practitioner',
+    specialty: emData.assignedDoctor.specializations?.[0]?.specialization || 'Emergency Care',
+    rating: emData.assignedDoctor.rating || 4.9,
+    phone: emData.assignedDoctor.phone || '+91 98765 43210',
+    vehicle: 'Mobile Medical Response Unit',
+    distance: '1.4 km'
+  } : socketDoctor;
+
   useEffect(() => {
-    // 1. Trigger the emergency dispatch on load
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          triggerEmergency({
-            latitude: pos.coords.latitude,
-            longitude: pos.coords.longitude,
-            medicalNeeds: 'Emergency Doctor Visit Needed ASAP'
-          });
-        },
-        () => {
-          triggerEmergency({
-            latitude: 18.5204,
-            longitude: 73.8567,
-            medicalNeeds: 'Emergency Doctor Visit Needed ASAP'
-          });
-        }
-      );
-    } else {
+    // If no requestId provided, auto-trigger a default emergency dispatch
+    if (!requestId) {
       triggerEmergency({
         latitude: 18.5204,
         longitude: 73.8567,
@@ -53,26 +59,30 @@ export default function EmergencyTrackingPage() {
       });
     }
 
-    // 2. Setup Socket.IO listener for live doctor assignment
+    // Setup Socket.IO listener for live doctor assignment
     const socket = getClientSocket();
     if (socket) {
       socket.on('emergency:doctor_assigned', (data) => {
-        setStatus('DOCTOR_ASSIGNED');
-        setAssignedDoctor(data.doctor);
+        setSocketStatus('DOCTOR_ASSIGNED');
+        if (data.doctor) {
+          setSocketDoctor({
+            name: data.doctor.name || 'Verified Emergency Practitioner',
+            specialty: 'Emergency Medicine',
+            rating: data.doctor.rating || 4.9,
+            phone: data.doctor.phone || '+91 98765 43210',
+            vehicle: 'Mobile Medical Response Unit',
+            distance: '1.2 km'
+          });
+        }
         if (data.etaMinutes) setEtaMinutes(data.etaMinutes);
-      });
-
-      socket.on('doctor:location:update', (loc) => {
-        // Live GPS coordinates of doctor on the move
-        console.log('Doctor live location:', loc);
       });
     }
 
-    // 3. Fallback mock assignment if no live doctor accepts in 8 seconds (for seamless demo)
+    // Fallback simulation timer if testing in isolated local demo
     const fallbackTimer = setTimeout(() => {
-      setStatus((current) => {
+      setSocketStatus((current) => {
         if (current === 'SEARCHING') {
-          setAssignedDoctor({
+          setSocketDoctor({
             name: 'Dr. Ramesh Sharma',
             specialty: 'Emergency General Physician',
             rating: 4.9,
@@ -84,7 +94,7 @@ export default function EmergencyTrackingPage() {
         }
         return current;
       });
-    }, 6000);
+    }, 8000);
 
     const ticker = setInterval(() => {
       setSearchSeconds((s) => s + 1);
@@ -94,10 +104,11 @@ export default function EmergencyTrackingPage() {
       clearTimeout(fallbackTimer);
       clearInterval(ticker);
     };
-  }, [triggerEmergency]);
+  }, [requestId, triggerEmergency]);
 
   return (
     <div className="min-h-screen bg-slate-950 text-white flex flex-col relative overflow-hidden">
+      
       {/* Background Radar Rings */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20">
         <div className="w-[800px] h-[800px] rounded-full border border-red-500/30 animate-ping"></div>
@@ -114,7 +125,7 @@ export default function EmergencyTrackingPage() {
         <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-950/80 border border-red-800 text-red-400 text-xs font-bold uppercase tracking-wider animate-pulse">
           <Activity className="h-3.5 w-3.5 text-red-400" /> Live Emergency Dispatch
         </div>
-        <a href="tel:108" className="px-3 py-1.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs flex items-center gap-1.5 transition-colors">
+        <a href="tel:108" className="px-3.5 py-1.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs flex items-center gap-1.5 transition-colors shadow-lg shadow-red-600/30">
           <Phone className="h-3.5 w-3.5" /> Call 108
         </a>
       </div>
@@ -140,7 +151,7 @@ export default function EmergencyTrackingPage() {
                   Scanning for Nearest Doctor...
                 </h1>
                 <p className="text-slate-400 font-medium max-w-md mx-auto text-sm">
-                  Broadcasting urgent distress signal to verified on-duty doctors within 5km radius. Searching for {searchSeconds}s.
+                  Distress signal broadcast to verified doctors within a 5km radius. Searching for {searchSeconds}s.
                 </p>
               </motion.div>
             ) : (
@@ -193,7 +204,7 @@ export default function EmergencyTrackingPage() {
                 </div>
               </div>
               <span className="text-xs font-bold text-teal-300 mt-1 bg-slate-950/80 px-2 py-0.5 rounded border border-teal-800/60">
-                Doctor (1.8 km away)
+                Doctor (1.4 km away)
               </span>
             </motion.div>
           )}
@@ -241,18 +252,24 @@ export default function EmergencyTrackingPage() {
             </div>
 
             {/* Quick Actions */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <a
                 href={`tel:${assignedDoctor.phone || '9876543210'}`}
-                className="flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-teal-500 hover:bg-teal-600 text-white font-bold transition-colors shadow-lg shadow-teal-500/20"
+                className="flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-teal-500 hover:bg-teal-600 text-white font-bold text-xs transition-colors shadow-lg shadow-teal-500/20"
               >
-                <Phone className="h-4 w-4" /> Call Doctor
+                <Phone className="h-4 w-4" /> Call Doctor Directly
               </a>
-              <button
-                onClick={() => alert('Live emergency coordinates link copied to clipboard!')}
-                className="flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-semibold transition-colors"
+              <Link
+                href="/patient/appointments"
+                className="flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs transition-all shadow-lg shadow-emerald-600/20"
               >
-                <Share2 className="h-4 w-4" /> Share Location
+                <Activity className="h-4 w-4" /> Join Video Consultation
+              </Link>
+              <button
+                onClick={() => alert('Live emergency coordinates link copied to clipboard! Sent to registered contacts.')}
+                className="flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-semibold text-xs transition-colors"
+              >
+                <Share2 className="h-4 w-4" /> Share Live GPS
               </button>
             </div>
           </motion.div>
@@ -266,5 +283,17 @@ export default function EmergencyTrackingPage() {
 
       </div>
     </div>
+  );
+}
+
+export default function EmergencyTrackingPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center text-white">
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-red-500 border-t-transparent"></div>
+      </div>
+    }>
+      <EmergencyTrackingContent />
+    </Suspense>
   );
 }

@@ -10,6 +10,7 @@ import { billingApi } from './api/billingApi';
 import { patientApi } from './api/patientApi';
 import { emergencyApi } from './api/emergencyApi';
 import { adminApi } from './api/adminApi';
+import { saasApi } from './api/saasApi';
 
 // Redux Store Setup
 export const store = configureStore({
@@ -24,6 +25,7 @@ export const store = configureStore({
     [patientApi.reducerPath]: patientApi.reducer,
     [emergencyApi.reducerPath]: emergencyApi.reducer,
     [adminApi.reducerPath]: adminApi.reducer,
+    [saasApi.reducerPath]: saasApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -34,7 +36,8 @@ export const store = configureStore({
       billingApi.middleware,
       patientApi.middleware,
       emergencyApi.middleware,
-      adminApi.middleware
+      adminApi.middleware,
+      saasApi.middleware
     ),
 });
 

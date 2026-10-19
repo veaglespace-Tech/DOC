@@ -12,7 +12,7 @@ export const appointmentApi = createApi({
       return headers;
     }
   }),
-  tagTypes: ['Appointment'],
+  tagTypes: ['Appointment', 'Prescription'],
   endpoints: (builder) => ({
     getMyAppointments: builder.query({
       query: () => '/appointments/my',
@@ -50,6 +50,22 @@ export const appointmentApi = createApi({
       }),
       invalidatesTags: ['Appointment']
     }),
+    getPrescription: builder.query({
+      query: (appointmentId) => `/appointments/${appointmentId}/prescription`,
+      providesTags: ['Prescription']
+    }),
+    createPrescription: builder.mutation({
+      query: ({ appointmentId, data }) => ({
+        url: `/appointments/${appointmentId}/prescription`,
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: ['Prescription', 'Appointment']
+    }),
+    getPatientPrescriptions: builder.query({
+      query: () => '/patients/prescriptions',
+      providesTags: ['Prescription']
+    }),
   }),
 });
 
@@ -58,5 +74,8 @@ export const {
   useCreateAppointmentMutation, 
   useUpdateAppointmentStatusMutation,
   useStartVisitMutation,
-  useCompleteVisitMutation
+  useCompleteVisitMutation,
+  useGetPrescriptionQuery,
+  useCreatePrescriptionMutation,
+  useGetPatientPrescriptionsQuery
 } = appointmentApi;

@@ -15,5 +15,6 @@ router.patch('/withdrawals/:id', adminController.updateWithdrawalStatus);
 router.get('/complaints', adminController.getComplaintsList);
 router.patch('/complaints/:id', adminController.updateComplaintStatus);
 router.get('/audit-logs', adminController.getAuditLogs);
+router.get('/emergency', adminController.getEmergencyDispatches);
 
 module.exports = router;

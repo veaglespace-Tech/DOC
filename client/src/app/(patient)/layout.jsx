@@ -3,7 +3,7 @@
 import RoleGuard from '@/components/auth/RoleGuard';
 import { ROLES, logout } from '@/store/slices/authSlice';
 import Link from 'next/link';
-import { Activity, LayoutDashboard, Search, FileText, Bell, User, Settings, LogOut, HeartPulse, Wallet, Bot } from 'lucide-react';
+import { Activity, LayoutDashboard, Search, FileText, Bell, User, Settings, LogOut, HeartPulse, Wallet, Bot, AlertTriangle, LifeBuoy } from 'lucide-react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useRouter } from 'next/navigation';
 
@@ -59,13 +59,21 @@ export default function PatientLayout({ children }) {
                 <Bot className="h-5 w-5 transition-transform group-hover:scale-110" />
                 AI Symptom Checker
               </Link>
+              <Link href="/patient/sos" className="group flex items-center gap-3 rounded-2xl px-4 py-3 font-bold text-rose-600 bg-rose-50/60 transition-all hover:bg-rose-100/80 hover:text-rose-700 border border-rose-200/60 shadow-sm shadow-rose-500/10">
+                <AlertTriangle className="h-5 w-5 transition-transform group-hover:scale-110 animate-pulse text-rose-600" />
+                Emergency Doctor SOS
+              </Link>
             </nav>
 
-            <div className="mt-10 mb-4 px-4 text-xs font-bold uppercase tracking-wider text-slate-400">Settings</div>
+            <div className="mt-10 mb-4 px-4 text-xs font-bold uppercase tracking-wider text-slate-400">Settings & Support</div>
             <nav className="space-y-1.5">
               <Link href="/patient/profile" className="group flex items-center gap-3 rounded-2xl px-4 py-3 font-medium text-slate-600 transition-all hover:bg-indigo-50 hover:text-indigo-600">
                 <User className="h-5 w-5 transition-transform group-hover:scale-110" />
                 My Profile
+              </Link>
+              <Link href="/patient/complaints" className="group flex items-center gap-3 rounded-2xl px-4 py-3 font-medium text-slate-600 transition-all hover:bg-indigo-50 hover:text-indigo-600">
+                <LifeBuoy className="h-5 w-5 transition-transform group-hover:scale-110" />
+                Help & Complaints
               </Link>
               <Link href="/patient/settings" className="group flex items-center gap-3 rounded-2xl px-4 py-3 font-medium text-slate-600 transition-all hover:bg-indigo-50 hover:text-indigo-600">
                 <Settings className="h-5 w-5 transition-transform group-hover:scale-110" />

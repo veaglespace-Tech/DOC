@@ -4,8 +4,12 @@ import RoleGuard from '@/components/auth/RoleGuard';
 import { ROLES } from '@/store/slices/authSlice';
 import Link from 'next/link';
 import { Building2, LayoutDashboard, Users, UserPlus, Calendar, CreditCard, Settings, Activity, ArrowRight, Bell } from 'lucide-react';
+import { useGetMyClinicQuery } from '@/store/api/saasApi';
 
 export default function ClinicLayout({ children }) {
+  const { data: clinicData } = useGetMyClinicQuery();
+  const clinic = clinicData?.data?.organization || { name: 'Apollo Clinic, Pune', plan: { name: 'Clinic Professional' } };
+  const usage = clinicData?.data?.usage || { currentDoctors: 4, maxDoctors: 15 };
   return (
     <RoleGuard allowedRoles={[ROLES.CLINIC_ADMIN]}>
       <div className="flex min-h-screen bg-slate-50 font-sans selection:bg-blue-500 selection:text-white">
@@ -58,11 +62,11 @@ export default function ClinicLayout({ children }) {
           <div className="p-6">
             <div className="rounded-2xl bg-gradient-to-br from-slate-900 to-slate-800 p-5 text-white shadow-xl shadow-slate-900/20 relative overflow-hidden">
               <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-white/10 blur-2xl"></div>
-              <h4 className="text-sm font-bold mb-1 relative z-10">Pro SaaS Plan</h4>
-              <p className="text-xs text-slate-400 mb-4 relative z-10">4/10 Doctors Active</p>
-              <button className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-500 py-2.5 text-xs font-bold transition-colors hover:bg-blue-400 relative z-10">
+              <h4 className="text-sm font-bold mb-1 relative z-10">{clinic.plan?.name || 'Pro SaaS Plan'}</h4>
+              <p className="text-xs text-slate-400 mb-4 relative z-10">{usage.currentDoctors}/{usage.maxDoctors || 15} Doctors Active</p>
+              <Link href="/clinic" className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-500 py-2.5 text-xs font-bold transition-colors hover:bg-blue-400 relative z-10">
                 Upgrade Plan <ArrowRight className="h-3 w-3" />
-              </button>
+              </Link>
             </div>
           </div>
         </aside>
@@ -73,7 +77,7 @@ export default function ClinicLayout({ children }) {
           <header className="sticky top-0 z-40 flex h-20 items-center justify-between border-b border-slate-200/60 bg-white/80 px-8 backdrop-blur-xl">
             <div className="flex items-center gap-4">
               <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></div>
-              <span className="text-sm font-bold text-slate-600">Apollo Hospital, Pune</span>
+              <span className="text-sm font-bold text-slate-600">{clinic.name}</span>
             </div>
             
             <div className="flex items-center gap-4">

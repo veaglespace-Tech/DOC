@@ -12,7 +12,7 @@ export const doctorApi = createApi({
       return headers;
     }
   }),
-  tagTypes: ['Doctor', 'Wallet', 'Handover'],
+  tagTypes: ['Doctor', 'Wallet', 'Handover', 'DoctorProfile'],
   endpoints: (builder) => ({
     searchDoctors: builder.query({
       query: (params) => ({
@@ -57,15 +57,77 @@ export const doctorApi = createApi({
       }),
       invalidatesTags: ['Handover']
     }),
+    getDoctorById: builder.query({
+      query: (id) => `/search/doctors/${id}`,
+      providesTags: ['Doctor']
+    }),
+    getDoctorProfile: builder.query({
+      query: () => '/doctors/profile',
+      providesTags: ['DoctorProfile', 'Doctor']
+    }),
+    updateDoctorProfile: builder.mutation({
+      query: (body) => ({
+        url: '/doctors/profile',
+        method: 'PUT',
+        body
+      }),
+      invalidatesTags: ['DoctorProfile', 'Doctor']
+    }),
+    uploadDoctorKyc: builder.mutation({
+      query: (formData) => ({
+        url: '/doctors/kyc',
+        method: 'POST',
+        body: formData
+      }),
+      invalidatesTags: ['DoctorProfile']
+    }),
+    addDoctorSpecialization: builder.mutation({
+      query: (body) => ({
+        url: '/doctors/specializations',
+        method: 'POST',
+        body
+      }),
+      invalidatesTags: ['DoctorProfile']
+    }),
+    removeDoctorSpecialization: builder.mutation({
+      query: (id) => ({
+        url: `/doctors/specializations/${id}`,
+        method: 'DELETE'
+      }),
+      invalidatesTags: ['DoctorProfile']
+    }),
+    setDoctorAvailability: builder.mutation({
+      query: (body) => ({
+        url: '/doctors/availability',
+        method: 'POST',
+        body
+      }),
+      invalidatesTags: ['DoctorProfile']
+    }),
+    deleteDoctorAvailability: builder.mutation({
+      query: (id) => ({
+        url: `/doctors/availability/${id}`,
+        method: 'DELETE'
+      }),
+      invalidatesTags: ['DoctorProfile']
+    }),
   }),
 });
 
 export const { 
   useSearchDoctorsQuery, 
   useGetDoctorDashboardQuery,
+  useGetDoctorByIdQuery,
   useGetDoctorWalletQuery,
   useRequestWithdrawalMutation,
   useGetDoctorHandoversQuery,
   useRequestHandoverMutation,
   useRespondHandoverMutation,
+  useGetDoctorProfileQuery,
+  useUpdateDoctorProfileMutation,
+  useUploadDoctorKycMutation,
+  useAddDoctorSpecializationMutation,
+  useRemoveDoctorSpecializationMutation,
+  useSetDoctorAvailabilityMutation,
+  useDeleteDoctorAvailabilityMutation,
 } = doctorApi;

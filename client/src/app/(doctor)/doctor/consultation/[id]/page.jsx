@@ -39,6 +39,19 @@ export default function ConsultationRoom() {
 
   const [completeVisit, { isLoading: isCompleting }] = useCompleteVisitMutation();
 
+  const [elapsedSeconds, setElapsedSeconds] = useState(85);
+
+  useEffect(() => {
+    const timer = setInterval(() => setElapsedSeconds((s) => s + 1), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const formatTimer = (totalSec) => {
+    const m = Math.floor(totalSec / 60);
+    const s = totalSec % 60;
+    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  };
+
   // 1. Fetch Chat History & Join Socket Room
   useEffect(() => {
     const fetchChat = async () => {
@@ -152,9 +165,21 @@ export default function ConsultationRoom() {
                 alt="Patient Video Feed" 
                 className="h-full w-full object-cover opacity-80"
               />
-              <div className="absolute left-4 top-4 flex items-center gap-2 rounded-full bg-black/50 px-3 py-1.5 backdrop-blur-md">
+              <div className="absolute left-4 top-4 flex items-center gap-2 rounded-full bg-black/60 px-3.5 py-1.5 backdrop-blur-md border border-white/10">
                 <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                <span className="text-xs font-medium text-white">Patient Video Room • Apt #{appointmentId}</span>
+                <span className="text-xs font-bold text-white">Rahul Deshmukh (Patient) • Apt #{appointmentId}</span>
+              </div>
+
+              {/* Top Right Live Call HUD */}
+              <div className="absolute right-4 top-4 flex items-center gap-2.5 rounded-full bg-black/60 px-3.5 py-1.5 backdrop-blur-md border border-white/10">
+                <div className="flex items-center gap-1">
+                  <span className="h-2.5 w-0.5 bg-emerald-400 animate-pulse rounded-full"></span>
+                  <span className="h-4 w-0.5 bg-emerald-400 animate-pulse rounded-full delay-75"></span>
+                  <span className="h-2 w-0.5 bg-emerald-400 animate-pulse rounded-full delay-150"></span>
+                </div>
+                <span className="font-mono text-xs font-black text-emerald-400 tracking-wider">
+                  {formatTimer(elapsedSeconds)}
+                </span>
               </div>
             </>
           )}
@@ -266,7 +291,7 @@ export default function ConsultationRoom() {
                         }`}>
                           <p className="font-medium">{m.content}</p>
                           <span className={`block text-[10px] mt-1 ${isDoc ? 'text-teal-200 text-right' : 'text-gray-400'}`}>
-                            {new Date(m.createdAt || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            {m.createdAt ? new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
                           </span>
                         </div>
                       </div>

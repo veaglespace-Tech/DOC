@@ -67,7 +67,20 @@ exports.getMyAppointments = async (req, res, next) => {
         appointments = await prisma.appointment.findMany({
           where: { doctorId: doctor.id },
           include: {
-            patient: { select: { name: true, phone: true } },
+            patient: { 
+              select: { 
+                id: true,
+                name: true, 
+                address: true,
+                city: true,
+                latitude: true,
+                longitude: true,
+                emergencyContact: true,
+                bloodGroup: true,
+                gender: true,
+                user: { select: { phone: true, email: true } }
+              } 
+            },
             visit: true
           },
           orderBy: { scheduledAt: 'desc' }

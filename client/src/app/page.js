@@ -94,29 +94,57 @@ export default function LandingPage() {
               <motion.h3 variants={fadeUp} className="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl mb-6 leading-tight">
                 Your health in the <span className="text-slate-500">palm of your hand.</span>
               </motion.h3>
-              <motion.p variants={fadeUp} className="text-lg text-slate-600 mb-10 leading-relaxed">
-                The ViolaCare patient ecosystem is built on a robust architecture. Effortlessly manage your Electronic Health Records (EHR), track live emergency ambulances via GPS, and consult with top specialists.
+              <motion.p variants={fadeUp} className="text-lg text-slate-600 mb-10 leading-relaxed font-medium">
+                The CareConnect patient ecosystem is built on a robust architecture. Effortlessly manage your Electronic Health Records (EHR), track live emergency doctor arrivals via GPS, and consult with top verified specialists.
               </motion.p>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
                 {['Family Member Profiles', 'Instant UPI Payments', 'Encrypted Records', 'WhatsApp Reminders'].map((item, i) => (
                   <motion.div key={i} variants={fadeUp} className="flex items-center gap-4 bg-white border border-slate-100 shadow-sm rounded-2xl p-4">
-                    <div className="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
-                      <CheckCircle className="h-4 w-4 text-slate-800" />
+                    <div className="h-8 w-8 rounded-full bg-indigo-50 flex items-center justify-center shrink-0">
+                      <CheckCircle className="h-4 w-4 text-indigo-600" />
                     </div>
                     <span className="text-slate-700 font-semibold text-sm">{item}</span>
                   </motion.div>
                 ))}
               </div>
 
-              <motion.div variants={fadeUp}>
-                <Link href="/login" className="inline-flex items-center justify-center gap-2 rounded-full bg-slate-800 px-8 py-4 text-base font-semibold text-white shadow-md transition-all hover:bg-slate-700">
+              <motion.div variants={fadeUp} className="flex flex-wrap gap-4">
+                <Link href="/patient" className="inline-flex items-center justify-center gap-2 rounded-full bg-slate-900 px-8 py-4 text-base font-bold text-white shadow-md transition-all hover:bg-slate-800">
                   Explore Patient Portal <ArrowRight className="h-5 w-5" />
+                </Link>
+                <Link href="/patient/sos" className="inline-flex items-center justify-center gap-2 rounded-full bg-rose-50 border border-rose-200 px-6 py-4 text-base font-bold text-rose-700 shadow-sm transition-all hover:bg-rose-100">
+                  Try Emergency SOS
                 </Link>
               </motion.div>
             </motion.div>
             
           </div>
+        </div>
+      </section>
+
+      {/* 🌟 EMERGENCY SOS SHOWCASE BANNER */}
+      <section className="py-16 bg-gradient-to-r from-rose-950 via-slate-900 to-indigo-950 text-white relative overflow-hidden border-y border-rose-500/20">
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-rose-600/10 rounded-full blur-[140px] pointer-events-none"></div>
+        <div className="max-w-7xl mx-auto px-6 relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+          <div>
+            <div className="inline-flex items-center gap-2 bg-rose-500/20 border border-rose-500/40 text-rose-300 px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-3">
+              <span className="h-2 w-2 rounded-full bg-rose-500 animate-ping"></span>
+              BRD Sec 7 — Instant Dispatch System
+            </div>
+            <h3 className="text-3xl lg:text-4xl font-black text-white tracking-tight">
+              Life-Saving Care in Minutes. <span className="text-rose-400">Doctor-on-Demand within 5km.</span>
+            </h3>
+            <p className="text-slate-400 max-w-2xl text-base mt-2 font-medium">
+              High-priority dispatch broadcasting simultaneously to nearby verified doctors. Live Haversine geolocation tracking from assignment to arrival at your doorstep.
+            </p>
+          </div>
+          <Link
+            href="/patient/sos"
+            className="shrink-0 px-8 py-4 rounded-2xl bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-white font-black text-base shadow-2xl shadow-rose-600/40 transition-all hover:scale-105"
+          >
+            Launch Emergency SOS Dispatch
+          </Link>
         </div>
       </section>
 
@@ -135,23 +163,23 @@ export default function LandingPage() {
               <Image src="/images/doctor-tablet.jpg" alt="Doctor Portal" fill sizes="(max-width: 768px) 100vw, 50vw" priority={true} className="object-cover" />
               <div className="absolute top-8 right-8 z-20 bg-white/95 backdrop-blur-md border border-slate-100 p-5 rounded-2xl shadow-xl flex items-center gap-4">
                 <div className="h-10 w-10 rounded-full bg-slate-100 flex items-center justify-center">
-                  <HeartPulse className="h-5 w-5 text-slate-800" />
+                  <HeartPulse className="h-5 w-5 text-purple-600" />
                 </div>
                 <div>
                   <p className="text-slate-600 text-xs font-semibold uppercase">Earnings Updated</p>
-                  <p className="text-slate-900 font-bold">+$4,250.00 Today</p>
+                  <p className="text-slate-900 font-bold">+₹4,250.00 Today</p>
                 </div>
               </div>
             </motion.div>
             
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={staggerContainer} className="relative z-20">
-              <motion.div variants={fadeUp} className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-xs font-bold text-slate-600 uppercase tracking-widest mb-8">
+              <motion.div variants={fadeUp} className="inline-flex items-center gap-2 rounded-full border border-purple-200 bg-purple-50 px-4 py-2 text-xs font-bold text-purple-700 uppercase tracking-widest mb-8">
                 <Stethoscope className="h-4 w-4" /> Doctor Empowered
               </motion.div>
               <motion.h3 variants={fadeUp} className="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl mb-6 leading-tight">
-                Practice management, <span className="text-slate-500">elevated.</span>
+                Practice management, <span className="text-purple-600">elevated.</span>
               </motion.h3>
-              <motion.p variants={fadeUp} className="text-lg text-slate-600 mb-10 leading-relaxed">
+              <motion.p variants={fadeUp} className="text-lg text-slate-600 mb-10 leading-relaxed font-medium">
                 Designed specifically for modern healthcare professionals. Optimize your clinic operations with smart scheduling, track granular revenue streams, and issue e-prescriptions seamlessly.
               </motion.p>
               
@@ -159,7 +187,7 @@ export default function LandingPage() {
                 {['Digital Prescription', 'Smart Vacation Blocks', 'Real-time Payouts', 'Emergency Handovers'].map((item, i) => (
                   <motion.div key={i} variants={fadeUp} className="flex items-center gap-4 bg-slate-50 border border-slate-100 shadow-sm rounded-2xl p-4">
                     <div className="h-8 w-8 rounded-full bg-white flex items-center justify-center shrink-0 border border-slate-200">
-                      <CheckCircle className="h-4 w-4 text-slate-800" />
+                      <CheckCircle className="h-4 w-4 text-purple-600" />
                     </div>
                     <span className="text-slate-700 font-semibold text-sm">{item}</span>
                   </motion.div>
@@ -167,7 +195,7 @@ export default function LandingPage() {
               </div>
 
               <motion.div variants={fadeUp}>
-                <Link href="/register?role=DOCTOR" className="inline-flex items-center justify-center gap-2 rounded-full bg-slate-800 px-8 py-4 text-base font-semibold text-white shadow-md transition-all hover:bg-slate-700">
+                <Link href="/register/doctor" className="inline-flex items-center justify-center gap-2 rounded-full bg-purple-600 px-8 py-4 text-base font-bold text-white shadow-lg shadow-purple-600/30 transition-all hover:bg-purple-700">
                   Join as a Doctor <ArrowRight className="h-5 w-5" />
                 </Link>
               </motion.div>
@@ -191,9 +219,9 @@ export default function LandingPage() {
               <div className="mx-auto w-20 h-20 mb-8 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-inner">
                 <Building2 className="h-10 w-10 text-white" />
               </div>
-              <h2 className="text-4xl md:text-5xl font-extrabold mb-6 tracking-tight text-white">Scale your Hospital <span className="text-teal-400">instantly.</span></h2>
+              <h2 className="text-4xl md:text-5xl font-extrabold mb-6 tracking-tight text-white">Scale your Hospital & Clinic <span className="text-teal-400">instantly.</span></h2>
               <p className="text-lg text-slate-300 mb-10 max-w-2xl mx-auto leading-relaxed">
-                Get the ViolaCare Enterprise Suite. Multi-doctor management, custom branding, and automated GST compliance.
+                Get the CareConnect Enterprise Suite. Multi-doctor management, custom branding, and automated GST compliance.
               </p>
               <Link href="/register/clinic" className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-8 py-4 text-base font-bold text-slate-900 transition-all hover:bg-slate-100 hover:scale-105 shadow-xl shadow-white/10">
                 Register your Clinic <ArrowRight className="h-5 w-5" />

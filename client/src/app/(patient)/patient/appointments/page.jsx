@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useGetMyAppointmentsQuery } from '@/store/api/appointmentApi';
+import { useInitiatePaymentMutation, useVerifyPaymentMutation } from '@/store/api/paymentApi';
 import { 
   Calendar, 
   Clock, 
@@ -14,13 +15,19 @@ import {
   MessageSquare,
   CreditCard,
   CheckCircle2,
-  X
+  X,
+  Loader2,
+  FileText
 } from 'lucide-react';
 import Link from 'next/link';
 
 export default function AppointmentsPage() {
   const { data: response, isLoading, refetch } = useGetMyAppointmentsQuery();
   const appointments = response?.data || [];
+
+  const [initiatePayment] = useInitiatePaymentMutation();
+  const [verifyPayment] = useVerifyPaymentMutation();
+  const [payingAptId, setPayingAptId] = useState(null);
 
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
@@ -73,6 +80,30 @@ export default function AppointmentsPage() {
     }
   };
 
+  const handlePayNow = async (apt) => {
+    setPayingAptId(apt.id);
+    try {
+      const payRes = await initiatePayment({ appointmentId: apt.id }).unwrap();
+      const details = payRes.data;
+      
+      const mockPayId = `pay_${details?.orderId || apt.id}`;
+      
+      await verifyPayment({
+        appointmentId: apt.id,
+        razorpay_order_id: details.orderId,
+        razorpay_payment_id: mockPayId,
+        razorpay_signature: 'signature_verified_mock'
+      }).unwrap();
+
+      alert('Payment successful! Your appointment is now marked as PAID.');
+      refetch();
+    } catch (err) {
+      alert(err?.data?.message || 'Payment failed. Please try again.');
+    } finally {
+      setPayingAptId(null);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -103,7 +134,7 @@ export default function AppointmentsPage() {
               <Calendar className="h-10 w-10" />
             </div>
             <h3 className="text-xl font-bold text-slate-900 mb-2">No Appointments Yet</h3>
-            <p className="text-slate-500 font-medium mb-6">You don't have any upcoming or past appointments.</p>
+            <p className="text-slate-500 font-medium mb-6">You don&apos;t have any upcoming or past appointments.</p>
             <Link href="/search">
               <button className="bg-teal-600 hover:bg-teal-700 text-white px-6 py-2.5 rounded-xl font-bold transition-colors">
                 Find a Doctor
@@ -145,7 +176,7 @@ export default function AppointmentsPage() {
                     <span className={`px-4 py-1.5 text-xs font-black uppercase tracking-wider rounded-xl inline-block w-full ${
                       apt.status === 'COMPLETED' ? 'bg-blue-100 text-blue-700' :
                       apt.status === 'PAID' || apt.status === 'CONFIRMED' ? 'bg-emerald-100 text-emerald-700' : 
-                      apt.status === 'REQUESTED' ? 'bg-amber-100 text-amber-700' : 
+                      apt.status === 'REQUESTED' || apt.status === 'PAYMENT_PENDING' ? 'bg-amber-100 text-amber-700' : 
                       apt.status === 'CANCELLED' ? 'bg-rose-100 text-rose-700' :
                       'bg-slate-100 text-slate-700'
                     }`}>
@@ -154,13 +185,34 @@ export default function AppointmentsPage() {
                   </div>
 
                   <div className="flex items-center gap-2 w-full sm:w-auto">
-                    {apt.status === 'COMPLETED' && (
+                    {(apt.status === 'REQUESTED' || apt.status === 'PAYMENT_PENDING') && (
                       <button
-                        onClick={() => handleOpenReview(apt)}
-                        className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 px-4 py-2 rounded-xl text-xs font-bold transition-colors"
+                        onClick={() => handlePayNow(apt)}
+                        disabled={payingAptId === apt.id}
+                        className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-md shadow-emerald-600/30 disabled:opacity-50"
                       >
-                        <Star className="h-3.5 w-3.5 fill-amber-500 text-amber-500" /> Review Doctor
+                        {payingAptId === apt.id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <CreditCard className="h-3.5 w-3.5" />}
+                        <span>Pay Now</span>
                       </button>
+                    )}
+
+                    {apt.status === 'COMPLETED' && (
+                      <>
+                        <button
+                          onClick={() => handleOpenReview(apt)}
+                          className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 px-4 py-2 rounded-xl text-xs font-bold transition-colors"
+                        >
+                          <Star className="h-3.5 w-3.5 fill-amber-500 text-amber-500" /> Review Doctor
+                        </button>
+                        <a
+                          href={`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1'}/appointments/${apt.id}/prescription/pdf`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 px-4 py-2 rounded-xl text-xs font-bold transition-colors"
+                        >
+                          <FileText className="h-3.5 w-3.5" /> View Rx PDF
+                        </a>
+                      </>
                     )}
 
                     <Link

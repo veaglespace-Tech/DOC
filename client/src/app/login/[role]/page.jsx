@@ -11,7 +11,11 @@ import { Activity, Mail, Lock, ArrowRight, ShieldCheck, CheckCircle } from 'luci
 export default function DynamicLoginPage() {
   const router = useRouter();
   const params = useParams();
-  const roleParam = params.role?.toLowerCase() === 'doctor' ? ROLES.DOCTOR : ROLES.PATIENT;
+  const roleLower = params.role?.toLowerCase();
+  const roleParam = 
+    roleLower === 'doctor' ? ROLES.DOCTOR : 
+    roleLower === 'clinic' ? ROLES.CLINIC_ADMIN : ROLES.PATIENT;
+
   const [login, { isLoading }] = useLoginMutation();
 
   const [email, setEmail] = useState('');
@@ -25,11 +29,16 @@ export default function DynamicLoginPage() {
     try {
       await login({ email, password, role: roleParam }).unwrap();
       if (roleParam === ROLES.PATIENT) router.push('/patient');
-      if (roleParam === ROLES.DOCTOR) router.push('/doctor');
+      else if (roleParam === ROLES.DOCTOR) router.push('/doctor');
+      else if (roleParam === ROLES.CLINIC_ADMIN) router.push('/clinic');
     } catch (err) {
       setErrorMsg(err?.data?.message || 'Login failed. Please check your credentials.');
     }
   };
+
+  const portalTitle = 
+    roleParam === ROLES.PATIENT ? 'Patient Portal' :
+    roleParam === ROLES.DOCTOR ? 'Doctor Portal' : 'Clinic & Hospital HQ';
 
   return (
     <div className="min-h-screen bg-white flex selection:bg-teal-500 selection:text-white">
@@ -48,13 +57,10 @@ export default function DynamicLoginPage() {
           </Link>
           
           <h2 className="text-4xl font-extrabold text-slate-900 tracking-tight mb-2">
-            {roleParam === ROLES.PATIENT ? 'Welcome Back' : 'Doctor Portal'}
+            {portalTitle}
           </h2>
           <p className="text-base text-slate-500 font-medium mb-10">
-            {roleParam === ROLES.PATIENT ? "Don't have an account? " : "Not registered as a doctor? "}
-            <Link href={`/register/${roleParam.toLowerCase()}`} className="font-bold text-teal-600 hover:text-teal-500 transition-colors">
-              Sign up for free
-            </Link>
+            Log in to manage appointments, care workflows, and medical data.
           </p>
 
           <form className="space-y-6" onSubmit={handleLogin}>

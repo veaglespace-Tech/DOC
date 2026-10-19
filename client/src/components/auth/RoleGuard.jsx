@@ -32,8 +32,17 @@ export default function RoleGuard({ children, allowedRoles }) {
     }
 
     if (allowedRoles && allowedRoles.length > 0) {
-      if (!allowedRoles.includes(userRole)) {
-        handleUnauthorizedRedirect(userRole, router);
+      const normalizedUserRole = 
+        userRole === 'SUPERADMIN' ? ROLES.SUPER_ADMIN :
+        userRole === 'ADMIN' ? ROLES.CLINIC_ADMIN : userRole;
+
+      const normalizedAllowed = allowedRoles.map(r => 
+        r === 'SUPERADMIN' ? ROLES.SUPER_ADMIN :
+        r === 'ADMIN' ? ROLES.CLINIC_ADMIN : r
+      );
+
+      if (!normalizedAllowed.includes(normalizedUserRole) && !allowedRoles.includes(userRole)) {
+        handleUnauthorizedRedirect(normalizedUserRole, router);
         return;
       }
     }
@@ -54,9 +63,11 @@ export default function RoleGuard({ children, allowedRoles }) {
 
 function handleUnauthorizedRedirect(role, router) {
   switch (role) {
+    case 'SUPERADMIN':
     case ROLES.SUPER_ADMIN:
       router.push('/admin');
       break;
+    case 'ADMIN':
     case ROLES.CLINIC_ADMIN:
       router.push('/clinic');
       break;

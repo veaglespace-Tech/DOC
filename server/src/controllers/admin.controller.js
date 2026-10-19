@@ -343,3 +343,27 @@ exports.getAuditLogs = async (req, res, next) => {
     next(error);
   }
 };
+
+/**
+ * View live emergency SOS dispatches (BRD Sec 7)
+ */
+exports.getEmergencyDispatches = async (req, res, next) => {
+  try {
+    const dispatches = await prisma.emergencyRequest.findMany({
+      include: {
+        patient: { select: { name: true, emergencyContact: true, user: { select: { email: true, phone: true } } } },
+        assignments: {
+          include: {
+            doctor: { select: { id: true, name: true, phone: true } }
+          }
+        }
+      },
+      orderBy: { createdAt: 'desc' },
+      take: 50
+    });
+
+    res.status(200).json({ success: true, data: dispatches });
+  } catch (error) {
+    next(error);
+  }
+};

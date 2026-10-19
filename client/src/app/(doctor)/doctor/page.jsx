@@ -19,7 +19,8 @@ import {
   CreditCard,
   ArrowRightLeft,
   PhoneCall,
-  ShieldAlert
+  ShieldAlert,
+  ShieldCheck
 } from 'lucide-react';
 
 import { useGetDoctorDashboardQuery } from '@/store/api/doctorApi';
@@ -310,6 +311,16 @@ export default function DoctorDashboard() {
               <div className="text-left">
                 <div className="font-bold text-slate-900 group-hover:text-purple-700">Prescription Pad</div>
                 <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mt-0.5">Generate digital Rx PDF</div>
+              </div>
+            </Link>
+
+            <Link href="/doctor/kyc" className="flex items-center gap-4 w-full p-4 hover:bg-indigo-50 rounded-2xl transition-colors group">
+              <div className="h-12 w-12 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                <ShieldCheck className="h-5 w-5" />
+              </div>
+              <div className="text-left">
+                <div className="font-bold text-slate-900 group-hover:text-indigo-700">KYC & Practice Credentials</div>
+                <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mt-0.5">Upload MCI license & degrees</div>
               </div>
             </Link>
 

@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { User, Stethoscope, ArrowRight } from 'lucide-react';
+import { User, Stethoscope, ArrowRight, Building2, ShieldCheck } from 'lucide-react';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -35,24 +35,24 @@ export default function LoginRoleSelection() {
           <p className="mt-4 text-lg text-slate-500">Please select your portal to continue.</p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           
           {/* Patient Card */}
           <motion.div variants={itemVariants} whileHover={{ y: -8, transition: { type: "spring" } }}>
             <Link 
               href="/login/patient" 
-              className="group block rounded-[2rem] bg-white p-10 border border-slate-200/60 shadow-lg shadow-slate-200/50 hover:shadow-2xl hover:shadow-teal-500/10 hover:border-teal-500/30 transition-all duration-300 relative overflow-hidden"
+              className="group block h-full rounded-[2rem] bg-white p-7 border border-slate-200/60 shadow-lg shadow-slate-200/50 hover:shadow-2xl hover:shadow-teal-500/10 hover:border-teal-500/30 transition-all duration-300 relative overflow-hidden"
             >
-              <div className="absolute top-0 right-0 p-8 opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all duration-300">
-                <ArrowRight className="h-6 w-6 text-teal-500" />
+              <div className="h-16 w-16 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center mb-6 group-hover:bg-teal-500 group-hover:text-white transition-colors duration-300">
+                <User className="h-8 w-8" />
               </div>
-              <div className="h-20 w-20 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center mb-8 group-hover:bg-teal-500 group-hover:text-white transition-colors duration-300">
-                <User className="h-10 w-10" />
-              </div>
-              <h2 className="text-3xl font-extrabold text-slate-900 mb-4">Patient Portal</h2>
-              <p className="text-slate-500 leading-relaxed group-hover:text-slate-600 transition-colors">
-                Access your medical records, book new appointments, manage emergency contacts, and consult with doctors online.
+              <h2 className="text-xl font-black text-slate-900 mb-2">Patient Portal</h2>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Consult with doctors online, trigger 5km Emergency SOS, and view prescriptions.
               </p>
+              <div className="mt-6 flex items-center gap-1 text-xs font-bold text-teal-600 group-hover:translate-x-1 transition-transform">
+                Sign in as Patient <ArrowRight className="h-3.5 w-3.5" />
+              </div>
             </Link>
           </motion.div>
 
@@ -60,26 +60,64 @@ export default function LoginRoleSelection() {
           <motion.div variants={itemVariants} whileHover={{ y: -8, transition: { type: "spring" } }}>
             <Link 
               href="/login/doctor" 
-              className="group block rounded-[2rem] bg-white p-10 border border-slate-200/60 shadow-lg shadow-slate-200/50 hover:shadow-2xl hover:shadow-slate-800/10 hover:border-slate-800/30 transition-all duration-300 relative overflow-hidden"
+              className="group block h-full rounded-[2rem] bg-white p-7 border border-slate-200/60 shadow-lg shadow-slate-200/50 hover:shadow-2xl hover:shadow-slate-800/10 hover:border-slate-800/30 transition-all duration-300 relative overflow-hidden"
             >
-              <div className="absolute top-0 right-0 p-8 opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all duration-300">
-                <ArrowRight className="h-6 w-6 text-slate-800" />
+              <div className="h-16 w-16 rounded-2xl bg-slate-50 text-slate-700 flex items-center justify-center mb-6 group-hover:bg-slate-900 group-hover:text-white transition-colors duration-300">
+                <Stethoscope className="h-8 w-8" />
               </div>
-              <div className="h-20 w-20 rounded-2xl bg-slate-50 text-slate-600 flex items-center justify-center mb-8 group-hover:bg-slate-900 group-hover:text-white transition-colors duration-300">
-                <Stethoscope className="h-10 w-10" />
-              </div>
-              <h2 className="text-3xl font-extrabold text-slate-900 mb-4">Doctor Portal</h2>
-              <p className="text-slate-500 leading-relaxed group-hover:text-slate-600 transition-colors">
-                Manage your appointments, securely access patient history, write digital prescriptions, and view your revenue ledger.
+              <h2 className="text-xl font-black text-slate-900 mb-2">Doctor Practice</h2>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Manage consultations, digital prescriptions, patient roster, and 24h escrow earnings.
               </p>
+              <div className="mt-6 flex items-center gap-1 text-xs font-bold text-slate-800 group-hover:translate-x-1 transition-transform">
+                Sign in as Doctor <ArrowRight className="h-3.5 w-3.5" />
+              </div>
+            </Link>
+          </motion.div>
+
+          {/* Clinic & Hospital Card */}
+          <motion.div variants={itemVariants} whileHover={{ y: -8, transition: { type: "spring" } }}>
+            <Link 
+              href="/login/clinic" 
+              className="group block h-full rounded-[2rem] bg-white p-7 border border-slate-200/60 shadow-lg shadow-slate-200/50 hover:shadow-2xl hover:shadow-blue-500/10 hover:border-blue-500/30 transition-all duration-300 relative overflow-hidden"
+            >
+              <div className="h-16 w-16 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mb-6 group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300">
+                <Building2 className="h-8 w-8" />
+              </div>
+              <h2 className="text-xl font-black text-slate-900 mb-2">Clinic & Hospital HQ</h2>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Multi-tenant SaaS dashboard, live OPD tokens, staff management, and GST ledger.
+              </p>
+              <div className="mt-6 flex items-center gap-1 text-xs font-bold text-blue-600 group-hover:translate-x-1 transition-transform">
+                Sign in as Clinic <ArrowRight className="h-3.5 w-3.5" />
+              </div>
+            </Link>
+          </motion.div>
+
+          {/* Super Admin Card */}
+          <motion.div variants={itemVariants} whileHover={{ y: -8, transition: { type: "spring" } }}>
+            <Link 
+              href="/admin/login" 
+              className="group block h-full rounded-[2rem] bg-white p-7 border border-slate-200/60 shadow-lg shadow-slate-200/50 hover:shadow-2xl hover:shadow-indigo-500/10 hover:border-indigo-500/30 transition-all duration-300 relative overflow-hidden"
+            >
+              <div className="h-16 w-16 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mb-6 group-hover:bg-indigo-600 group-hover:text-white transition-colors duration-300">
+                <ShieldCheck className="h-8 w-8" />
+              </div>
+              <h2 className="text-xl font-black text-slate-900 mb-2">Super Admin</h2>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Platform control panel, doctor KYC verification, payout releases, and audit logs.
+              </p>
+              <div className="mt-6 flex items-center gap-1 text-xs font-bold text-indigo-600 group-hover:translate-x-1 transition-transform">
+                Super Admin Access <ArrowRight className="h-3.5 w-3.5" />
+              </div>
             </Link>
           </motion.div>
 
         </div>
 
         <motion.div variants={itemVariants} className="mt-12 text-center">
-          <p className="text-slate-500 font-medium">
-            New to CareConnect? <Link href="/register" className="text-teal-600 hover:text-teal-700 hover:underline underline-offset-4 font-bold ml-1">Create an account</Link>
+          <p className="text-slate-500 font-medium text-xs">
+            Shared Default Credentials: Password is <span className="font-mono font-bold text-slate-800 bg-slate-200/80 px-2 py-0.5 rounded">Veagle@123</span> for all demo roles.
           </p>
         </motion.div>
       </motion.div>

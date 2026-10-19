@@ -2,7 +2,9 @@ import { createSlice } from '@reduxjs/toolkit';
 
 export const ROLES = {
   SUPER_ADMIN: 'SUPER_ADMIN',
+  SUPERADMIN: 'SUPERADMIN',
   CLINIC_ADMIN: 'CLINIC_ADMIN',
+  ADMIN: 'ADMIN',
   DOCTOR: 'DOCTOR',
   PATIENT: 'PATIENT',
 };

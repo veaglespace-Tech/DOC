@@ -2,7 +2,7 @@ const { z } = require('zod');
 
 const createAppointmentSchema = z.object({
   doctorId: z.number().int().positive("Valid Doctor ID is required"),
-  serviceType: z.enum(["NORMAL", "HOME_VISIT", "EMERGENCY"]).default("NORMAL"),
+  serviceType: z.enum(["NORMAL", "HOME_VISIT", "EMERGENCY", "VIRTUAL"]).default("NORMAL"),
   scheduledAt: z.string().datetime("Valid scheduled date-time is required"),
   notes: z.string().max(1000, "Notes too long").optional(),
 });

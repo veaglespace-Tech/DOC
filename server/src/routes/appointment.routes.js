@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const appointmentController = require('../controllers/appointment.controller');
+const prescriptionController = require('../controllers/prescription.controller');
 const { validate } = require('../middlewares/validate.middleware');
 const { authenticate } = require('../middlewares/auth.middleware');
 const { 
@@ -45,6 +46,22 @@ router.post(
   '/:id/complete-visit', 
   validate(completeVisitSchema), 
   appointmentController.completeVisit
+);
+
+// Prescription Endpoints (BRD Sec 8, 18, 22)
+router.post(
+  '/:id/prescription',
+  prescriptionController.createPrescription
+);
+
+router.get(
+  '/:id/prescription',
+  prescriptionController.getPrescription
+);
+
+router.get(
+  '/:id/prescription/pdf',
+  prescriptionController.downloadPrescriptionPDF
 );
 
 module.exports = router;

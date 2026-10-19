@@ -183,4 +183,8 @@ router.post(
   controller.addMedicalRecord
 );
 
+// Prescriptions for patient (BRD Sec 18 & 22)
+const prescriptionController = require('../controllers/prescription.controller');
+router.get('/prescriptions', prescriptionController.getMyPrescriptions);
+
 module.exports = router;

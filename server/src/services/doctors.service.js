@@ -12,12 +12,10 @@ const getProfile = async (doctorId) => {
       user: {
         select: { email: true, phone: true, isVerified: true, isActive: true }
       },
-      doctorSpecializations: {
-        include: { specialization: true }
-      },
-      doctorAvailabilities: true,
-      doctorDocuments: true,
-      doctorWallet: true,
+      specializations: true,
+      availability: true,
+      documents: true,
+      wallet: true,
     }
   });
 
@@ -25,14 +23,10 @@ const getProfile = async (doctorId) => {
     throw Object.assign(new Error('Doctor not found'), { statusCode: 404 });
   }
 
-  // Format specializations to a simple array
-  const formattedDoctor = {
+  return {
     ...doctor,
-    specializations: doctor.doctorSpecializations.map(ds => ds.specialization.name)
+    specializations: doctor.specializations.map(ds => ds.specialization)
   };
-  delete formattedDoctor.doctorSpecializations;
-
-  return formattedDoctor;
 };
 
 /**

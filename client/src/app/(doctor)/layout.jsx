@@ -3,7 +3,7 @@
 import RoleGuard from '@/components/auth/RoleGuard';
 import { ROLES, logout } from '@/store/slices/authSlice';
 import Link from 'next/link';
-import { Activity, LayoutDashboard, Calendar, Users, Wallet, Settings, LogOut, Clock, Stethoscope, User } from 'lucide-react';
+import { Activity, LayoutDashboard, Calendar, Users, Wallet, Settings, LogOut, Clock, Stethoscope, User, ShieldCheck, ArrowRightLeft } from 'lucide-react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useRouter } from 'next/navigation';
 
@@ -47,6 +47,10 @@ export default function DoctorLayout({ children }) {
                 <Clock className="h-5 w-5 transition-transform group-hover:scale-110" />
                 Availability
               </Link>
+              <Link href="/doctor/handovers" className="group flex items-center gap-3 rounded-2xl px-4 py-3 font-medium text-slate-600 transition-all hover:bg-purple-50 hover:text-purple-600">
+                <ArrowRightLeft className="h-5 w-5 transition-transform group-hover:scale-110" />
+                Handovers
+              </Link>
               <Link href="/doctor/patients" className="group flex items-center gap-3 rounded-2xl px-4 py-3 font-medium text-slate-600 transition-all hover:bg-purple-50 hover:text-purple-600">
                 <Users className="h-5 w-5 transition-transform group-hover:scale-110" />
                 My Patients
@@ -58,6 +62,10 @@ export default function DoctorLayout({ children }) {
               <Link href="/doctor/wallet" className="group flex items-center gap-3 rounded-2xl px-4 py-3 font-medium text-slate-600 transition-all hover:bg-purple-50 hover:text-purple-600">
                 <Wallet className="h-5 w-5 transition-transform group-hover:scale-110" />
                 Wallet & Earnings
+              </Link>
+              <Link href="/doctor/kyc" className="group flex items-center gap-3 rounded-2xl px-4 py-3 font-medium text-slate-600 transition-all hover:bg-purple-50 hover:text-purple-600">
+                <ShieldCheck className="h-5 w-5 transition-transform group-hover:scale-110" />
+                KYC Verification
               </Link>
               <Link href="/doctor/settings" className="group flex items-center gap-3 rounded-2xl px-4 py-3 font-medium text-slate-600 transition-all hover:bg-purple-50 hover:text-purple-600">
                 <Settings className="h-5 w-5 transition-transform group-hover:scale-110" />

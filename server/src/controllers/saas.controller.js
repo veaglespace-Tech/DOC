@@ -128,3 +128,132 @@ exports.subscribePlan = async (req, res, next) => {
     next(error);
   }
 };
+
+/**
+ * Get Clinic Appointments Queue
+ */
+exports.getClinicAppointments = async (req, res, next) => {
+  try {
+    const appointments = await prisma.appointment.findMany({
+      take: 50,
+      orderBy: { scheduledAt: 'desc' },
+      include: {
+        patient: {
+          select: { id: true, name: true, phone: true, gender: true, bloodGroup: true }
+        },
+        doctor: {
+          select: { id: true, name: true, medicalRegNumber: true, consultationFee: true, specializations: true }
+        },
+        payment: {
+          select: { id: true, amount: true, status: true, paymentMethod: true }
+        }
+      }
+    });
+
+    res.status(200).json({
+      success: true,
+      data: appointments
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Get Clinic Patient Registry
+ */
+exports.getClinicPatients = async (req, res, next) => {
+  try {
+    const patients = await prisma.patient.findMany({
+      take: 50,
+      orderBy: { createdAt: 'desc' },
+      include: {
+        user: { select: { email: true, phone: true, isActive: true } },
+        appointments: {
+          select: { id: true, status: true, scheduledAt: true, type: true },
+          orderBy: { scheduledAt: 'desc' },
+          take: 3
+        },
+        medicalRecords: {
+          select: { id: true, diagnosis: true, recordType: true, recordDate: true },
+          take: 2
+        }
+      }
+    });
+
+    res.status(200).json({
+      success: true,
+      data: patients
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Get Clinic Billing & Invoices
+ */
+exports.getClinicBilling = async (req, res, next) => {
+  try {
+    const payments = await prisma.payment.findMany({
+      take: 50,
+      orderBy: { createdAt: 'desc' },
+      include: {
+        appointment: {
+          select: {
+            id: true,
+            type: true,
+            patient: { select: { name: true, phone: true } },
+            doctor: { select: { name: true } }
+          }
+        }
+      }
+    });
+
+    const totalRevenue = payments.reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
+    const completedPayments = payments.filter(p => p.status === 'COMPLETED');
+    const collectedRevenue = completedPayments.reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
+    const gstCollected = Math.round(collectedRevenue * 0.18);
+
+    res.status(200).json({
+      success: true,
+      data: {
+        summary: {
+          totalInvoices: payments.length,
+          totalRevenue: collectedRevenue,
+          gstCollected,
+          pendingAmount: totalRevenue - collectedRevenue
+        },
+        invoices: payments
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Update Clinic Settings
+ */
+exports.updateClinicSettings = async (req, res, next) => {
+  try {
+    const { name, subdomain } = req.body;
+    let org = await prisma.organization.findFirst();
+    if (org) {
+      org = await prisma.organization.update({
+        where: { id: org.id },
+        data: {
+          ...(name && { name }),
+          ...(subdomain && { subdomain })
+        }
+      });
+    }
+    res.status(200).json({
+      success: true,
+      message: 'Clinic profile & settings saved successfully',
+      data: org
+    });
+  } catch (error) {
+    next(error);
+  }
+};

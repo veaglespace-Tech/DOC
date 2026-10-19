@@ -3,11 +3,29 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Search, PlayCircle } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { Search, PlayCircle, AlertTriangle, ShieldCheck, Sparkles, ArrowRight } from 'lucide-react';
 
 export default function HeroSlider() {
+  const router = useRouter();
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      router.push(`/search?query=${encodeURIComponent(searchTerm.trim())}`);
+    } else {
+      router.push('/search');
+    }
+  };
+
   return (
     <section className="relative pt-20 pb-16 bg-slate-50 overflow-hidden">
+      {/* Dynamic Background Glows */}
+      <div className="absolute top-10 left-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-[130px] pointer-events-none"></div>
+      <div className="absolute top-32 right-10 w-96 h-96 bg-teal-500/10 rounded-full blur-[130px] pointer-events-none"></div>
+
       <div className="mx-auto max-w-7xl px-6 relative z-10 flex flex-col lg:flex-row items-center gap-12 pt-12">
         
         {/* Left Content */}
@@ -17,33 +35,37 @@ export default function HeroSlider() {
           transition={{ duration: 0.8 }}
           className="lg:w-1/2"
         >
-          <div className="inline-block bg-white text-slate-600 px-4 py-1.5 rounded-full text-sm font-semibold mb-6 shadow-sm border border-slate-100">
-            Welcome to ViolaCare
+          <div className="inline-flex items-center gap-2 bg-white text-indigo-700 px-4 py-1.5 rounded-full text-xs font-bold mb-6 shadow-sm border border-indigo-100">
+            <Sparkles className="h-3.5 w-3.5 text-indigo-600" />
+            CareConnect Healthcare Platform
           </div>
           
-          <h1 className="text-5xl lg:text-6xl font-extrabold text-slate-800 leading-[1.15] mb-6">
-            Premium Treatments for a <span className="text-slate-600">Healthy Lifestyle</span>
+          <h1 className="text-5xl lg:text-6xl font-black text-slate-900 leading-[1.12] mb-6 tracking-tight">
+            Healthcare on Demand, <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">Whenever You Need It.</span>
           </h1>
           
-          <p className="text-lg text-slate-600 mb-8 max-w-lg leading-relaxed">
-            Experience world-class medical care from the comfort of your home. Instantly book top-rated specialists, arrange emergency dispatches, and consult via HD video.
+          <p className="text-lg text-slate-600 mb-8 max-w-lg leading-relaxed font-medium">
+            Book verified specialists, order home visits, or dispatch an emergency doctor within a 5km radius in minutes.
           </p>
           
-          <div className="flex flex-col sm:flex-row items-center gap-4 mb-12">
-            <Link href="/register" className="w-full sm:w-auto bg-slate-800 text-white px-8 py-4 rounded-full font-semibold hover:bg-slate-700 transition-colors shadow-md text-center">
-              Book Appointment
+          <div className="flex flex-col sm:flex-row items-center gap-4 mb-8">
+            <Link href="/patient/sos" className="w-full sm:w-auto bg-gradient-to-r from-rose-600 to-red-600 text-white px-7 py-4 rounded-full font-bold hover:from-rose-700 hover:to-red-700 transition-all shadow-lg shadow-rose-600/30 text-center flex items-center justify-center gap-2 group">
+              <AlertTriangle className="h-4 w-4 animate-pulse" />
+              Emergency SOS (5km)
             </Link>
             
-            <div className="w-full sm:w-auto relative flex items-center">
+            <form onSubmit={handleSearch} className="w-full sm:w-auto relative flex items-center">
               <input 
                 type="text" 
-                placeholder="Search doctors..." 
-                className="w-full sm:w-64 bg-white border border-slate-200 rounded-full py-4 pl-6 pr-12 outline-none focus:border-slate-400 focus:ring-1 focus:ring-slate-400 text-sm shadow-sm transition-all"
+                placeholder="Search specialty, doctor..." 
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full sm:w-72 bg-white border border-slate-200 rounded-full py-4 pl-6 pr-12 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 text-sm shadow-sm transition-all font-medium"
               />
-              <button className="absolute right-2 h-10 w-10 bg-slate-800 text-white rounded-full flex items-center justify-center hover:bg-slate-700 transition-colors">
+              <button type="submit" className="absolute right-2 h-10 w-10 bg-indigo-600 text-white rounded-full flex items-center justify-center hover:bg-indigo-700 transition-colors shadow-md">
                 <Search className="h-4 w-4" />
               </button>
-            </div>
+            </form>
           </div>
 
           {/* Stats */}

@@ -1,32 +1,46 @@
-import React from 'react';
-import { Activity, Heart, Scale, Droplets } from 'lucide-react';
+'use client';
 
-export default function VitalsCard() {
+import React from 'react';
+import { Activity, Heart, ShieldAlert, Droplets, User, Calendar } from 'lucide-react';
+
+export default function VitalsCard({ profile, onEdit }) {
+  const bloodGroup = profile?.bloodGroup || 'Not set';
+  const gender = profile?.gender || 'Not set';
+  const dob = profile?.dateOfBirth ? new Date(profile.dateOfBirth).toLocaleDateString() : 'Not set';
+  const emergency = profile?.emergencyContact || 'Not set';
+
   const vitals = [
-    { label: 'Blood Group', value: 'O+', icon: Droplets, color: 'text-red-500', bg: 'bg-red-50' },
-    { label: 'Height', value: '175 cm', icon: Activity, color: 'text-blue-500', bg: 'bg-blue-50' },
-    { label: 'Weight', value: '72 kg', icon: Scale, color: 'text-green-500', bg: 'bg-green-50' },
-    { label: 'Blood Pressure', value: '120/80', icon: Heart, color: 'text-purple-500', bg: 'bg-purple-50' },
+    { label: 'Blood Group', value: bloodGroup, icon: Droplets, color: 'text-rose-500', bg: 'bg-rose-50' },
+    { label: 'Gender', value: gender, icon: User, color: 'text-indigo-500', bg: 'bg-indigo-50' },
+    { label: 'Date of Birth', value: dob, icon: Calendar, color: 'text-teal-500', bg: 'bg-teal-50' },
+    { label: 'Emergency Contact', value: emergency, icon: ShieldAlert, color: 'text-amber-500', bg: 'bg-amber-50' },
   ];
 
   return (
-    <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-all hover:shadow-md">
+    <div className="rounded-3xl border border-slate-100 bg-white p-6 shadow-sm transition-all hover:shadow-md">
       <div className="mb-4 flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-gray-800">Personal Vitals</h3>
-        <button className="text-sm font-medium text-primary hover:text-primary/80">Edit</button>
+        <h3 className="text-base font-bold text-slate-900">Personal Health Attributes</h3>
+        {onEdit && (
+          <button 
+            onClick={onEdit}
+            className="text-xs font-bold text-teal-600 hover:text-teal-700 bg-teal-50 hover:bg-teal-100 px-3 py-1 rounded-lg transition-colors"
+          >
+            Update
+          </button>
+        )}
       </div>
       
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-3">
         {vitals.map((vital, index) => {
           const Icon = vital.icon;
           return (
-            <div key={index} className="flex items-center gap-4 rounded-xl border border-gray-50 p-4 transition-colors hover:bg-gray-50">
-              <div className={`flex h-12 w-12 items-center justify-center rounded-full ${vital.bg}`}>
-                <Icon className={`h-6 w-6 ${vital.color}`} />
+            <div key={index} className="flex items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50/70 p-3.5 transition-colors">
+              <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${vital.bg}`}>
+                <Icon className={`h-5 w-5 ${vital.color}`} />
               </div>
-              <div>
-                <p className="text-sm font-medium text-gray-500">{vital.label}</p>
-                <p className="text-lg font-bold text-gray-900">{vital.value}</p>
+              <div className="min-w-0 flex-1">
+                <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{vital.label}</p>
+                <p className="text-sm font-extrabold text-slate-800 truncate">{vital.value}</p>
               </div>
             </div>
           );

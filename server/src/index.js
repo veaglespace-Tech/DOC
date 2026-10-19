@@ -45,6 +45,9 @@ app.use(cors({
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+const path = require('path');
+app.use('/uploads', express.static(path.join(__dirname, '../../uploads')));
+
 if (process.env.NODE_ENV !== 'test') {
   app.use(morgan('dev', { stream: { write: (msg) => logger.http(msg.trim()) } }));
 }

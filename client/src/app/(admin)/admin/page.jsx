@@ -18,8 +18,10 @@ import {
   Search,
   MessageSquare,
   ShieldCheck,
-  ArrowUpRight
+  ArrowUpRight,
+  ExternalLink
 } from 'lucide-react';
+import Link from 'next/link';
 import { 
   useGetAdminStatsQuery, 
   useGetAdminDoctorsQuery, 
@@ -28,11 +30,12 @@ import {
   useUpdateWithdrawalStatusMutation,
   useGetAdminComplaintsQuery,
   useUpdateComplaintStatusMutation,
-  useGetAdminAuditLogsQuery
+  useGetAdminAuditLogsQuery,
+  useGetAdminEmergencyDispatchesQuery
 } from '@/store/api/adminApi';
 
 export default function SuperAdminDashboard() {
-  const [activeTab, setActiveTab] = useState('overview'); // 'overview', 'kyc', 'withdrawals', 'complaints', 'audit'
+  const [activeTab, setActiveTab] = useState('overview'); // 'overview', 'kyc', 'emergency', 'withdrawals', 'complaints', 'audit'
 
   // Admin API hooks
   const { data: statsResponse, isLoading: loadingStats } = useGetAdminStatsQuery();
@@ -40,6 +43,7 @@ export default function SuperAdminDashboard() {
   const { data: withdrawalsResponse, refetch: refetchWithdrawals } = useGetAdminWithdrawalsQuery();
   const { data: complaintsResponse, refetch: refetchComplaints } = useGetAdminComplaintsQuery();
   const { data: auditResponse } = useGetAdminAuditLogsQuery();
+  const { data: emergencyResponse } = useGetAdminEmergencyDispatchesQuery();
 
   const [verifyDoctor, { isLoading: isVerifying }] = useVerifyDoctorMutation();
   const [updateWithdrawal, { isLoading: isUpdatingWithdrawal }] = useUpdateWithdrawalStatusMutation();
@@ -65,6 +69,7 @@ export default function SuperAdminDashboard() {
   const withdrawals = withdrawalsResponse?.data || [];
   const complaints = complaintsResponse?.data || [];
   const auditLogs = auditResponse?.data || [];
+  const emergencyDispatches = emergencyResponse?.data || [];
 
   const handleVerify = async (doctorId, status) => {
     try {
@@ -113,6 +118,7 @@ export default function SuperAdminDashboard() {
           {[
             { id: 'overview', label: 'Overview', icon: TrendingUp },
             { id: 'kyc', label: `Doctor KYC (${stats.pendingDoctors})`, icon: FileCheck },
+            { id: 'emergency', label: `Emergency SOS (${emergencyDispatches.length || stats.emergencyRequests || 0})`, icon: ShieldAlert },
             { id: 'withdrawals', label: `Payouts (${stats.pendingWithdrawals})`, icon: IndianRupee },
             { id: 'complaints', label: `Complaints (${stats.openComplaints})`, icon: MessageSquare },
             { id: 'audit', label: 'Audit Trail', icon: ShieldCheck }
@@ -223,11 +229,17 @@ export default function SuperAdminDashboard() {
       {/* DOCTOR KYC TAB */}
       {activeTab === 'kyc' && (
         <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
-          <div className="p-6 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
+          <div className="p-6 border-b border-slate-100 bg-slate-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <h3 className="text-lg font-bold text-slate-900">Doctor Verification & KYC Review</h3>
               <p className="text-xs text-slate-500">Live MySQL data — doctors must be APPROVED to receive bookings</p>
             </div>
+            <Link
+              href="/admin/kyc"
+              className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md shadow-indigo-600/20 inline-flex items-center gap-1.5 transition-all self-start sm:self-auto"
+            >
+              Open Full Document Review Console <ExternalLink className="w-3.5 h-3.5" />
+            </Link>
           </div>
 
           <div className="divide-y divide-slate-100 overflow-x-auto">
@@ -249,9 +261,9 @@ export default function SuperAdminDashboard() {
                       <div className="font-bold text-slate-900">{doc.name}</div>
                       <div className="text-xs text-slate-400">{doc.user?.email || 'No email'}</div>
                     </td>
-                    <td className="px-6 py-4 font-mono text-xs">{doc.medicalRegNumber || 'MCI-PENDING'}</td>
+                    <td className="px-6 py-4 font-mono text-xs">{doc.medicalRegNumber || doc.licenseNumber || 'MCI-PENDING'}</td>
                     <td className="px-6 py-4 text-xs">
-                      {doc.specializations?.map(s => s.specialization).join(', ') || 'General Physician'}
+                      {doc.specializations?.map(s => s.specialization || s.name).join(', ') || 'General Physician'}
                     </td>
                     <td className="px-6 py-4 font-bold text-slate-900">₹{parseFloat(doc.consultationFee || 500).toFixed(2)}</td>
                     <td className="px-6 py-4">
@@ -260,10 +272,16 @@ export default function SuperAdminDashboard() {
                         doc.verificationStatus === 'REJECTED' ? 'bg-rose-50 text-rose-700' :
                         'bg-amber-50 text-amber-700 animate-pulse'
                       }`}>
-                        {doc.verificationStatus}
+                        {doc.verificationStatus || 'PENDING'}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right space-x-2">
+                      <Link
+                        href="/admin/kyc"
+                        className="px-3 py-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-xs inline-flex items-center gap-1 transition-colors"
+                      >
+                        Inspect Docs <ExternalLink className="w-3 h-3" />
+                      </Link>
                       {doc.verificationStatus !== 'APPROVED' && (
                         <button
                           onClick={() => handleVerify(doc.id, 'APPROVED')}
@@ -288,6 +306,103 @@ export default function SuperAdminDashboard() {
               </tbody>
             </table>
           </div>
+        </div>
+      )}
+
+      {/* EMERGENCY SOS DISPATCHES TAB (BRD Sec 7) */}
+      {activeTab === 'emergency' && (
+        <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+          <div className="p-6 border-b border-slate-100 bg-slate-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="px-2.5 py-0.5 rounded-full bg-red-100 text-red-800 text-xs font-black uppercase tracking-wider flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-red-500 animate-ping"></span> Live Satellite Dispatch
+                </span>
+                <span className="text-xs text-slate-400 font-bold">5km Radial PostGIS Scanning</span>
+              </div>
+              <h3 className="text-lg font-bold text-slate-900 mt-1">Emergency SOS Dispatches</h3>
+              <p className="text-xs text-slate-500">Real-time acute patient distress signals & mobile medical responder assignments</p>
+            </div>
+            <div className="text-xs font-bold text-slate-600 bg-white px-4 py-2 rounded-xl border border-slate-200 shadow-xs">
+              Total Logged: <span className="text-red-600 font-black">{emergencyDispatches.length}</span>
+            </div>
+          </div>
+
+          {emergencyDispatches.length === 0 ? (
+            <div className="p-12 text-center text-slate-400 text-sm">
+              No emergency dispatches recorded in the system.
+            </div>
+          ) : (
+            <div className="divide-y divide-slate-100 overflow-x-auto">
+              <table className="w-full text-left text-sm text-slate-600">
+                <thead className="bg-slate-50 text-xs uppercase font-bold text-slate-400">
+                  <tr>
+                    <th className="px-6 py-3">Dispatch ID</th>
+                    <th className="px-6 py-3">Patient</th>
+                    <th className="px-6 py-3">Emergency Category</th>
+                    <th className="px-6 py-3">GPS Location</th>
+                    <th className="px-6 py-3">Assigned Doctor</th>
+                    <th className="px-6 py-3">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 font-medium">
+                  {emergencyDispatches.map((emg) => {
+                    const assignedDoc = emg.assignments?.find(a => a.status === 'ACCEPTED')?.doctor;
+                    const isSearching = emg.status === 'SEARCHING' || !emg.status;
+                    const isAssigned = emg.status === 'DOCTOR_ASSIGNED';
+
+                    return (
+                      <tr key={emg.id} className="hover:bg-slate-50/50 transition-colors">
+                        <td className="px-6 py-4 font-mono text-xs text-slate-700">
+                          <div>EMG-{emg.id}</div>
+                          <div className="text-[10px] text-slate-400 font-sans">
+                            {new Date(emg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="font-bold text-slate-900">{emg.patient?.name || 'Emergency Patient'}</div>
+                          <div className="text-xs text-slate-400">{emg.patient?.user?.phone || emg.patient?.emergencyContact || 'No contact'}</div>
+                        </td>
+                        <td className="px-6 py-4 text-xs font-semibold text-slate-800 max-w-xs truncate">
+                          {emg.medicalNeeds || 'Acute Medical Emergency'}
+                        </td>
+                        <td className="px-6 py-4 text-xs font-mono">
+                          <div>{parseFloat(emg.latitude).toFixed(4)}°N, {parseFloat(emg.longitude).toFixed(4)}°E</div>
+                          <a
+                            href={`https://maps.google.com/?q=${emg.latitude},${emg.longitude}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[11px] text-indigo-600 hover:underline font-sans font-bold inline-flex items-center gap-0.5 mt-0.5"
+                          >
+                            View Pin <ExternalLink className="w-3 h-3" />
+                          </a>
+                        </td>
+                        <td className="px-6 py-4 text-xs">
+                          {assignedDoc ? (
+                            <div>
+                              <div className="font-bold text-emerald-700">{assignedDoc.name}</div>
+                              <div className="text-slate-400 text-[11px]">{assignedDoc.phone || 'Phone verified'}</div>
+                            </div>
+                          ) : (
+                            <span className="text-slate-400 italic">None (Awaiting Response)</span>
+                          )}
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className={`inline-flex px-3 py-1 rounded-full text-xs font-black uppercase ${
+                            isAssigned ? 'bg-emerald-100 text-emerald-800' :
+                            isSearching ? 'bg-red-100 text-red-800 animate-pulse' :
+                            'bg-slate-100 text-slate-700'
+                          }`}>
+                            {emg.status || 'SEARCHING'}
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       )}
 
