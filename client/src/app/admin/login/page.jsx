@@ -2,46 +2,66 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ROLES } from '@/store/slices/authSlice';
+import { useDispatch } from 'react-redux';
+import { ROLES, setCredentials } from '@/store/slices/authSlice';
 import { useAdminLoginMutation } from '@/store/api/authApi';
 import Link from 'next/link';
+import Navbar from '@/components/shared/Navbar';
+import Footer from '@/components/shared/Footer';
 import { ShieldAlert, KeyRound, ArrowRight, Lock, Activity } from 'lucide-react';
 
 export default function AdminLoginPage() {
   const router = useRouter();
+  const dispatch = useDispatch();
   const [adminLogin, { isLoading }] = useAdminLoginMutation();
-  const [email, setEmail] = useState('admin@careconnect.com');
+  const [email, setEmail] = useState('admin@doctoroncall.com');
   const [password, setPassword] = useState('Veagle@123');
+  const [errorMsg, setErrorMsg] = useState('');
 
   const handleAdminLogin = async (e) => {
     e.preventDefault();
+    setErrorMsg('');
     
     try {
-      await adminLogin({ email, password }).unwrap();
+      const res = await adminLogin({ email, password }).unwrap();
+      const payload = res?.data || res;
+      if (payload?.accessToken) {
+        dispatch(setCredentials({
+          user: payload.user,
+          token: payload.accessToken,
+          role: payload.user?.roles?.[0] || 'SUPERADMIN'
+        }));
+        localStorage.setItem('careconnect_token', payload.accessToken);
+        localStorage.setItem('careconnect_auth', JSON.stringify({
+          user: payload.user,
+          token: payload.accessToken,
+          role: payload.user?.roles?.[0] || 'SUPERADMIN'
+        }));
+      }
       router.push('/admin');
     } catch (err) {
-      console.warn("API unavailable, proceeding with offline mock.");
-      // Simulated offline execution
-      setTimeout(() => {
-        router.push('/admin');
-      }, 1000);
+      setErrorMsg(err?.data?.message || 'Authentication failed. Please verify credentials.');
     }
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8 selection:bg-teal-500 selection:text-white relative">
-      <Link href="/" className="absolute top-6 left-6 md:top-8 md:left-8 flex items-center gap-2 text-sm font-bold text-slate-400 hover:text-white transition-colors bg-slate-800/50 px-4 py-2 rounded-xl shadow-sm border border-slate-700/50">
-        <ArrowRight className="h-4 w-4 rotate-180" /> Back to Home
-      </Link>
-      {/* Background glowing effects */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-64 bg-teal-500/10 blur-[120px] pointer-events-none"></div>
+    <div className="min-h-screen bg-slate-900 flex flex-col justify-between selection:bg-teal-500 selection:text-white">
+      {/* 🌟 UNIFIED TOP NAVBAR */}
+      <Navbar />
 
-      <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10 mt-10">
+      <main className="flex-1 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative">
+        <Link href="/" className="absolute top-6 left-6 md:top-8 md:left-8 flex items-center gap-2 text-sm font-bold text-slate-400 hover:text-white transition-colors bg-slate-800/50 px-4 py-2 rounded-xl shadow-sm border border-slate-700/50">
+          <ArrowRight className="h-4 w-4 rotate-180" /> Back to Home
+        </Link>
+        {/* Background glowing effects */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-64 bg-teal-500/10 blur-[120px] pointer-events-none"></div>
+
+        <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10 mt-10">
         <Link href="/" className="flex justify-center items-center gap-2 mb-6">
           <div className="h-10 w-10 bg-slate-800 border border-slate-700 rounded-xl flex items-center justify-center text-teal-400 shadow-lg shadow-teal-500/20">
             <ShieldAlert className="h-5 w-5" />
           </div>
-          <span className="text-2xl font-extrabold text-white tracking-tight">Care<span className="text-teal-400">Connect</span> <span className="text-slate-500 font-medium text-xl">| Admin</span></span>
+          <span className="text-2xl font-extrabold text-white tracking-tight">Doctor<span className="text-teal-400"> On Call</span> <span className="text-slate-500 font-medium text-xl">| Admin</span></span>
         </Link>
         <h2 className="mt-2 text-center text-3xl font-extrabold text-white tracking-tight">
           System Authentication
@@ -54,6 +74,13 @@ export default function AdminLoginPage() {
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md relative z-10">
         <div className="bg-slate-800/50 backdrop-blur-xl py-10 px-6 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] rounded-[2rem] sm:px-10 border border-slate-700/50">
           
+          {errorMsg && (
+            <div className="mb-6 p-4 bg-rose-500/10 border border-rose-500/30 rounded-xl text-rose-300 text-xs font-semibold flex items-center gap-2.5">
+              <span className="h-2 w-2 rounded-full bg-rose-400 shrink-0"></span>
+              <span>{errorMsg}</span>
+            </div>
+          )}
+
           <form className="space-y-6" onSubmit={handleAdminLogin}>
             <div>
               <label className="block text-sm font-bold text-slate-300 mb-2">Admin Identifier</label>
@@ -110,6 +137,10 @@ export default function AdminLoginPage() {
           </div>
         </div>
       </div>
-    </div>
+    </main>
+
+    {/* 🌟 UNIFIED FOOTER */}
+    <Footer />
+  </div>
   );
 }

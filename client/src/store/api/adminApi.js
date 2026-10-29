@@ -5,14 +5,32 @@ export const adminApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1',
     prepareHeaders: (headers, { getState }) => {
-      const token = getState().auth.token || (typeof window !== 'undefined' ? (localStorage.getItem('careconnect_token') || sessionStorage.getItem('careconnect_token')) : null);
+      let token = getState().auth.token;
+      if (!token && typeof window !== 'undefined') {
+        token = localStorage.getItem('careconnect_token') || sessionStorage.getItem('careconnect_token');
+        if (!token) {
+          try {
+            const raw = localStorage.getItem('careconnect_auth');
+            if (raw) token = JSON.parse(raw)?.token;
+          } catch (e) {}
+        }
+      }
       if (token) {
         headers.set('authorization', `Bearer ${token}`);
       }
       return headers;
     }
   }),
-  tagTypes: ['AdminStats', 'AdminDoctors', 'AdminWithdrawals', 'AdminComplaints'],
+  tagTypes: [
+    'AdminStats', 
+    'AdminDoctors', 
+    'AdminWithdrawals', 
+    'AdminComplaints', 
+    'AdminSettings', 
+    'AdminPatients', 
+    'AdminClinics', 
+    'AdminTransactions'
+  ],
   endpoints: (builder) => ({
     getAdminStats: builder.query({
       query: () => '/admin/stats',
@@ -70,6 +88,50 @@ export const adminApi = createApi({
       query: () => '/admin/emergency',
       providesTags: ['AdminStats']
     }),
+    getAdminSettings: builder.query({
+      query: () => '/admin/settings',
+      providesTags: ['AdminSettings']
+    }),
+    updateAdminSettings: builder.mutation({
+      query: (updates) => ({
+        url: '/admin/settings',
+        method: 'PATCH',
+        body: { updates }
+      }),
+      invalidatesTags: ['AdminSettings']
+    }),
+    getFinancialReport: builder.query({
+      query: (params) => ({
+        url: '/admin/reports/financials',
+        params
+      }),
+      providesTags: ['AdminStats']
+    }),
+    getAdminRefunds: builder.query({
+      query: () => '/payments/refunds',
+      providesTags: ['AdminStats']
+    }),
+    getAdminPatients: builder.query({
+      query: (params) => ({
+        url: '/admin/patients',
+        params
+      }),
+      providesTags: ['AdminPatients']
+    }),
+    getAdminClinics: builder.query({
+      query: (params) => ({
+        url: '/admin/clinics',
+        params
+      }),
+      providesTags: ['AdminClinics']
+    }),
+    getAdminTransactions: builder.query({
+      query: (params) => ({
+        url: '/admin/transactions',
+        params
+      }),
+      providesTags: ['AdminTransactions', 'AdminStats']
+    }),
   }),
 });
 
@@ -83,4 +145,12 @@ export const {
   useUpdateComplaintStatusMutation,
   useGetAdminAuditLogsQuery,
   useGetAdminEmergencyDispatchesQuery,
+  useGetAdminSettingsQuery,
+  useUpdateAdminSettingsMutation,
+  useGetFinancialReportQuery,
+  useGetAdminRefundsQuery,
+  useGetAdminPatientsQuery,
+  useGetAdminClinicsQuery,
+  useGetAdminTransactionsQuery,
 } = adminApi;
+

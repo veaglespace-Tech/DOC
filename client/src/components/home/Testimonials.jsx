@@ -63,7 +63,7 @@ const testimonials = [
     id: 5,
     name: "Meera Patel",
     role: "Pediatrics Parent",
-    content: "Finding the right care for my child was stressful, but CareConnect made it seamless. The pediatric ward is wonderfully designed.",
+    content: "Finding the right care for my child was stressful, but Doctor On Call made it seamless. The pediatric ward is wonderfully designed.",
     rating: 5,
     avatarColor: "bg-purple-500 text-white shadow-purple-500/30",
     shadowColor: "shadow-purple-200/40 hover:shadow-purple-300/50 hover:border-purple-200",

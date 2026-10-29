@@ -7,18 +7,27 @@ import { setCredentials, setAuthLoading } from './slices/authSlice';
 
 function AuthHydrator({ children }) {
   useEffect(() => {
-    const storedAuth = localStorage.getItem('careconnect_auth');
-    if (storedAuth) {
-      try {
+    try {
+      const storedAuth = localStorage.getItem('careconnect_auth');
+      if (storedAuth) {
         const { user, token, role } = JSON.parse(storedAuth);
-        store.dispatch(setCredentials({ user, token, role }));
-      } catch (e) {
-        localStorage.removeItem('careconnect_auth');
-        store.dispatch(setAuthLoading(false));
+        if (token) {
+          const assignedRole = role || user?.roles?.[0] || user?.role || null;
+          store.dispatch(setCredentials({ user, token, role: assignedRole }));
+          return;
+        }
       }
-    } else {
-      store.dispatch(setAuthLoading(false));
+
+      const fallbackToken = localStorage.getItem('careconnect_token') || sessionStorage.getItem('careconnect_token');
+      if (fallbackToken) {
+        store.dispatch(setCredentials({ user: null, token: fallbackToken, role: null }));
+        return;
+      }
+    } catch (e) {
+      localStorage.removeItem('careconnect_auth');
     }
+
+    store.dispatch(setAuthLoading(false));
   }, []);
 
   return <>{children}</>;

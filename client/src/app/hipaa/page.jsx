@@ -29,7 +29,7 @@ export default function HIPAAPage() {
 
           <h2>Encryption & Data Storage</h2>
           <p>
-            ViolaCare uses AES-256 encryption at rest and TLS 1.3 for data in transit. All electronic health records (EHR), messaging between patients and doctors, and video consultations are fully encrypted end-to-end. Your data is stored on highly secure, compliant AWS servers located entirely within certified data centers.
+            Doctor On Call uses AES-256 encryption at rest and TLS 1.3 for data in transit. All electronic health records (EHR), messaging between patients and doctors, and video consultations are fully encrypted end-to-end. Your data is stored on highly secure, compliant AWS servers located entirely within certified data centers.
           </p>
 
           <h2>Access Controls</h2>
@@ -39,7 +39,7 @@ export default function HIPAAPage() {
 
           <h2>Business Associate Agreements (BAA)</h2>
           <p>
-            ViolaCare signs Business Associate Agreements with all enterprise clinic partners and third-party infrastructure providers. This ensures that every node in our data processing chain adheres to the same rigorous HIPAA standards.
+            Doctor On Call signs Business Associate Agreements with all enterprise clinic partners and third-party infrastructure providers. This ensures that every node in our data processing chain adheres to the same rigorous HIPAA standards.
           </p>
 
           <h2>Continuous Auditing</h2>

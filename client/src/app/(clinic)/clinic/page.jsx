@@ -39,7 +39,7 @@ export default function ClinicDashboardPage() {
   const [subscriptionStatus, setSubscriptionStatus] = useState({ message: '', type: '' });
 
   const clinic = clinicData?.data?.organization || {
-    name: 'CareConnect Multi-Speciality Clinic',
+    name: 'Doctor On Call Multi-Speciality Clinic',
     subdomain: 'citycare',
     plan: {
       name: 'Clinic Professional',
@@ -124,7 +124,7 @@ export default function ClinicDashboardPage() {
                 Active SaaS Tier: {clinic.plan?.name || 'Clinic Professional'}
               </span>
               <span className="text-xs text-slate-300 font-mono bg-white/10 px-3 py-1 rounded-full">
-                {clinic.subdomain}.careconnect.health
+                {clinic.subdomain}.doctoroncall.health
               </span>
             </div>
             
@@ -180,9 +180,9 @@ export default function ClinicDashboardPage() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12 relative z-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-10 relative z-10">
         
-        <div className="bg-white rounded-3xl p-7 shadow-xl shadow-slate-200/50 border border-slate-100 flex flex-col justify-between gap-4 hover:scale-[1.02] transition-transform">
+        <div className="bg-white rounded-3xl p-6 sm:p-7 shadow-lg shadow-slate-200/50 border border-slate-100 flex flex-col justify-between gap-4 hover:scale-[1.02] transition-transform">
           <div className="flex justify-between items-start">
             <div className="h-14 w-14 rounded-2xl bg-sky-50 text-sky-600 flex items-center justify-center">
               <Users className="h-7 w-7" />
@@ -197,7 +197,7 @@ export default function ClinicDashboardPage() {
           </div>
         </div>
 
-        <div className="bg-white rounded-3xl p-7 shadow-xl shadow-slate-200/50 border border-slate-100 flex flex-col justify-between gap-4 hover:scale-[1.02] transition-transform">
+        <div className="bg-white rounded-3xl p-6 sm:p-7 shadow-lg shadow-slate-200/50 border border-slate-100 flex flex-col justify-between gap-4 hover:scale-[1.02] transition-transform">
           <div className="flex justify-between items-start">
             <div className="h-14 w-14 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
               <Calendar className="h-7 w-7" />
@@ -212,7 +212,7 @@ export default function ClinicDashboardPage() {
           </div>
         </div>
 
-        <div className="bg-white rounded-3xl p-7 shadow-xl shadow-slate-200/50 border border-slate-100 flex flex-col justify-between gap-4 hover:scale-[1.02] transition-transform">
+        <div className="bg-white rounded-3xl p-6 sm:p-7 shadow-lg shadow-slate-200/50 border border-slate-100 flex flex-col justify-between gap-4 hover:scale-[1.02] transition-transform">
           <div className="flex justify-between items-start">
             <div className="h-14 w-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
               <DollarSign className="h-7 w-7" />
@@ -227,7 +227,7 @@ export default function ClinicDashboardPage() {
           </div>
         </div>
 
-        <div className="bg-white rounded-3xl p-7 shadow-xl shadow-slate-200/50 border border-slate-100 flex flex-col justify-between gap-4 hover:scale-[1.02] transition-transform">
+        <div className="bg-white rounded-3xl p-6 sm:p-7 shadow-lg shadow-slate-200/50 border border-slate-100 flex flex-col justify-between gap-4 hover:scale-[1.02] transition-transform">
           <div className="flex justify-between items-start">
             <div className="h-14 w-14 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center">
               <Activity className="h-7 w-7" />

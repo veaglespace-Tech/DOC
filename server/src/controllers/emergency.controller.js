@@ -340,3 +340,128 @@ exports.updateDoctorLocation = async (req, res, next) => {
     next(error);
   }
 };
+
+/**
+ * Automated 90s Timeout & Auto-Escalation Worker (BRD Sec 7)
+ * Runs periodically: auto-reassigns timed-out dispatches to next eligible doctor
+ * or escalates to Admin/Operations when all options exhausted
+ */
+exports.processEmergencyTimeouts = async () => {
+  try {
+    const expiredAssignments = await prisma.emergencyAssignment.findMany({
+      where: {
+        status: 'NOTIFIED',
+        timeoutAt: { lte: new Date() },
+        request: { status: 'SEARCHING' }
+      },
+      include: {
+        request: {
+          include: {
+            patient: { include: { user: true } },
+            assignments: true
+          }
+        }
+      }
+    });
+
+    if (expiredAssignments.length === 0) return;
+
+    for (const assignment of expiredAssignments) {
+      // 1. Mark assignment as TIMED_OUT
+      await prisma.emergencyAssignment.update({
+        where: { id: assignment.id },
+        data: { status: 'TIMED_OUT', respondedAt: new Date() }
+      });
+
+      const req = assignment.request;
+      // Check if any other assignment is still waiting or accepted
+      const remainingActive = await prisma.emergencyAssignment.findFirst({
+        where: {
+          emergencyRequestId: req.id,
+          status: { in: ['NOTIFIED', 'ACCEPTED'] }
+        }
+      });
+
+      if (!remainingActive) {
+        // Find candidate doctors not yet notified for this request
+        const notifiedDocIds = req.assignments.map(a => a.doctorId);
+        const candidateDoctors = await prisma.doctor.findMany({
+          where: {
+            verificationStatus: 'APPROVED',
+            id: { notIn: notifiedDocIds }
+          },
+          include: { user: true }
+        });
+
+        if (candidateDoctors.length > 0) {
+          // Sort candidate doctors by distance
+          const patientLat = parseFloat(req.latitude) || 18.5204;
+          const patientLng = parseFloat(req.longitude) || 73.8567;
+
+          const scored = candidateDoctors.map(doc => {
+            const dLat = doc.currentLatitude ? parseFloat(doc.currentLatitude) : patientLat;
+            const dLng = doc.currentLongitude ? parseFloat(doc.currentLongitude) : patientLng;
+            return { ...doc, dist: calculateDistance(patientLat, patientLng, dLat, dLng) };
+          }).sort((a, b) => a.dist - b.dist);
+
+          const nextDoctor = scored[0];
+          const newTimeout = new Date(Date.now() + 90 * 1000);
+
+          const newAssignment = await prisma.emergencyAssignment.create({
+            data: {
+              emergencyRequestId: req.id,
+              doctorId: nextDoctor.id,
+              status: 'NOTIFIED',
+              timeoutAt: newTimeout
+            }
+          });
+
+          try {
+            const io = getIO();
+            io.to(`user:${nextDoctor.userId}`).emit('emergency:new_dispatch', {
+              assignmentId: newAssignment.id,
+              requestId: req.id,
+              patientName: req.patient.name,
+              patientPhone: req.patient.user?.phone || req.patient.emergencyContact || 'N/A',
+              medicalNeeds: req.medicalNeeds,
+              latitude: patientLat,
+              longitude: patientLng,
+              distanceKm: nextDoctor.dist.toFixed(1),
+              timeoutAt: newTimeout,
+              isReassigned: true
+            });
+          } catch {}
+
+          logger.info(`[Emergency Escalation] Request #${req.id} auto-reassigned to Doctor #${nextDoctor.id} (${nextDoctor.name}).`);
+        } else {
+          // No more eligible doctors — escalate to Admin & Operations (BRD Sec 7 & 3.5)
+          await prisma.emergencyRequest.update({
+            where: { id: req.id },
+            data: {
+              status: 'ESCALATED_TO_ADMIN',
+              escalatedAt: new Date()
+            }
+          });
+
+          try {
+            const io = getIO();
+            io.to('admin:emergencies').emit('emergency:escalated_to_admin', {
+              requestId: req.id,
+              patientName: req.patient.name,
+              patientPhone: req.patient.user?.phone || req.patient.emergencyContact,
+              medicalNeeds: req.medicalNeeds,
+              latitude: req.latitude,
+              longitude: req.longitude,
+              escalatedAt: new Date().toISOString()
+            });
+          } catch {}
+
+          logger.warn(`[Emergency Escalation] Request #${req.id} ESCALATED TO ADMIN — no available doctors within timeout.`);
+        }
+      }
+    }
+  } catch (err) {
+    logger.error('[Emergency Worker] Error in processEmergencyTimeouts:', err);
+  }
+};
+

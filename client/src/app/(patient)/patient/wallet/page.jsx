@@ -53,7 +53,7 @@ export default function PatientWalletPage() {
       const objUrl = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = objUrl;
-      a.download = `careconnect-invoice-${paymentId}.pdf`;
+      a.download = `doctoroncall-invoice-${paymentId}.pdf`;
       document.body.appendChild(a);
       a.click();
       a.remove();
@@ -244,7 +244,7 @@ export default function PatientWalletPage() {
         <div className="flex-1">
           <h4 className="text-sm font-bold text-slate-800">Strict Financial Traceability & GST Compliance</h4>
           <p className="text-xs text-slate-500 mt-0.5">
-            CareConnect generates compliant GST invoices with distinct 9% CGST + 9% SGST breakdown. All transactions are logged in a tamper-proof financial ledger.
+            Doctor On Call generates compliant GST invoices with distinct 9% CGST + 9% SGST breakdown. All transactions are logged in a tamper-proof financial ledger.
           </p>
         </div>
         <Link 

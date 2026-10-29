@@ -251,10 +251,10 @@ const options = {
   definition: {
     openapi: '3.0.3',
     info: {
-      title: 'CareConnect API',
+      title: 'Doctor On Call API',
       version: '1.0.0',
       description: `
-## CareConnect — Doctor-on-Demand & Healthcare SaaS Platform API
+## Doctor On Call — Doctor-on-Demand & Healthcare SaaS Platform API
 
 **Platform Roles:**
 - 🧑‍⚕️ **Patient** — Book appointments, emergency requests, payments, medical records

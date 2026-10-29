@@ -19,11 +19,15 @@ const generateInvoicePDF = async (paymentId) => {
   });
 
   if (!payment) throw Object.assign(new Error('Payment not found'), { statusCode: 404 });
-  if (payment.status !== 'COMPLETED') throw Object.assign(new Error('Invoice can only be generated for completed payments'), { statusCode: 400 });
+  if (!['COMPLETED', 'CAPTURED'].includes(payment.status)) {
+    throw Object.assign(new Error('Invoice can only be generated for completed payments'), { statusCode: 400 });
+  }
 
   const { appointment } = payment;
-  const doctor = appointment.doctor.user;
-  const patient = appointment.patient.user;
+  const doctorName = appointment.doctor?.name || 'Doctor';
+  const patientName = appointment.patient?.name || 'Patient';
+  const patientEmail = appointment.patient?.user?.email || 'N/A';
+  const patientPhone = appointment.patient?.user?.phone || 'N/A';
 
   // 2. Initialize PDF Document
   return new Promise((resolve, reject) => {
@@ -37,7 +41,7 @@ const generateInvoicePDF = async (paymentId) => {
       // --- HEADER ---
       doc.fillColor('#4f46e5')
          .fontSize(24)
-         .text('CareConnect Healthcare', { align: 'center' });
+         .text('Doctor On Call Healthcare', { align: 'center' });
       doc.fillColor('#475569')
          .fontSize(10)
          .text('123 Health Avenue, Medical District, Pune, IN', { align: 'center' })
@@ -55,29 +59,29 @@ const generateInvoicePDF = async (paymentId) => {
       const startY = doc.y;
       
       // Patient Info
-      doc.text(`Patient Name: ${patient.name || 'N/A'}`);
-      doc.text(`Email: ${patient.email || 'N/A'}`);
-      doc.text(`Phone: ${patient.phone || 'N/A'}`);
+      doc.text(`Patient Name: ${patientName}`);
+      doc.text(`Email: ${patientEmail}`);
+      doc.text(`Phone: ${patientPhone}`);
       
       // Invoice Meta (right aligned)
       doc.text(`Invoice No: INV-${payment.id}`, 350, startY);
       doc.text(`Date: ${invoiceDate}`, 350, startY + 15);
       doc.text(`Consultation ID: APT-${appointment.id}`, 350, startY + 30);
-      doc.text(`Doctor: Dr. ${doctor.name}`, 350, startY + 45);
-      doc.text(`Service Type: ${appointment.serviceType.replace('_', ' ')}`, 350, startY + 60);
+      doc.text(`Doctor: Dr. ${doctorName}`, 350, startY + 45);
+      doc.text(`Service Type: ${(appointment.serviceType || 'NORMAL').replace('_', ' ')}`, 350, startY + 60);
       
       doc.moveDown(3);
 
       // --- TABLE: LINE ITEMS ---
-      // We reconstruct the math: Gross Amount, Platform Fee, Tax, Total
-      const gross = parseFloat(payment.grossAmount);
-      const tax = parseFloat(payment.taxAmount);
-      const total = parseFloat(payment.amount);
+      // Reconstruct math: Gross Amount, Tax (18%), Total
+      const gross = parseFloat(payment.grossAmount || 0);
+      const tax = parseFloat(payment.taxAmount || 0);
+      const total = gross + tax;
 
       const table = {
         headers: ['Description', 'Amount (INR)'],
         rows: [
-          [`Medical Consultation with Dr. ${doctor.name}`, `Rs. ${gross.toFixed(2)}`],
+          [`Medical Consultation with Dr. ${doctorName}`, `Rs. ${gross.toFixed(2)}`],
           ['GST (18% on platform services included)', `Rs. ${tax.toFixed(2)}`],
         ]
       };
@@ -97,8 +101,8 @@ const generateInvoicePDF = async (paymentId) => {
          .text(`Grand Total Paid: Rs. ${total.toFixed(2)}`, { align: 'right' });
       
       doc.font('Helvetica').fontSize(10).fillColor('#64748b')
-         .text(`Payment Gateway Ref: ${payment.razorpayPaymentId || 'N/A'}`, { align: 'right' })
-         .text(`Status: PAID`, { align: 'right' });
+         .text(`Payment Gateway Ref: ${payment.gatewayPaymentId || payment.gatewayOrderId || 'N/A'}`, { align: 'right' })
+         .text(`Status: PAID (${payment.status})`, { align: 'right' });
 
       doc.moveDown(4);
 

@@ -111,23 +111,6 @@ export default function BookingRules() {
           </div>
         </div>
 
-        {/* Emergency Availability Toggle */}
-        <div className="flex items-center justify-between rounded-2xl border border-orange-100 bg-orange-50/50 p-5">
-          <div>
-            <h4 className="font-bold text-gray-900 text-sm">Emergency SOS Dispatch Availability</h4>
-            <p className="text-xs text-gray-600 mt-0.5">Receive immediate SOS alerts when emergency doctor dispatch is triggered within your 15km service radius.</p>
-          </div>
-          <label className="relative inline-flex cursor-pointer items-center shrink-0">
-            <input 
-              type="checkbox" 
-              className="peer sr-only" 
-              checked={emergencyAvailable}
-              onChange={(e) => setEmergencyAvailable(e.target.checked)}
-            />
-            <div className="peer h-7 w-12 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:h-6 after:w-6 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-orange-500 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none"></div>
-          </label>
-        </div>
-
       </div>
     </div>
   );

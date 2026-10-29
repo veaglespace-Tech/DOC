@@ -45,7 +45,7 @@ const buildOtpEmail = ({ heading, subtext, otp, expiryMinutes = 10, note = '' })
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CareConnect — ${heading}</title>
+  <title>Doctor On Call — ${heading}</title>
 </head>
 <body style="${BASE_STYLE}">
   <div style="${CARD_STYLE}">
@@ -53,7 +53,7 @@ const buildOtpEmail = ({ heading, subtext, otp, expiryMinutes = 10, note = '' })
     <!-- Logo -->
     <div style="text-align:center; margin-bottom:24px;">
       <span style="font-size:28px; font-weight:800; color:#0f172a;">
-        Care<span style="color:#4f46e5;">Connect</span>
+        Doctor<span style="color:#4f46e5;"> On Call</span>
       </span>
       <p style="margin:4px 0 0; color:#64748b; font-size:13px;">🏥 Doctor-on-Demand Platform</p>
     </div>
@@ -72,7 +72,7 @@ const buildOtpEmail = ({ heading, subtext, otp, expiryMinutes = 10, note = '' })
     <!-- Security Note -->
     <div style="background:#fef3c7; border-left:4px solid #f59e0b; border-radius:8px; padding:14px 18px; margin:20px 0;">
       <p style="margin:0; color:#92400e; font-size:13px;">
-        ⚠️ <strong>Security Notice:</strong> Never share this OTP with anyone. CareConnect will never ask for your OTP via call or message.
+        ⚠️ <strong>Security Notice:</strong> Never share this OTP with anyone. Doctor On Call will never ask for your OTP via call or message.
       </p>
     </div>
 
@@ -80,7 +80,7 @@ const buildOtpEmail = ({ heading, subtext, otp, expiryMinutes = 10, note = '' })
 
     <!-- Footer -->
     <div style="${FOOTER_STYLE}">
-      <p style="margin:0 0 4px;">© ${new Date().getFullYear()} CareConnect Healthcare SaaS</p>
+      <p style="margin:0 0 4px;">© ${new Date().getFullYear()} Doctor On Call Healthcare Platform</p>
       <p style="margin:0;">If you did not request this, please ignore this email.</p>
     </div>
   </div>
@@ -93,10 +93,10 @@ const buildOtpEmail = ({ heading, subtext, otp, expiryMinutes = 10, note = '' })
 // ============================================================
 
 const emailVerifyTemplate = (name, otp) => ({
-  subject: `${otp} — Verify Your Email | CareConnect`,
+  subject: `${otp} — Verify Your Email | Doctor On Call`,
   html: buildOtpEmail({
     heading:  `Welcome, ${name}! 👋`,
-    subtext:  'Please verify your email address to activate your CareConnect account.',
+    subtext:  'Please verify your email address to activate your Doctor On Call account.',
     otp,
     expiryMinutes: 10,
     note: 'This OTP is valid for 10 minutes from the time of request.',
@@ -104,7 +104,7 @@ const emailVerifyTemplate = (name, otp) => ({
 });
 
 const phoneVerifyTemplate = (otp) => ({
-  subject: `${otp} — Verify Your Phone | CareConnect`,
+  subject: `${otp} — Verify Your Phone | Doctor On Call`,
   html: buildOtpEmail({
     heading:  'Verify Your Phone Number',
     subtext:  'Use the OTP below to verify your phone number.',
@@ -114,9 +114,9 @@ const phoneVerifyTemplate = (otp) => ({
 });
 
 const loginOtpTemplate = (name, otp) => ({
-  subject: `${otp} — Login OTP | CareConnect`,
+  subject: `${otp} — Login OTP | Doctor On Call`,
   html: buildOtpEmail({
-    heading:  `Login to CareConnect`,
+    heading:  `Login to Doctor On Call`,
     subtext:  `Hi ${name}, use the OTP below to complete your login.`,
     otp,
     expiryMinutes: 10,
@@ -125,7 +125,7 @@ const loginOtpTemplate = (name, otp) => ({
 });
 
 const passwordResetTemplate = (name, otp) => ({
-  subject: `${otp} — Password Reset | CareConnect`,
+  subject: `${otp} — Password Reset | Doctor On Call`,
   html: buildOtpEmail({
     heading:  'Reset Your Password',
     subtext:  `Hi ${name}, use the OTP below to reset your password.`,
@@ -136,12 +136,12 @@ const passwordResetTemplate = (name, otp) => ({
 });
 
 const appointmentConfirmTemplate = ({ patientName, doctorName, scheduledAt, appointmentId }) => ({
-  subject: `Appointment Confirmed — ${doctorName} | CareConnect`,
+  subject: `Appointment Confirmed — ${doctorName} | Doctor On Call`,
   html: `
 <!DOCTYPE html><html><body style="${BASE_STYLE}">
   <div style="${CARD_STYLE}">
     <div style="text-align:center; margin-bottom:24px;">
-      <span style="font-size:28px; font-weight:800; color:#0f172a;">Care<span style="color:#4f46e5;">Connect</span></span>
+      <span style="font-size:28px; font-weight:800; color:#0f172a;">Doctor<span style="color:#4f46e5;"> On Call</span></span>
     </div>
     <div style="text-align:center; margin:20px 0;">
       <span style="font-size:48px;">✅</span>
@@ -157,7 +157,7 @@ const appointmentConfirmTemplate = ({ patientName, doctorName, scheduledAt, appo
       </table>
     </div>
     <div style="${FOOTER_STYLE}">
-      <p>© ${new Date().getFullYear()} CareConnect Healthcare SaaS</p>
+      <p>© ${new Date().getFullYear()} Doctor On Call Healthcare Platform</p>
     </div>
   </div>
 </body></html>`,

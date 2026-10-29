@@ -55,16 +55,16 @@ const getAdminBillingReports = async (req, res) => {
     // Basic aggregation for the dashboard
     const metrics = await prisma.payment.aggregate({
       _sum: {
-        amount: true,
         grossAmount: true,
         platformFee: true,
-        taxAmount: true
+        taxAmount: true,
+        doctorPayable: true
       },
       _count: {
         id: true
       },
       where: {
-        status: 'COMPLETED'
+        status: { in: ['COMPLETED', 'CAPTURED'] }
       }
     });
 
@@ -75,8 +75,8 @@ const getAdminBillingReports = async (req, res) => {
       include: {
         appointment: {
           include: {
-            patient: { include: { user: { select: { name: true, email: true } } } },
-            doctor: { include: { user: { select: { name: true } } } }
+            patient: { select: { name: true, user: { select: { email: true, phone: true } } } },
+            doctor: { select: { name: true, user: { select: { email: true } } } }
           }
         }
       }
@@ -103,13 +103,13 @@ const getPatientBillingHistory = async (req, res) => {
         appointment: {
           patientId: patientId
         },
-        status: 'COMPLETED'
+        status: { in: ['COMPLETED', 'CAPTURED'] }
       },
       orderBy: { createdAt: 'desc' },
       include: {
         appointment: {
           include: {
-            doctor: { include: { user: { select: { name: true } } } }
+            doctor: { select: { name: true, profileImage: true, user: { select: { email: true } } } }
           }
         }
       }

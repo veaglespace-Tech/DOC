@@ -25,7 +25,7 @@ export default function SystemStatusPage() {
             <Activity className="h-8 w-8 text-slate-700" />
           </div>
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-slate-900 mb-6">System Status</h1>
-          <p className="text-lg text-slate-600">Real-time status of ViolaCare services and APIs.</p>
+          <p className="text-lg text-slate-600">Real-time status of Doctor On Call services and APIs.</p>
         </div>
       </section>
 

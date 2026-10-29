@@ -457,22 +457,7 @@ export default function DoctorKycPage() {
                 </div>
               </div>
 
-              <div className="pt-2">
-                <label className="flex items-start gap-3 p-4 rounded-2xl border border-slate-200/80 bg-slate-50/50 cursor-pointer hover:bg-purple-50/50 transition-colors">
-                  <input
-                    type="checkbox"
-                    checked={isEmergencyAvailable}
-                    onChange={(e) => setCustomEmergency(e.target.checked)}
-                    className="mt-1 h-4 w-4 rounded border-slate-300 text-purple-600 focus:ring-purple-500"
-                  />
-                  <div>
-                    <span className="font-bold text-sm text-slate-900 block">Available for SOS Emergency</span>
-                    <span className="text-xs text-slate-500">
-                      Receive immediate critical care dispatches within your current geographic radius.
-                    </span>
-                  </div>
-                </label>
-              </div>
+
 
               <button
                 type="submit"

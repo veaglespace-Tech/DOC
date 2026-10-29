@@ -24,54 +24,19 @@ import {
 } from 'lucide-react';
 
 import { useGetDoctorDashboardQuery } from '@/store/api/doctorApi';
-import { useRespondEmergencyMutation } from '@/store/api/emergencyApi';
-import { getClientSocket } from '@/utils/socket';
 
 export default function DoctorDashboard() {
   const { user } = useSelector((state) => state.auth);
   const [isAvailable, setIsAvailable] = useState(true);
   const { data: dashboardResponse, isLoading } = useGetDoctorDashboardQuery();
-  const [respondEmergency] = useRespondEmergencyMutation();
-  const [activeEmergencyAlert, setActiveEmergencyAlert] = useState(null);
 
   const dashboardData = dashboardResponse?.data || {};
-
-  useEffect(() => {
-    // Listen for live emergency dispatch via Socket.IO
-    const socket = getClientSocket();
-    if (socket) {
-      if (user?.id) {
-        socket.emit('join:user', user.id);
-      }
-
-      socket.on('emergency:new_dispatch', (alertData) => {
-        setActiveEmergencyAlert(alertData);
-      });
-    }
-  }, [user]);
-
-  const handleEmergencyResponse = async (action) => {
-    if (!activeEmergencyAlert) return;
-    try {
-      await respondEmergency({
-        assignmentId: activeEmergencyAlert.assignmentId,
-        action
-      }).unwrap();
-
-      if (action === 'ACCEPT') {
-        alert('Emergency accepted! Patient notified. Please head to patient coordinates immediately.');
-      }
-      setActiveEmergencyAlert(null);
-    } catch (err) {
-      alert(err?.data?.message || 'Error processing response');
-    }
-  };
 
   const stats = [
     { label: "Today's Appointments", value: dashboardData.todaysAppointments || '0', icon: Users, color: 'text-blue-600', bg: 'bg-blue-50/80' },
     { label: 'Pending Requests', value: dashboardData.pendingRequests || '0', icon: Clock, color: 'text-amber-600', bg: 'bg-amber-50/80' },
     { label: "Today's Earnings", value: `₹ ${dashboardData.todaysEarnings || 0}`, icon: IndianRupee, color: 'text-emerald-600', bg: 'bg-emerald-50/80' },
-    { label: 'Emergency Alerts', value: activeEmergencyAlert ? '1 ACTIVE' : (dashboardData.emergencyAlerts || '0'), icon: AlertTriangle, color: 'text-rose-600', bg: 'bg-rose-50/80' }
+    { label: 'Completed Visits', value: dashboardData.completedVisits || dashboardData.todaysAppointments || '0', icon: CheckCircle2, color: 'text-teal-600', bg: 'bg-teal-50/80' }
   ];
 
   const todayAppointments = dashboardData.schedule || [];
@@ -89,55 +54,6 @@ export default function DoctorDashboard() {
       {/* Premium Background Blurs */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-sky-400/10 blur-[120px] rounded-full pointer-events-none"></div>
       <div className="absolute top-40 left-0 w-[400px] h-[400px] bg-teal-400/10 blur-[120px] rounded-full pointer-events-none"></div>
-
-      {/* Real-time Emergency SOS Alert Banner */}
-      <AnimatePresence>
-        {activeEmergencyAlert && (
-          <motion.div
-            initial={{ opacity: 0, y: -50, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -20, scale: 0.95 }}
-            className="mb-8 p-6 rounded-3xl bg-gradient-to-r from-red-600 via-rose-600 to-red-700 text-white shadow-2xl shadow-red-600/40 border border-red-400/40 relative z-20 overflow-hidden"
-          >
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-              <div className="flex items-start gap-4">
-                <div className="p-3 bg-white/20 rounded-2xl animate-pulse">
-                  <ShieldAlert className="h-8 w-8 text-white" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="bg-white/20 text-xs px-2.5 py-0.5 rounded-full font-black uppercase tracking-wider">
-                      CRITICAL SOS ALERT
-                    </span>
-                    <span className="text-xs text-red-100 font-bold">
-                      {activeEmergencyAlert.distanceKm} km away from your location
-                    </span>
-                  </div>
-                  <h3 className="text-2xl font-black mt-1">Patient: {activeEmergencyAlert.patientName}</h3>
-                  <p className="text-red-100 text-sm mt-0.5 font-medium">
-                    Needs: <span className="underline">{activeEmergencyAlert.medicalNeeds}</span>
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={() => handleEmergencyResponse('REJECT')}
-                  className="px-5 py-3 rounded-xl bg-black/30 hover:bg-black/40 text-white font-bold text-sm transition-colors"
-                >
-                  Decline
-                </button>
-                <button
-                  onClick={() => handleEmergencyResponse('ACCEPT')}
-                  className="px-6 py-3 rounded-xl bg-white text-red-600 hover:bg-red-50 font-black text-sm shadow-xl transition-transform hover:scale-105"
-                >
-                  ACCEPT & DISPATCH NOW
-                </button>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* Header Section */}
       <motion.div 
@@ -157,7 +73,7 @@ export default function DoctorDashboard() {
           <div className="flex flex-col">
             <span className="text-sm font-black text-slate-900 tracking-wide uppercase">Current Status</span>
             <span className={`text-xs font-bold ${isAvailable ? 'text-emerald-600' : 'text-slate-400'}`}>
-              {isAvailable ? 'Available for Walk-ins & Emergencies' : 'Offline / Do Not Disturb'}
+              {isAvailable ? 'Available for Consultations & Visits' : 'Offline / Do Not Disturb'}
             </span>
           </div>
           <button 
@@ -178,16 +94,16 @@ export default function DoctorDashboard() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12 relative z-10"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-10 relative z-10"
       >
         {stats.map((stat, idx) => (
-          <div key={idx} className="bg-white/70 backdrop-blur-xl rounded-[2rem] p-8 shadow-xl shadow-slate-200/40 border border-white flex flex-col justify-between gap-4 hover:scale-[1.02] transition-transform">
-            <div className={`h-16 w-16 rounded-[1.2rem] flex items-center justify-center shadow-inner ${stat.bg} ${stat.color}`}>
-              <stat.icon className="h-8 w-8" />
+          <div key={idx} className="bg-white/80 backdrop-blur-xl rounded-2xl sm:rounded-[2rem] p-6 sm:p-7 shadow-lg shadow-slate-200/50 border border-slate-100/80 flex items-center sm:flex-col sm:items-start justify-between sm:justify-between gap-4 hover:shadow-xl hover:scale-[1.02] transition-all">
+            <div className={`h-14 w-14 rounded-2xl flex items-center justify-center shrink-0 shadow-inner ${stat.bg} ${stat.color}`}>
+              <stat.icon className="h-7 w-7" />
             </div>
             <div>
-              <p className="text-2xl font-black text-slate-900 mb-1">{stat.value}</p>
-              <p className="text-sm font-bold text-slate-500 uppercase tracking-wider">{stat.label}</p>
+              <p className="text-2xl sm:text-3xl font-black text-slate-900 mb-0.5">{stat.value}</p>
+              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">{stat.label}</p>
             </div>
           </div>
         ))}

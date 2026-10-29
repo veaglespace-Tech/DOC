@@ -62,7 +62,7 @@ app.use('/api', apiLimiter);
 // Swagger Setup
 // ============================================================
 const swaggerUiOptions = {
-  customSiteTitle: 'CareConnect API Docs',
+  customSiteTitle: 'Doctor On Call API Docs',
   customfavIcon: '/favicon.ico',
   swaggerOptions: {
     persistAuthorization: true,
@@ -75,7 +75,7 @@ const swaggerUiOptions = {
   customCss: `
     .swagger-ui .topbar { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); padding: 10px 0; }
     .swagger-ui .topbar-wrapper img { display: none; }
-    .swagger-ui .topbar-wrapper::before { content: '🏥 CareConnect API'; color: #fff; font-size: 22px; font-weight: 700; }
+    .swagger-ui .topbar-wrapper::before { content: '🏥 Doctor On Call API'; color: #fff; font-size: 22px; font-weight: 700; }
     .swagger-ui .info .title { color: #4f46e5; }
     .swagger-ui .btn.authorize { background: #4f46e5; border-color: #4f46e5; color: #fff; border-radius: 8px; }
   `,
@@ -90,7 +90,7 @@ app.get('/api/docs/swagger.json', (req, res) => res.json(swaggerSpec));
 app.get('/api/health', (req, res) => res.status(200).json({
   success: true,
   status: 'OK',
-  message: 'CareConnect server is healthy 🏥',
+  message: 'Doctor On Call server is healthy 🏥',
   timestamp: new Date().toISOString(),
   environment: process.env.NODE_ENV || 'development',
   version: process.env.npm_package_version || '1.0.0',
@@ -125,6 +125,7 @@ setInterval(() => {
   });
 }, 10 * 60 * 1000); // Check every 10 minutes
 
+
 // Error Handling
 // ============================================================
 app.use(notFound);
@@ -150,7 +151,7 @@ const startServer = async () => {
 
     httpServer.listen(PORT, () => {
       logger.info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-      logger.info(`  CareConnect Server    : http://localhost:${PORT}`);
+      logger.info(`  Doctor On Call Server : http://localhost:${PORT}`);
       logger.info(`  Swagger API Docs      : http://localhost:${PORT}/api/docs`);
       logger.info(`  Environment           : ${process.env.NODE_ENV || 'development'}`);
       logger.info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');

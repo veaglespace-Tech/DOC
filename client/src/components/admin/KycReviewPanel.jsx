@@ -19,17 +19,25 @@ import {
   Check,
   X
 } from 'lucide-react';
+import { useSelector } from 'react-redux';
 import { useGetAdminDoctorsQuery, useVerifyDoctorMutation } from '@/store/api/adminApi';
 
 const DOC_TYPE_META = {
   MEDICAL_LICENSE: { title: 'State Medical Council License', icon: Award, color: 'text-purple-600 bg-purple-50' },
+  LICENSE: { title: 'State Medical Council License', icon: Award, color: 'text-purple-600 bg-purple-50' },
   DEGREE_CERTIFICATE: { title: 'Degree Diploma (MBBS / MD / MS)', icon: Stethoscope, color: 'text-blue-600 bg-blue-50' },
+  DEGREE: { title: 'Degree Diploma (MBBS / MD / MS)', icon: Stethoscope, color: 'text-blue-600 bg-blue-50' },
   ID_PROOF: { title: 'Government ID Proof', icon: ShieldCheck, color: 'text-teal-600 bg-teal-50' },
+  KYC_ID: { title: 'Government ID Proof (Aadhaar / Pan)', icon: ShieldCheck, color: 'text-teal-600 bg-teal-50' },
+  KYC_SELFIE: { title: 'Doctor Verification Photo', icon: ShieldCheck, color: 'text-teal-600 bg-teal-50' },
+  BANK_PASSBOOK: { title: 'Bank Passbook / Cancelled Cheque', icon: Building2, color: 'text-amber-600 bg-amber-50' },
   CLINIC_REGISTRATION: { title: 'Clinic / Establishment Certificate', icon: Building2, color: 'text-amber-600 bg-amber-50' }
 };
 
 export default function KycReviewPanel() {
-  const { data: doctorsResponse, isLoading, refetch } = useGetAdminDoctorsQuery();
+  const authState = useSelector((state) => state.auth);
+  const hasToken = !!authState?.token || (typeof window !== 'undefined' && !!localStorage.getItem('careconnect_token'));
+  const { data: doctorsResponse, isLoading, refetch } = useGetAdminDoctorsQuery(undefined, { skip: !hasToken });
   const [verifyDoctor, { isLoading: isVerifying }] = useVerifyDoctorMutation();
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('ALL'); // 'ALL', 'PENDING', 'APPROVED', 'REJECTED'
@@ -40,10 +48,11 @@ export default function KycReviewPanel() {
   const doctors = doctorsResponse?.data || [];
 
   const filteredDoctors = doctors.filter((doc) => {
+    const regNo = doc.medicalRegNumber || doc.licenseNumber || '';
     const matchesSearch = 
       doc.name?.toLowerCase().includes(search.toLowerCase()) ||
       (doc.user?.email && doc.user.email.toLowerCase().includes(search.toLowerCase())) ||
-      (doc.licenseNumber && doc.licenseNumber.toLowerCase().includes(search.toLowerCase()));
+      regNo.toLowerCase().includes(search.toLowerCase());
 
     const matchesStatus = 
       statusFilter === 'ALL' || 
@@ -52,6 +61,7 @@ export default function KycReviewPanel() {
 
     return matchesSearch && matchesStatus;
   });
+
 
   const activeDoc = doctors.find(d => d.id === selectedDoctorId) || filteredDoctors[0] || null;
 
@@ -157,7 +167,7 @@ export default function KycReviewPanel() {
                       {doc.specializations?.map(s => s.specialization || s.name).join(', ') || 'General Physician'}
                     </div>
                     <div className="flex items-center gap-2 text-[11px] text-slate-400 font-mono">
-                      <span>Lic: {doc.licenseNumber || 'Not provided'}</span>
+                      <span>Reg: {doc.medicalRegNumber || doc.licenseNumber || 'Not provided'}</span>
                       <span>•</span>
                       <span>{docCount} Docs</span>
                     </div>
@@ -198,7 +208,7 @@ export default function KycReviewPanel() {
                 <p className="text-xs text-slate-500 mt-1">
                   Email: <span className="font-bold text-slate-700">{activeDoc.user?.email || 'N/A'}</span> • 
                   Phone: <span className="font-bold text-slate-700">{activeDoc.user?.phone || 'N/A'}</span> • 
-                  MCI Reg: <span className="font-mono font-bold text-slate-700">{activeDoc.licenseNumber || 'N/A'}</span>
+                  MCI Reg: <span className="font-mono font-bold text-slate-700">{activeDoc.medicalRegNumber || activeDoc.licenseNumber || 'N/A'}</span>
                 </p>
                 <div className="flex flex-wrap items-center gap-3 mt-2 text-xs">
                   <span className="px-2.5 py-1 rounded-xl bg-purple-50 text-purple-700 font-bold">
@@ -207,12 +217,25 @@ export default function KycReviewPanel() {
                   <span className="px-2.5 py-1 rounded-xl bg-blue-50 text-blue-700 font-bold">
                     Experience: {activeDoc.experienceYears || 0} Years
                   </span>
-                  <span className={`px-2.5 py-1 rounded-xl font-bold ${
-                    activeDoc.isEmergencyAvailable ? 'bg-rose-50 text-rose-700' : 'bg-slate-100 text-slate-600'
-                  }`}>
-                    SOS: {activeDoc.isEmergencyAvailable ? 'Available' : 'Disabled'}
-                  </span>
                 </div>
+
+                {/* Login Status Banner */}
+                {activeDoc.verificationStatus === 'APPROVED' ? (
+                  <div className="mt-3 flex items-center gap-2 px-3.5 py-2 rounded-xl bg-emerald-50 border border-emerald-200/80 text-emerald-800 text-xs font-bold shadow-xs">
+                    <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
+                    <span>Doctor is Approved — Portal Login Enabled</span>
+                  </div>
+                ) : activeDoc.verificationStatus === 'REJECTED' ? (
+                  <div className="mt-3 flex items-center gap-2 px-3.5 py-2 rounded-xl bg-rose-50 border border-rose-200/80 text-rose-800 text-xs font-bold shadow-xs">
+                    <XCircle className="h-4 w-4 text-rose-600 shrink-0" />
+                    <span>Application Rejected — Portal Login Blocked</span>
+                  </div>
+                ) : (
+                  <div className="mt-3 flex items-center gap-2 px-3.5 py-2 rounded-xl bg-amber-50 border border-amber-200/80 text-amber-800 text-xs font-bold shadow-xs">
+                    <Clock className="h-4 w-4 text-amber-600 shrink-0 animate-pulse" />
+                    <span>Pending Verification — Doctor Login is Disabled until Super Admin approves</span>
+                  </div>
+                )}
               </div>
 
               {/* Action Buttons */}
@@ -220,16 +243,26 @@ export default function KycReviewPanel() {
                 <button
                   onClick={() => handleVerify('APPROVED')}
                   disabled={isVerifying || activeDoc.verificationStatus === 'APPROVED'}
-                  className="flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white font-bold text-xs shadow-md shadow-emerald-600/20 transition-all"
+                  className={`flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-xl font-bold text-xs transition-all shadow-md ${
+                    activeDoc.verificationStatus === 'APPROVED'
+                      ? 'bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200'
+                      : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-600/20'
+                  }`}
                 >
-                  <CheckCircle2 className="h-4 w-4" /> Approve Doctor
+                  <CheckCircle2 className="h-4 w-4" />
+                  {activeDoc.verificationStatus === 'APPROVED' ? 'Approved & Login Active' : 'Approve & Enable Login'}
                 </button>
                 <button
                   onClick={() => handleVerify('REJECTED')}
                   disabled={isVerifying || activeDoc.verificationStatus === 'REJECTED'}
-                  className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 disabled:opacity-50 text-rose-700 font-bold text-xs transition-colors"
+                  className={`flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl font-bold text-xs transition-colors ${
+                    activeDoc.verificationStatus === 'REJECTED'
+                      ? 'bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200'
+                      : 'bg-rose-50 hover:bg-rose-100 text-rose-700'
+                  }`}
                 >
-                  <XCircle className="h-4 w-4" /> Reject
+                  <XCircle className="h-4 w-4" /> 
+                  {activeDoc.verificationStatus === 'APPROVED' ? 'Revoke / Reject' : 'Reject Application'}
                 </button>
               </div>
             </div>

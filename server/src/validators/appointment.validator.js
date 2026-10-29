@@ -12,12 +12,14 @@ const updateAppointmentStatusSchema = z.object({
     "REQUESTED", 
     "PAYMENT_PENDING", 
     "PAID", 
+    "DOCTOR_ASSIGNED",
     "DOCTOR_ACCEPTED", 
     "ON_THE_WAY", 
     "ARRIVED", 
     "IN_PROGRESS", 
     "COMPLETED", 
-    "CANCELLED"
+    "CANCELLED",
+    "REFUND"
   ]),
   cancelReason: z.string().max(1000).optional()
 });

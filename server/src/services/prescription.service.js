@@ -48,7 +48,7 @@ const createOrUpdatePrescription = async (appointmentId, doctorUserId, data) => 
   }
 
   const doctorName = doctor.name ? (doctor.name.startsWith('Dr.') ? doctor.name : `Dr. ${doctor.name}`) : 'Doctor';
-  const signatureText = `Digitally Signed by ${doctorName} | Reg: ${doctor.medicalRegNumber || 'MCI-CARECONNECT'}`;
+  const signatureText = `Digitally Signed by ${doctorName} | Reg: ${doctor.medicalRegNumber || 'MCI-DOCTOR-ON-CALL'}`;
 
   // Find existing prescription or create new
   let prescription = await prisma.prescription.findFirst({
@@ -214,7 +214,7 @@ const generatePrescriptionPDF = async (appointmentId) => {
       // --- HEADER & CLINICAL BANNER ---
       doc.fillColor('#0d9488')
          .fontSize(22)
-         .text('CareConnect Healthcare', { align: 'left' });
+         .text('Doctor On Call Healthcare', { align: 'left' });
       doc.fontSize(10)
          .fillColor('#64748b')
          .text('Official Digital Medical Consultation & e-Prescription')
@@ -296,7 +296,7 @@ const generatePrescriptionPDF = async (appointmentId) => {
       doc.moveDown(1);
 
       doc.fillColor('#047857').fontSize(10).font('Helvetica-Bold').text(`✓ ${prescription.signature || `Digitally Signed by Dr. ${doctor.name}`}`);
-      doc.fontSize(8).font('Helvetica').fillColor('#94a3b8').text(`Signed on ${new Date(prescription.createdAt).toLocaleString()} via CareConnect E-Health System.`);
+      doc.fontSize(8).font('Helvetica').fillColor('#94a3b8').text(`Signed on ${new Date(prescription.createdAt).toLocaleString()} via Doctor On Call E-Health System.`);
       doc.moveDown(0.5);
       doc.fontSize(8).fillColor('#94a3b8').text('This is a computer-generated medical prescription valid under the Indian Telemedicine Practice Guidelines 2020.', { align: 'center' });
 

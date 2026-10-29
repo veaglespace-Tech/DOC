@@ -101,8 +101,8 @@ export default function DoctorAppointmentsPage() {
       </div>
 
       {/* KPI Counters */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8 relative z-10">
-        <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-sm flex items-center justify-between">
+      <div className="cards-scroller flex md:grid md:grid-cols-4 gap-4 mb-8 relative z-10 pb-2">
+        <div className="min-w-[220px] shrink-0 md:min-w-0 p-5 rounded-2xl bg-white border border-slate-200/80 shadow-sm flex items-center justify-between">
           <div>
             <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Total Assigned</p>
             <h3 className="text-3xl font-black text-slate-900 mt-1">{appointments.length}</h3>
@@ -112,7 +112,7 @@ export default function DoctorAppointmentsPage() {
           </div>
         </div>
 
-        <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-sm flex items-center justify-between">
+        <div className="min-w-[220px] shrink-0 md:min-w-0 p-5 rounded-2xl bg-white border border-slate-200/80 shadow-sm flex items-center justify-between">
           <div>
             <p className="text-xs font-bold uppercase tracking-wider text-amber-500">Upcoming / Confirmed</p>
             <h3 className="text-3xl font-black text-slate-900 mt-1">{scheduledCount}</h3>
@@ -122,7 +122,7 @@ export default function DoctorAppointmentsPage() {
           </div>
         </div>
 
-        <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-sm flex items-center justify-between">
+        <div className="min-w-[220px] shrink-0 md:min-w-0 p-5 rounded-2xl bg-white border border-slate-200/80 shadow-sm flex items-center justify-between">
           <div>
             <p className="text-xs font-bold uppercase tracking-wider text-indigo-500">Active Visits</p>
             <h3 className="text-3xl font-black text-slate-900 mt-1">{inProgressCount}</h3>
@@ -132,7 +132,7 @@ export default function DoctorAppointmentsPage() {
           </div>
         </div>
 
-        <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-sm flex items-center justify-between">
+        <div className="min-w-[220px] shrink-0 md:min-w-0 p-5 rounded-2xl bg-white border border-slate-200/80 shadow-sm flex items-center justify-between">
           <div>
             <p className="text-xs font-bold uppercase tracking-wider text-emerald-500">Completed Encounters</p>
             <h3 className="text-3xl font-black text-slate-900 mt-1">{completedCount}</h3>
@@ -179,7 +179,6 @@ export default function DoctorAppointmentsPage() {
             <option value="NORMAL">In-Clinic OPD</option>
             <option value="HOME_VISIT">Home Visit</option>
             <option value="VIRTUAL">Teleconsultation</option>
-            <option value="EMERGENCY">Emergency SOS</option>
           </select>
         </div>
       </div>
@@ -273,14 +272,47 @@ export default function DoctorAppointmentsPage() {
                 </div>
 
                 {/* Right: Actions */}
-                <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto justify-end border-t lg:border-t-0 pt-4 lg:pt-0 border-slate-100">
+                <div className="flex flex-wrap items-center gap-2.5 w-full lg:w-auto justify-end border-t lg:border-t-0 pt-4 lg:pt-0 border-slate-100">
+                  {/* Step 1: Doctor Accepts */}
+                  {(apt.status === 'REQUESTED' || apt.status === 'DOCTOR_ASSIGNED' || apt.status === 'PAYMENT_PENDING') && (
+                    <button
+                      onClick={() => handleStatusChange(apt.id, 'DOCTOR_ACCEPTED')}
+                      disabled={isUpdating}
+                      className="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs transition-colors flex items-center gap-1.5 shadow-sm"
+                    >
+                      <CheckCircle2 className="h-3.5 w-3.5" /> Accept Booking
+                    </button>
+                  )}
+
+                  {/* Step 2: Doctor Starts Travel */}
+                  {(apt.status === 'DOCTOR_ACCEPTED' || apt.status === 'PAID') && (apt.serviceType === 'HOME_VISIT' || apt.serviceType === 'EMERGENCY') && (
+                    <button
+                      onClick={() => handleStatusChange(apt.id, 'ON_THE_WAY')}
+                      disabled={isUpdating}
+                      className="px-3.5 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs transition-colors flex items-center gap-1.5 shadow-sm shadow-purple-500/20"
+                    >
+                      <Navigation className="h-3.5 w-3.5 rotate-45" /> On The Way
+                    </button>
+                  )}
+
+                  {/* Step 3: Doctor Arrives at Patient Location */}
+                  {apt.status === 'ON_THE_WAY' && (
+                    <button
+                      onClick={() => handleStatusChange(apt.id, 'ARRIVED')}
+                      disabled={isUpdating}
+                      className="px-3.5 py-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs transition-colors flex items-center gap-1.5 shadow-sm"
+                    >
+                      <MapPin className="h-3.5 w-3.5" /> Arrived at Patient
+                    </button>
+                  )}
+
                   {/* Enter Consultation Room */}
                   {!isCompleted && !isCancelled && (
                     <Link
                       href={`/doctor/consultation/${apt.id}`}
-                      className="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs transition-colors flex items-center gap-1.5 shadow-sm shadow-purple-500/20"
+                      className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition-colors flex items-center gap-1.5 shadow-sm"
                     >
-                      <Activity className="h-3.5 w-3.5" /> Start Visit
+                      <Activity className="h-3.5 w-3.5 text-teal-400" /> Consult Room
                     </Link>
                   )}
 
@@ -299,7 +331,7 @@ export default function DoctorAppointmentsPage() {
                       disabled={isUpdating}
                       className="px-3.5 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs transition-colors flex items-center gap-1"
                     >
-                      <CheckCircle2 className="h-3.5 w-3.5" /> Complete
+                      <CheckCircle2 className="h-3.5 w-3.5" /> Complete Visit
                     </button>
                   )}
 

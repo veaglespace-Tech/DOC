@@ -146,10 +146,32 @@ const register = async ({ name, email, phone, password, role, organizationId }) 
 
 const login = async ({ email, phone, password }) => {
   const where = email ? { email } : { phone };
-  const user  = await prisma.user.findUnique({
+  let user = await prisma.user.findUnique({
     where,
-    include: { userRoles: { include: { role: true } } },
+    include: { 
+      userRoles: { include: { role: true } },
+      doctor: true,
+    },
   });
+
+  // Backward compatibility alias for re-branded domain
+  if (!user && email && email.includes('@doctoroncall.com')) {
+    user = await prisma.user.findUnique({
+      where: { email: email.replace('@doctoroncall.com', '@careconnect.com') },
+      include: { 
+        userRoles: { include: { role: true } },
+        doctor: true,
+      },
+    });
+  } else if (!user && email && email.includes('@careconnect.com')) {
+    user = await prisma.user.findUnique({
+      where: { email: email.replace('@careconnect.com', '@doctoroncall.com') },
+      include: { 
+        userRoles: { include: { role: true } },
+        doctor: true,
+      },
+    });
+  }
 
   if (!user || !user.passwordHash) {
     throw Object.assign(new Error('Invalid credentials'), { statusCode: 401 });
@@ -162,6 +184,29 @@ const login = async ({ email, phone, password }) => {
   const isMatch = await comparePassword(password, user.passwordHash);
   if (!isMatch) {
     throw Object.assign(new Error('Invalid credentials'), { statusCode: 401 });
+  }
+
+  // Doctor Approval Verification Check: Only APPROVED doctors can log in
+  const isDoctor = user.userRoles.some(ur => ur.role.name === 'DOCTOR') || !!user.doctor;
+  if (isDoctor && user.doctor) {
+    if (user.doctor.verificationStatus === 'PENDING') {
+      throw Object.assign(
+        new Error('Your Doctor account is pending Super Admin verification. You can only log in once your account is approved.'),
+        { statusCode: 403, code: 'DOCTOR_PENDING_APPROVAL' }
+      );
+    }
+    if (user.doctor.verificationStatus === 'REJECTED') {
+      throw Object.assign(
+        new Error('Your Doctor verification application was rejected by the Super Admin. Please contact support.'),
+        { statusCode: 403, code: 'DOCTOR_REJECTED' }
+      );
+    }
+    if (user.doctor.verificationStatus !== 'APPROVED') {
+      throw Object.assign(
+        new Error('Your Doctor account is not yet approved. Login will be enabled after Super Admin approval.'),
+        { statusCode: 403, code: 'DOCTOR_NOT_APPROVED' }
+      );
+    }
   }
 
   // Update last login

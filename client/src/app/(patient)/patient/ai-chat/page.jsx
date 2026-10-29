@@ -8,7 +8,7 @@ export default function AIChatbotPage() {
     {
       id: 1,
       sender: 'ai',
-      text: "Hello! I am the CareConnect AI Medical Assistant. I can help you check symptoms, find the right specialist, or summarize your recent medical reports. How can I assist you today?",
+      text: "Hello! I am the Doctor On Call AI Medical Assistant. I can help you check symptoms, find the right specialist, or summarize your recent medical reports. How can I assist you today?",
       time: "10:00 AM"
     }
   ]);
@@ -59,7 +59,7 @@ export default function AIChatbotPage() {
             <Sparkles className="h-6 w-6 text-white" />
           </div>
           <div>
-            <h1 className="text-xl font-extrabold text-slate-900 tracking-tight">CareConnect AI Intelligence</h1>
+            <h1 className="text-xl font-extrabold text-slate-900 tracking-tight">Doctor On Call AI Intelligence</h1>
             <p className="text-sm font-medium text-slate-500 flex items-center gap-1.5">
               <span className="relative flex h-2.5 w-2.5">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>

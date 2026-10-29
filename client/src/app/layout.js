@@ -12,32 +12,32 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  metadataBase: new URL('https://careconnect.health'),
+  metadataBase: new URL('https://doctoroncall.health'),
   title: {
-    default: "CareConnect | India's Premium Healthcare Network & SOS Dispatch",
-    template: "%s | CareConnect Healthcare SaaS"
+    default: "Doctor On Call | India's Premium Healthcare Network & Appointments",
+    template: "%s | Doctor On Call"
   },
-  description: "Experience world-class medical care from the comfort of your home. CareConnect offers instant video consultations, top-rated specialist home visits, digital EHR vaults, and intelligent SOS emergency dispatches.",
-  keywords: ["Healthcare SaaS", "Online Doctor Consultation", "Emergency SOS Medical", "Home Doctor Visits", "Digital Prescriptions", "EHR Vault", "India Healthcare Network", "Premium Telemedicine", "Doctor Appointment Booking"],
-  authors: [{ name: "CareConnect Team" }],
-  creator: "CareConnect",
-  publisher: "CareConnect Medical Services",
+  description: "Experience world-class medical care from the comfort of your home. Doctor On Call offers instant video consultations, top-rated specialist home visits, and secure digital EHR vaults.",
+  keywords: ["Doctor On Call", "Healthcare SaaS", "Online Doctor Consultation", "Home Doctor Visits", "Digital Prescriptions", "EHR Vault", "India Healthcare Network", "Premium Telemedicine", "Doctor Appointment Booking"],
+  authors: [{ name: "Doctor On Call Team" }],
+  creator: "Doctor On Call",
+  publisher: "Doctor On Call Medical Services",
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
   openGraph: {
-    title: "CareConnect | India's #1 Premium Healthcare Network",
-    description: "Instantly book top-rated specialists, arrange emergency dispatches, and consult via HD video. Your health in the palm of your hand.",
-    url: 'https://careconnect.health',
-    siteName: 'CareConnect',
+    title: "Doctor On Call | India's #1 Premium Healthcare Network",
+    description: "Instantly book top-rated specialists, arrange doctor visits, and consult via HD video. Your health in the palm of your hand.",
+    url: 'https://doctoroncall.health',
+    siteName: 'Doctor On Call',
     images: [
       {
         url: '/images/hero-clinic.jpg',
         width: 1200,
         height: 630,
-        alt: 'CareConnect Luxurious Clinic',
+        alt: 'Doctor On Call Premium Healthcare',
       },
     ],
     locale: 'en_IN',
@@ -45,8 +45,8 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: "CareConnect | Advanced Medical Network",
-    description: "Book home visits, video consults, and access intelligent SOS dispatch.",
+    title: "Doctor On Call | Advanced Medical Network",
+    description: "Book home visits, video consults, and access top healthcare specialists.",
     images: ['/images/hero-clinic.jpg'],
   },
   robots: {

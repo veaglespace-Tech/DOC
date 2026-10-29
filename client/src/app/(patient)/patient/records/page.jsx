@@ -22,7 +22,7 @@ import { useGetPatientPrescriptionsQuery } from '@/store/api/appointmentApi';
 import { useGetMedicalRecordsQuery, useAddMedicalRecordMutation } from '@/store/api/patientApi';
 
 export default function PatientRecordsPage() {
-  const { data: prescriptions = [], isLoading: isLoadingPrescriptions } = useGetPatientPrescriptionsQuery();
+  const { data: prescriptionsResponse, isLoading: isLoadingPrescriptions } = useGetPatientPrescriptionsQuery();
   const { data: medicalRecordsResponse, isLoading: isLoadingRecords, refetch: refetchRecords } = useGetMedicalRecordsQuery();
   const [addMedicalRecord, { isLoading: isUploading }] = useAddMedicalRecordMutation();
 
@@ -41,7 +41,35 @@ export default function PatientRecordsPage() {
     notes: ''
   });
 
-  const records = medicalRecordsResponse?.data || [];
+  const prescriptions = Array.isArray(prescriptionsResponse)
+    ? prescriptionsResponse
+    : (Array.isArray(prescriptionsResponse?.data) ? prescriptionsResponse.data : []);
+
+  const records = Array.isArray(medicalRecordsResponse?.data)
+    ? medicalRecordsResponse.data
+    : (Array.isArray(medicalRecordsResponse) ? medicalRecordsResponse : []);
+
+  const filteredPrescriptions = prescriptions.filter((p) => {
+    if (!searchQuery) return true;
+    const q = searchQuery.toLowerCase();
+    return (
+      p.diagnosis?.toLowerCase().includes(q) ||
+      p.doctor?.name?.toLowerCase().includes(q) ||
+      p.notes?.toLowerCase().includes(q)
+    );
+  });
+
+  const filteredRecords = records.filter((rec) => {
+    if (!searchQuery) return true;
+    const q = searchQuery.toLowerCase();
+    return (
+      rec.title?.toLowerCase().includes(q) ||
+      rec.diagnosis?.toLowerCase().includes(q) ||
+      rec.doctorName?.toLowerCase().includes(q) ||
+      rec.notes?.toLowerCase().includes(q) ||
+      rec.recordType?.toLowerCase().includes(q)
+    );
+  });
 
   const handleDownloadPDF = async (appointmentId) => {
     setDownloadingId(appointmentId);
@@ -180,14 +208,14 @@ export default function PatientRecordsPage() {
                 <Loader2 className="h-8 w-8 text-indigo-600 animate-spin mx-auto mb-2" />
                 <p className="text-slate-500 text-xs font-medium">Fetching verified prescriptions...</p>
               </div>
-            ) : prescriptions.length === 0 ? (
+            ) : filteredPrescriptions.length === 0 ? (
               <div className="p-8 text-center bg-white rounded-2xl border border-slate-200/80 text-slate-400">
                 <p className="text-sm font-semibold text-slate-600">No prescriptions found</p>
                 <p className="text-xs mt-1">Prescriptions issued during consultations will appear here automatically.</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {prescriptions.map((p) => {
+                {(filteredPrescriptions || []).map((p) => {
                   let meds = [];
                   try {
                     meds = typeof p.medicines === 'string' ? JSON.parse(p.medicines) : (p.medicines || []);
@@ -207,7 +235,7 @@ export default function PatientRecordsPage() {
                               {p.diagnosis || 'General Consultation'}
                             </h4>
                             <p className="text-xs text-slate-400 mt-0.5">
-                              Dr. {p.doctor?.name || 'CareConnect Specialist'}
+                              Dr. {p.doctor?.name || 'Doctor On Call Specialist'}
                             </p>
                           </div>
 
@@ -271,14 +299,14 @@ export default function PatientRecordsPage() {
                 <Loader2 className="h-8 w-8 text-purple-600 animate-spin mx-auto mb-2" />
                 <p className="text-slate-500 text-xs font-medium">Loading uploaded records...</p>
               </div>
-            ) : records.length === 0 ? (
+            ) : filteredRecords.length === 0 ? (
               <div className="p-8 text-center bg-white rounded-2xl border border-slate-200/80 text-slate-400">
                 <p className="text-sm font-semibold text-slate-600">No diagnostic records uploaded yet</p>
                 <p className="text-xs mt-1">Use the "Upload Health Record" button above to upload blood tests, scans or hospital summaries.</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {records.map((rec) => (
+                {(filteredRecords || []).map((rec) => (
                   <div key={rec.id} className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-sm flex flex-col justify-between">
                     <div>
                       <div className="flex items-center justify-between mb-2">

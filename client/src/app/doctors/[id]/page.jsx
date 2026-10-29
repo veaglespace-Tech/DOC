@@ -1,6 +1,6 @@
 'use client';
 
-import React, { use, useState, useMemo } from 'react';
+import React, { use, useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useSelector } from 'react-redux';
@@ -23,7 +23,10 @@ import {
   CheckCircle2,
   FileText,
   Loader2,
-  PhoneCall
+  PhoneCall,
+  Lock,
+  User,
+  ArrowRight
 } from 'lucide-react';
 import { useGetDoctorByIdQuery } from '@/store/api/doctorApi';
 import { useCreateAppointmentMutation } from '@/store/api/appointmentApi';
@@ -34,7 +37,16 @@ export default function DoctorProfilePage({ params }) {
   const id = unwrappedParams?.id || '1';
   const router = useRouter();
 
-  const { user, token } = useSelector((state) => state.auth);
+  const { user, token, role: currentRole } = useSelector((state) => state.auth);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const activeRole = currentRole || user?.role || user?.roles?.[0];
+  const isLoggedIn = mounted && Boolean(token && user);
+  const isPatient = mounted && Boolean(activeRole === 'PATIENT');
 
   const { data: response, isLoading, isError } = useGetDoctorByIdQuery(id);
   const doctor = response?.data;
@@ -91,8 +103,13 @@ export default function DoctorProfilePage({ params }) {
   const handleProceedToBook = async () => {
     setErrorMsg('');
 
-    if (!token) {
-      router.push(`/login/patient?returnUrl=/doctors/${id}`);
+    if (!token || !user) {
+      router.push(`/login/patient?returnUrl=${encodeURIComponent(`/doctors/${id}`)}`);
+      return;
+    }
+
+    if (activeRole && activeRole !== 'PATIENT') {
+      setErrorMsg(`You are currently signed in as ${activeRole}. Doctor appointments can only be booked by registered Patient accounts.`);
       return;
     }
 
@@ -210,11 +227,6 @@ export default function DoctorProfilePage({ params }) {
                     <div className="flex items-center gap-1.5 bg-slate-100 text-slate-700 px-3 py-1.5 rounded-lg text-sm font-bold border border-slate-200">
                       <Clock className="h-4 w-4 text-slate-500" /> {doctor.experience}
                     </div>
-                    {doctor.isEmergencyAvailable && (
-                      <span className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-rose-50 text-rose-700 text-xs font-bold border border-rose-200">
-                        <PhoneCall className="h-3.5 w-3.5" /> Emergency SOS Ready
-                      </span>
-                    )}
                   </div>
 
                   <div className="space-y-2 text-slate-600 font-medium">
@@ -285,6 +297,69 @@ export default function DoctorProfilePage({ params }) {
 
               <div className="p-6 sm:p-8 space-y-6">
                 
+                {/* User Auth Status Banner */}
+                {mounted && (
+                  <>
+                    {!isLoggedIn ? (
+                      <div className="p-4 rounded-2xl bg-amber-50/90 border border-amber-200/90 flex items-start gap-3">
+                        <div className="h-8 w-8 rounded-xl bg-amber-100 flex items-center justify-center shrink-0 text-amber-700 mt-0.5">
+                          <Lock className="h-4 w-4" />
+                        </div>
+                        <div className="text-xs">
+                          <p className="font-bold text-amber-950 flex items-center gap-1.5">
+                            <span>Patient Login Required</span>
+                            <span className="text-[10px] font-black uppercase tracking-wider bg-amber-200/80 text-amber-900 px-2 py-0.5 rounded-full">
+                              Compulsory
+                            </span>
+                          </p>
+                          <p className="text-amber-800 mt-1 leading-relaxed">
+                            Booking consultations requires an active Patient account for EHR sync and token generation.
+                          </p>
+                          <Link
+                            href={`/login/patient?returnUrl=${encodeURIComponent(`/doctors/${id}`)}`}
+                            className="inline-flex items-center gap-1 text-teal-700 hover:text-teal-900 font-bold mt-2 underline underline-offset-2"
+                          >
+                            Sign in now <ArrowRight className="h-3 w-3" />
+                          </Link>
+                        </div>
+                      </div>
+                    ) : !isPatient ? (
+                      <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200/90 flex items-start gap-3">
+                        <div className="h-8 w-8 rounded-xl bg-rose-100 flex items-center justify-center shrink-0 text-rose-700 mt-0.5">
+                          <AlertCircle className="h-4 w-4" />
+                        </div>
+                        <div className="text-xs">
+                          <p className="font-bold text-rose-950">Patient Role Required</p>
+                          <p className="text-rose-800 mt-1 leading-relaxed">
+                            You are signed in as <strong className="uppercase">{activeRole || 'User'}</strong>. Please switch to a Patient account to book.
+                          </p>
+                          <Link
+                            href={`/login/patient?returnUrl=${encodeURIComponent(`/doctors/${id}`)}`}
+                            className="inline-flex items-center gap-1 text-rose-700 hover:text-rose-900 font-bold mt-2 underline underline-offset-2"
+                          >
+                            Switch to Patient Account <ArrowRight className="h-3 w-3" />
+                          </Link>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="p-3.5 rounded-2xl bg-emerald-50/90 border border-emerald-200/80 flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-teal-500 to-emerald-600 text-white flex items-center justify-center font-black text-sm shadow-sm">
+                            {user.name ? user.name[0].toUpperCase() : 'P'}
+                          </div>
+                          <div className="text-xs">
+                            <p className="font-bold text-slate-900 leading-snug">Booking as {user.name || 'Patient'}</p>
+                            <p className="text-[11px] text-slate-500">{user.email}</p>
+                          </div>
+                        </div>
+                        <span className="text-[10px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-full border border-emerald-200">
+                          Verified Patient
+                        </span>
+                      </div>
+                    )}
+                  </>
+                )}
+
                 {/* 1. Select Service Type */}
                 <div>
                   <h4 className="font-bold text-sm text-slate-900 uppercase tracking-wider mb-3">1. Select Service Mode</h4>
@@ -401,24 +476,52 @@ export default function DoctorProfilePage({ params }) {
                   />
                 </div>
 
+                {/* Error Banner */}
+                {errorMsg && (
+                  <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold flex items-center gap-2">
+                    <AlertCircle className="h-4 w-4 shrink-0" />
+                    <span>{errorMsg}</span>
+                  </div>
+                )}
+
                 {/* Proceed Button */}
-                <button 
-                  type="button"
-                  onClick={handleProceedToBook}
-                  disabled={isBooking || isInitiatingPay}
-                  className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 text-white py-4 rounded-2xl font-bold text-base transition-all hover:-translate-y-0.5 shadow-xl shadow-teal-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isBooking || isInitiatingPay ? (
-                    <>
-                      <Loader2 className="h-5 w-5 animate-spin" />
-                      <span>Creating Appointment...</span>
-                    </>
-                  ) : (
-                    <>
-                      <CheckCircle className="h-5 w-5" /> Proceed to Book & Pay
-                    </>
-                  )}
-                </button>
+                {mounted && !isLoggedIn ? (
+                  <button 
+                    type="button"
+                    onClick={() => router.push(`/login/patient?returnUrl=${encodeURIComponent(`/doctors/${id}`)}`)}
+                    className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white py-4 rounded-2xl font-bold text-base transition-all hover:-translate-y-0.5 shadow-xl shadow-teal-600/25 cursor-pointer"
+                  >
+                    <Lock className="h-5 w-5" />
+                    <span>Log in as Patient to Book</span>
+                  </button>
+                ) : mounted && !isPatient ? (
+                  <button 
+                    type="button"
+                    onClick={() => router.push(`/login/patient?returnUrl=${encodeURIComponent(`/doctors/${id}`)}`)}
+                    className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-rose-600 to-amber-600 hover:from-rose-500 hover:to-amber-500 text-white py-4 rounded-2xl font-bold text-base transition-all hover:-translate-y-0.5 shadow-xl shadow-rose-600/25 cursor-pointer"
+                  >
+                    <User className="h-5 w-5" />
+                    <span>Switch to Patient Account</span>
+                  </button>
+                ) : (
+                  <button 
+                    type="button"
+                    onClick={handleProceedToBook}
+                    disabled={isBooking || isInitiatingPay}
+                    className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 text-white py-4 rounded-2xl font-bold text-base transition-all hover:-translate-y-0.5 shadow-xl shadow-teal-500/20 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                  >
+                    {isBooking || isInitiatingPay ? (
+                      <>
+                        <Loader2 className="h-5 w-5 animate-spin" />
+                        <span>Creating Appointment...</span>
+                      </>
+                    ) : (
+                      <>
+                        <CheckCircle className="h-5 w-5" /> Proceed to Book & Pay
+                      </>
+                    )}
+                  </button>
+                )}
 
                 <p className="text-center text-[11px] text-slate-400 font-medium">
                   🔒 100% Secure Checkout &bull; Instant Confirmation
@@ -442,8 +545,8 @@ export default function DoctorProfilePage({ params }) {
                     <CreditCard className="h-6 w-6" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-slate-900">CareConnect Checkout</h3>
-                    <p className="text-xs text-slate-400">Order ID: {paymentDetails?.orderId || `CC-ORD-${pendingAppointment?.id}`}</p>
+                    <h3 className="text-xl font-bold text-slate-900">Doctor On Call Checkout</h3>
+                    <p className="text-xs text-slate-400">Order ID: {paymentDetails?.orderId || `DOC-ORD-${pendingAppointment?.id}`}</p>
                   </div>
                 </div>
 

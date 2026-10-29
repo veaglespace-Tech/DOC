@@ -26,11 +26,20 @@ export const paymentApi = createApi({
         method: 'POST',
         body: verificationData,
       })
+    }),
+    requestRefund: builder.mutation({
+      query: (refundData) => ({
+        url: '/payments/refund',
+        method: 'POST',
+        body: refundData,
+      })
     })
   }),
 });
 
 export const { 
   useInitiatePaymentMutation, 
-  useVerifyPaymentMutation
+  useVerifyPaymentMutation,
+  useRequestRefundMutation
 } = paymentApi;
+

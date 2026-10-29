@@ -5,8 +5,12 @@ import { FileText, Download, Calendar, Stethoscope, Pill, Loader2, CheckCircle2 
 import { useGetPatientPrescriptionsQuery } from '@/store/api/appointmentApi';
 
 export default function MedicalRecordsCard() {
-  const { data: prescriptions = [], isLoading, error } = useGetPatientPrescriptionsQuery();
+  const { data: rawPrescriptions = [], isLoading, error } = useGetPatientPrescriptionsQuery();
   const [downloadingId, setDownloadingId] = useState(null);
+
+  const prescriptions = Array.isArray(rawPrescriptions)
+    ? rawPrescriptions
+    : (Array.isArray(rawPrescriptions?.data) ? rawPrescriptions.data : []);
 
   const handleDownloadPDF = async (appointmentId) => {
     setDownloadingId(appointmentId);
@@ -53,7 +57,7 @@ export default function MedicalRecordsCard() {
         <div className="flex justify-center items-center py-12">
           <Loader2 className="h-6 w-6 text-teal-600 animate-spin" />
         </div>
-      ) : prescriptions.length === 0 ? (
+      ) : (!Array.isArray(prescriptions) || prescriptions.length === 0) ? (
         <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-200 bg-slate-50/50 p-8 text-center text-slate-400">
           <Pill className="mb-2 h-8 w-8 opacity-40 text-slate-500" />
           <p className="text-sm font-semibold text-slate-700">No Prescriptions Yet</p>
@@ -63,25 +67,30 @@ export default function MedicalRecordsCard() {
         </div>
       ) : (
         <div className="space-y-4">
-          {prescriptions.map((rec) => (
+          {(prescriptions || []).map((rec) => (
             <div 
               key={rec.id} 
               className="group relative flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-2xl border border-slate-100 p-4 transition-all hover:border-teal-100 hover:bg-teal-50/20"
             >
-              <div className="flex items-start gap-4">
+              <div className="flex items-start gap-4 flex-1 min-w-0">
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-teal-100 text-teal-700 font-bold">
                   <Pill className="h-6 w-6" />
                 </div>
                 
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h4 className="font-bold text-slate-900 text-sm">
-                      {rec.notes ? `Prescription: ${rec.notes}` : 'Doctor Prescription'}
-                    </h4>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">
-                      Signed
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-2 mb-1.5">
+                    <span className="text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/60 inline-flex items-center gap-1 shrink-0">
+                      <CheckCircle2 className="h-3 w-3 text-emerald-600" />
+                      Digitally Signed
+                    </span>
+                    <span className="text-teal-600 font-mono text-[11px] font-bold">
+                      {rec.tokenNumber ? `Token: ${rec.tokenNumber}` : `Appt: #${rec.appointmentId}`}
                     </span>
                   </div>
+
+                  <h4 className="font-bold text-slate-900 text-sm break-words leading-relaxed">
+                    {rec.notes ? `Prescription: ${rec.notes}` : 'Doctor Prescription'}
+                  </h4>
                   
                   <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-500 font-medium">
                     <div className="flex items-center gap-1">

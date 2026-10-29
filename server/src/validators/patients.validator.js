@@ -3,14 +3,16 @@ const { z } = require('zod');
 
 const updateProfileSchema = z.object({
   name:             z.string().min(2).max(100).optional(),
-  dateOfBirth:      z.string().datetime().optional().or(z.string().regex(/^\d{4}-\d{2}-\d{2}$/)).optional(),
-  gender:           z.enum(['MALE', 'FEMALE', 'OTHER']).optional(),
-  bloodGroup:       z.string().max(5).optional(),
-  address:          z.string().optional(),
-  city:             z.string().optional(),
+  dateOfBirth:      z.string().datetime().optional().or(z.string().regex(/^\d{4}-\d{2}-\d{2}$/)).optional().or(z.literal('')).transform(v => v || undefined),
+  gender:           z.string().optional().transform(v => v ? v.toUpperCase() : undefined).pipe(z.enum(['MALE', 'FEMALE', 'OTHER']).optional()),
+  bloodGroup:       z.string().max(5).optional().or(z.literal('')).transform(v => v || undefined),
+  address:          z.string().optional().or(z.literal('')).transform(v => v || undefined),
+  city:             z.string().optional().or(z.literal('')).transform(v => v || undefined),
   latitude:         z.number().min(-90).max(90).optional(),
   longitude:        z.number().min(-180).max(180).optional(),
-  emergencyContact: z.string().regex(/^\+?[1-9]\d{9,14}$/, 'Invalid phone number').optional(),
+  emergencyContact: z.string().optional().transform(v => v ? v.replace(/[\s-]/g, '') : undefined).pipe(
+    z.string().regex(/^\+?[1-9]\d{9,14}$/, 'Invalid phone number').optional()
+  ).or(z.literal('')).transform(v => v || undefined),
 });
 
 const addFamilyMemberSchema = z.object({

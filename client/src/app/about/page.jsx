@@ -15,8 +15,8 @@ import Footer from '@/components/shared/Footer';
 
 export const metadata = {
   title: "About Us",
-  description: "Learn about CareConnect's mission to redefine global healthcare. We bring premium medical services, expert doctors, and emergency SOS directly to you.",
-  keywords: ["About CareConnect", "Healthcare Network Mission", "Best Telemedicine Platform India", "Healthcare SaaS Vision", "Medical Specialists"],
+  description: "Learn about Doctor On Call's mission to redefine global healthcare. We bring premium medical services and expert doctors directly to you.",
+  keywords: ["About Doctor On Call", "Doctor On Call", "Healthcare Network Mission", "Best Telemedicine Platform India", "Healthcare SaaS Vision", "Medical Specialists"],
 };
 
 export default function AboutPage() {
@@ -51,7 +51,7 @@ export default function AboutPage() {
           </h1>
           
           <p className="mt-6 text-xl leading-8 text-slate-300 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-200">
-            At CareConnect, we believe that premium healthcare shouldn't be a privilege. It should be an accessible, seamless, and luxurious experience tailored entirely to your well-being.
+            At Doctor On Call, we believe that premium healthcare shouldn't be a privilege. It should be an accessible, seamless, and luxurious experience tailored entirely to your well-being.
           </p>
         </div>
       </section>
@@ -64,7 +64,7 @@ export default function AboutPage() {
               <h2 className="text-sm font-bold text-teal-600 uppercase tracking-widest mb-2">Our Mission</h2>
               <h3 className="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl mb-6">Bridging the gap between patients and elite doctors.</h3>
               <p className="text-lg text-slate-600 mb-6 leading-relaxed">
-                Founded in 2026, CareConnect was built on a simple premise: healthcare is broken, and technology can fix it. We integrated advanced spatial algorithms (PostGIS), WebRTC video infrastructure, and a multi-tenant architecture to create the most robust medical platform in the world.
+                Founded in 2026, Doctor On Call was built on a simple premise: healthcare is broken, and technology can fix it. We integrated advanced spatial algorithms (PostGIS), WebRTC video infrastructure, and a multi-tenant architecture to create the most robust medical platform in the world.
               </p>
               <p className="text-lg text-slate-600 leading-relaxed">
                 We handle the administrative complexities—from automated GST invoices to secure Electronic Health Records (EHR) encryption—so our doctors can focus purely on what they do best: saving lives.
@@ -96,7 +96,7 @@ export default function AboutPage() {
             <div className="relative h-[700px] w-full rounded-[3rem] overflow-hidden shadow-2xl shadow-teal-900/50">
               <Image 
                 src="/images/about-team.jpg" 
-                alt="CareConnect Expert Medical Team" 
+                alt="Doctor On Call Expert Medical Team" 
                 fill 
                 className="object-cover hover:scale-105 transition-transform duration-1000"
               />
@@ -111,7 +111,7 @@ export default function AboutPage() {
               <h2 className="text-sm font-bold text-teal-400 uppercase tracking-widest mb-2">Our People</h2>
               <h3 className="text-4xl font-extrabold tracking-tight sm:text-5xl mb-6">Built by Doctors, for Patients.</h3>
               <p className="text-lg text-slate-300 mb-8 leading-relaxed">
-                Our platform is governed by a medical advisory board of elite physicians and surgeons. From the user interface of our Digital Prescription Builder to the logic of our Emergency SOS Dispatcher, every feature is medically validated.
+                Our platform is governed by a medical advisory board of elite physicians and surgeons. From the user interface of our Digital Prescription Builder to the precision of our Doctor Dispatch System, every feature is medically validated.
               </p>
               
               <div className="space-y-6">

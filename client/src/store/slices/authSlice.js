@@ -14,7 +14,7 @@ const initialState = {
   role: null,
   token: null,
   isAuthenticated: false,
-  isLoading: true, // Start true to wait for hydration
+  isLoading: true,
 };
 
 const authSlice = createSlice({
@@ -25,11 +25,12 @@ const authSlice = createSlice({
       const { user, token, role } = action.payload;
       state.user = user;
       state.token = token;
-      state.role = role || user?.role || null;
+      state.role = role || user?.roles?.[0] || user?.role || null;
       state.isAuthenticated = true;
       state.isLoading = false;
       if (typeof window !== 'undefined') {
         localStorage.setItem('careconnect_auth', JSON.stringify({ user: state.user, token: state.token, role: state.role }));
+        if (token) localStorage.setItem('careconnect_token', token);
       }
     },
     logout: (state) => {
@@ -40,6 +41,8 @@ const authSlice = createSlice({
       state.isLoading = false;
       if (typeof window !== 'undefined') {
         localStorage.removeItem('careconnect_auth');
+        localStorage.removeItem('careconnect_token');
+        sessionStorage.removeItem('careconnect_token');
       }
     },
     setAuthLoading: (state, action) => {

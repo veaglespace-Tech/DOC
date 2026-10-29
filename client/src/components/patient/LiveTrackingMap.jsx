@@ -61,10 +61,10 @@ export default function LiveTrackingMap() {
           </svg>
         </div>
 
-        {/* Floating SOS Badge */}
-        <div className="absolute left-6 top-6 flex items-center gap-2 rounded-full bg-red-600 px-4 py-2 text-sm font-bold tracking-widest text-white shadow-lg animate-pulse">
-          <AlertTriangle className="h-5 w-5" />
-          ACTIVE SOS
+        {/* Floating Tracking Badge */}
+        <div className="absolute left-6 top-6 flex items-center gap-2 rounded-full bg-emerald-600 px-4 py-2 text-xs font-black uppercase tracking-wider text-white shadow-lg">
+          <Navigation className="h-4 w-4 animate-pulse" />
+          Doctor En Route
         </div>
       </div>
 
@@ -96,7 +96,7 @@ export default function LiveTrackingMap() {
               <h3 className="font-bold text-gray-900">Dr. Ramesh Sharma</h3>
               <p className="text-sm text-gray-500">Emergency Physician</p>
               <div className="mt-1 flex items-center gap-1 text-xs font-semibold text-indigo-600">
-                <Clock className="h-3 w-3" /> Dispatched via CareConnect
+                <Clock className="h-3 w-3" /> Dispatched via Doctor On Call
               </div>
             </div>
           </div>

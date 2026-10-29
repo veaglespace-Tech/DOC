@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { Search, PlayCircle, AlertTriangle, ShieldCheck, Sparkles, ArrowRight } from 'lucide-react';
+import { Search, PlayCircle, ShieldCheck, Sparkles, ArrowRight, Calendar, Stethoscope, Clock } from 'lucide-react';
 
 export default function HeroSlider() {
   const router = useRouter();
@@ -20,13 +20,15 @@ export default function HeroSlider() {
     }
   };
 
-  return (
-    <section className="relative pt-20 pb-16 bg-slate-50 overflow-hidden">
-      {/* Dynamic Background Glows */}
-      <div className="absolute top-10 left-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-[130px] pointer-events-none"></div>
-      <div className="absolute top-32 right-10 w-96 h-96 bg-teal-500/10 rounded-full blur-[130px] pointer-events-none"></div>
+  const popularSpecialties = ['Cardiology', 'Pediatrics', 'Dermatology', 'Neurology', 'Orthopedics'];
 
-      <div className="mx-auto max-w-7xl px-6 relative z-10 flex flex-col lg:flex-row items-center gap-12 pt-12">
+  return (
+    <section className="relative pt-12 pb-20 bg-gradient-to-b from-slate-50 via-white to-slate-50 overflow-hidden">
+      {/* Dynamic Background Glows & Mesh Gradients */}
+      <div className="absolute top-10 left-1/4 w-[500px] h-[500px] bg-gradient-to-br from-indigo-500/15 to-purple-500/10 rounded-full blur-[140px] pointer-events-none"></div>
+      <div className="absolute top-32 right-10 w-[500px] h-[500px] bg-gradient-to-br from-teal-500/15 to-sky-500/10 rounded-full blur-[140px] pointer-events-none"></div>
+
+      <div className="mx-auto max-w-7xl px-6 relative z-10 flex flex-col lg:flex-row items-center gap-14 pt-8">
         
         {/* Left Content */}
         <motion.div 
@@ -35,96 +37,148 @@ export default function HeroSlider() {
           transition={{ duration: 0.8 }}
           className="lg:w-1/2"
         >
-          <div className="inline-flex items-center gap-2 bg-white text-indigo-700 px-4 py-1.5 rounded-full text-xs font-bold mb-6 shadow-sm border border-indigo-100">
+          <div className="inline-flex items-center gap-2 bg-indigo-50 border border-indigo-200/80 text-indigo-700 px-4 py-1.5 rounded-full text-xs font-bold mb-6 shadow-xs">
             <Sparkles className="h-3.5 w-3.5 text-indigo-600" />
-            CareConnect Healthcare Platform
+            <span>Next-Gen Unified Healthcare Network</span>
           </div>
           
           <h1 className="text-5xl lg:text-6xl font-black text-slate-900 leading-[1.12] mb-6 tracking-tight">
-            Healthcare on Demand, <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">Whenever You Need It.</span>
+            Healthcare on Demand, <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700">Whenever You Need It.</span>
           </h1>
           
           <p className="text-lg text-slate-600 mb-8 max-w-lg leading-relaxed font-medium">
-            Book verified specialists, order home visits, or dispatch an emergency doctor within a 5km radius in minutes.
+            Book certified specialists, order rapid home consultations, or connect via high-definition video in minutes.
           </p>
           
-          <div className="flex flex-col sm:flex-row items-center gap-4 mb-8">
-            <Link href="/patient/sos" className="w-full sm:w-auto bg-gradient-to-r from-rose-600 to-red-600 text-white px-7 py-4 rounded-full font-bold hover:from-rose-700 hover:to-red-700 transition-all shadow-lg shadow-rose-600/30 text-center flex items-center justify-center gap-2 group">
-              <AlertTriangle className="h-4 w-4 animate-pulse" />
-              Emergency SOS (5km)
+          {/* Action Row */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 mb-6">
+            <Link 
+              href="/search" 
+              className="bg-gradient-to-r from-indigo-600 via-indigo-700 to-purple-700 hover:from-indigo-500 hover:to-purple-600 text-white px-7 py-4 rounded-2xl font-black transition-all shadow-xl shadow-indigo-600/30 text-center flex items-center justify-center gap-2.5 group hover:scale-105"
+            >
+              <Calendar className="h-4 w-4 text-white" />
+              <span>Book Appointment</span>
             </Link>
             
-            <form onSubmit={handleSearch} className="w-full sm:w-auto relative flex items-center">
+            <form onSubmit={handleSearch} className="relative flex-1 flex items-center">
               <input 
                 type="text" 
-                placeholder="Search specialty, doctor..." 
+                placeholder="Search specialty, doctor or clinic..." 
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full sm:w-72 bg-white border border-slate-200 rounded-full py-4 pl-6 pr-12 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 text-sm shadow-sm transition-all font-medium"
+                className="w-full bg-white border border-slate-200/90 rounded-2xl py-4 pl-5 pr-12 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 text-sm shadow-sm transition-all font-medium text-slate-800 placeholder-slate-400"
               />
-              <button type="submit" className="absolute right-2 h-10 w-10 bg-indigo-600 text-white rounded-full flex items-center justify-center hover:bg-indigo-700 transition-colors shadow-md">
+              <button 
+                type="submit" 
+                className="absolute right-2.5 h-10 w-10 bg-indigo-600 text-white rounded-xl flex items-center justify-center hover:bg-indigo-700 transition-colors shadow-md"
+                aria-label="Search"
+              >
                 <Search className="h-4 w-4" />
               </button>
             </form>
           </div>
 
-          {/* Stats */}
-          <div className="grid grid-cols-4 gap-4 divide-x divide-slate-200">
-            <div className="px-2">
-              <p className="text-3xl font-extrabold text-slate-800">4500+</p>
-              <p className="text-xs font-semibold text-slate-500 uppercase mt-1">Patients</p>
+          {/* Quick Specialty Filter Tags */}
+          <div className="flex flex-wrap items-center gap-2 mb-10">
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider mr-1">Trending:</span>
+            {popularSpecialties.map((spec) => (
+              <button
+                key={spec}
+                type="button"
+                onClick={() => router.push(`/search?specialty=${encodeURIComponent(spec)}`)}
+                className="px-3 py-1 rounded-full text-xs font-semibold bg-white border border-slate-200 hover:border-indigo-400 hover:text-indigo-600 hover:bg-indigo-50/50 transition-all text-slate-600 shadow-2xs"
+              >
+                {spec}
+              </button>
+            ))}
+          </div>
+
+          {/* Clean Metric Counters */}
+          <div className="grid grid-cols-4 p-4 sm:p-5 rounded-3xl bg-white/80 backdrop-blur-md border border-slate-200/70 shadow-sm divide-x divide-slate-100">
+            <div className="px-2 sm:px-3">
+              <p className="text-xl sm:text-2xl lg:text-[26px] xl:text-3xl font-black text-slate-900 tracking-tight whitespace-nowrap">4,500+</p>
+              <p className="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider mt-0.5 whitespace-nowrap">Patients</p>
             </div>
-            <div className="px-4">
-              <p className="text-3xl font-extrabold text-slate-800">20+</p>
-              <p className="text-xs font-semibold text-slate-500 uppercase mt-1">Specialties</p>
+            <div className="px-2 sm:px-3">
+              <p className="text-xl sm:text-2xl lg:text-[26px] xl:text-3xl font-black text-slate-900 tracking-tight whitespace-nowrap">25+</p>
+              <p className="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider mt-0.5 whitespace-nowrap">Specialties</p>
             </div>
-            <div className="px-4">
-              <p className="text-3xl font-extrabold text-slate-800">500+</p>
-              <p className="text-xs font-semibold text-slate-500 uppercase mt-1">Doctors</p>
+            <div className="px-2 sm:px-3">
+              <p className="text-xl sm:text-2xl lg:text-[26px] xl:text-3xl font-black text-slate-900 tracking-tight whitespace-nowrap">500+</p>
+              <p className="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider mt-0.5 whitespace-nowrap">Verified Docs</p>
             </div>
-            <div className="px-4">
-              <p className="text-3xl font-extrabold text-slate-800">25+</p>
-              <p className="text-xs font-semibold text-slate-500 uppercase mt-1">Awards</p>
+            <div className="px-2 sm:px-3">
+              <p className="text-xl sm:text-2xl lg:text-[26px] xl:text-3xl font-black text-emerald-600 tracking-tight whitespace-nowrap">
+                &lt; 15 <span className="text-sm sm:text-base lg:text-lg font-bold text-emerald-600">min</span>
+              </p>
+              <p className="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider mt-0.5 whitespace-nowrap">Avg Response</p>
             </div>
           </div>
         </motion.div>
 
-        {/* Right Image */}
+        {/* Right Dynamic Visual */}
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1, delay: 0.2 }}
           className="lg:w-1/2 relative"
         >
-          {/* Main rounded container */}
-          <div className="relative aspect-[4/5] max-h-[600px] w-full max-w-md mx-auto rounded-[3rem] overflow-hidden bg-slate-200 shadow-2xl">
+          {/* Main rounded frame */}
+          <div className="relative aspect-[4/5] max-h-[580px] w-full max-w-md mx-auto rounded-[3rem] overflow-hidden bg-slate-900 shadow-2xl border-4 border-white shadow-indigo-500/10">
             <Image 
               src="/professional_doctor_tablet.jpg" 
-              alt="Doctor" 
+              alt="Doctor On Call Specialist" 
               fill
               priority
               className="object-cover"
             />
-            {/* Play button overlay */}
-            <div className="absolute inset-0 bg-slate-900/10 flex items-center justify-center">
-              <button className="h-16 w-16 bg-white/30 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white/40 transition-colors border border-white/50">
-                <PlayCircle className="h-8 w-8" />
-              </button>
+            {/* Subtle Gradient Vignette */}
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent"></div>
+
+            {/* Bottom In-Image Live Status Pill */}
+            <div className="absolute bottom-6 left-6 right-6 p-4 rounded-2xl bg-white/90 backdrop-blur-xl border border-white/50 shadow-lg flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center font-bold">
+                  <ShieldCheck className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-xs font-black text-slate-900">MCI & State Certified</p>
+                  <p className="text-[10px] text-slate-500 font-medium">Digital Verification & EHR Logged</p>
+                </div>
+              </div>
+              <span className="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-black uppercase">
+                Active Now
+              </span>
             </div>
           </div>
 
-          {/* Floating badge */}
+          {/* Floating Top Badge - Home Consult */}
           <motion.div 
-            animate={{ y: [0, -10, 0] }}
-            transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-            className="absolute top-12 right-0 lg:-right-8 bg-white p-4 rounded-2xl shadow-xl flex items-center gap-3 border border-slate-100"
+            animate={{ y: [0, -8, 0] }}
+            transition={{ repeat: Infinity, duration: 4.5, ease: "easeInOut" }}
+            className="absolute top-8 right-0 lg:-right-6 bg-white/95 backdrop-blur-xl p-4 rounded-2xl shadow-xl flex items-center gap-3.5 border border-slate-100"
           >
-            <div className="h-10 w-10 bg-slate-100 rounded-full overflow-hidden relative">
-              <Image src="/images/doctor-tablet.jpg" alt="Avatar" fill className="object-cover" />
+            <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-teal-50 text-teal-600">
+              <Stethoscope className="h-5 w-5" />
             </div>
             <div>
-              <p className="text-sm font-bold text-slate-800">Dr. Sarah Johnson</p>
-              <p className="text-xs text-slate-500 font-medium">Chief Cardiologist</p>
+              <p className="text-xs font-black text-slate-900">Doctor Home Visits</p>
+              <p className="text-[11px] text-teal-600 font-bold">Top Verified Practitioners</p>
+            </div>
+          </motion.div>
+
+          {/* Floating Left Badge - Verified Specialist */}
+          <motion.div 
+            animate={{ y: [0, 8, 0] }}
+            transition={{ repeat: Infinity, duration: 5, ease: "easeInOut", delay: 0.5 }}
+            className="absolute bottom-28 left-0 lg:-left-6 bg-white/95 backdrop-blur-xl p-4 rounded-2xl shadow-xl flex items-center gap-3 border border-slate-100"
+          >
+            <div className="h-10 w-10 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center font-black">
+              Dr
+            </div>
+            <div>
+              <p className="text-xs font-black text-slate-900">Dr. Sarah Johnson, MD</p>
+              <p className="text-[11px] text-indigo-600 font-semibold">Chief Cardiologist • 4.9 ★</p>
             </div>
           </motion.div>
         </motion.div>

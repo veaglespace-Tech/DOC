@@ -131,7 +131,7 @@ export default function ServicePage({ params }) {
             >
               <div className="bg-slate-800 p-10 rounded-[2.5rem] shadow-2xl relative overflow-hidden text-white">
                 <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent pointer-events-none"></div>
-                <h3 className="text-2xl font-bold mb-8">Why Choose ViolaCare?</h3>
+                <h3 className="text-2xl font-bold mb-8">Why Choose Doctor On Call?</h3>
                 
                 <div className="space-y-6">
                   <div className="flex items-start gap-4">

@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useGetMyAppointmentsQuery } from '@/store/api/appointmentApi';
-import { useInitiatePaymentMutation, useVerifyPaymentMutation } from '@/store/api/paymentApi';
+import { useInitiatePaymentMutation, useVerifyPaymentMutation, useRequestRefundMutation } from '@/store/api/paymentApi';
 import { 
   Calendar, 
   Clock, 
@@ -17,7 +17,9 @@ import {
   CheckCircle2,
   X,
   Loader2,
-  FileText
+  FileText,
+  RotateCcw,
+  AlertTriangle
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -27,6 +29,7 @@ export default function AppointmentsPage() {
 
   const [initiatePayment] = useInitiatePaymentMutation();
   const [verifyPayment] = useVerifyPaymentMutation();
+  const [requestRefund, { isLoading: isRefunding }] = useRequestRefundMutation();
   const [payingAptId, setPayingAptId] = useState(null);
 
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
@@ -36,6 +39,41 @@ export default function AppointmentsPage() {
   const [submittingReview, setSubmittingReview] = useState(false);
   const [reviewSuccess, setReviewSuccess] = useState(false);
 
+  // Refund Modal State
+  const [refundModalOpen, setRefundModalOpen] = useState(false);
+  const [refundAppointment, setRefundAppointment] = useState(null);
+  const [refundReason, setRefundReason] = useState('Change of schedule / Doctor unavailable');
+  const [refundMsg, setRefundMsg] = useState('');
+  const [downloadingPdfId, setDownloadingPdfId] = useState(null);
+
+  const handleDownloadPrescription = async (appointmentId) => {
+    setDownloadingPdfId(appointmentId);
+    try {
+      const token = localStorage.getItem('careconnect_token') || sessionStorage.getItem('careconnect_token');
+      const url = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1'}/appointments/${appointmentId}/prescription/pdf`;
+      const res = await fetch(url, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.message || 'Prescription PDF is not ready or could not be downloaded.');
+      }
+      const blob = await res.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = downloadUrl;
+      a.download = `Prescription-CC-${appointmentId}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(downloadUrl);
+    } catch (err) {
+      alert(err.message || 'Error downloading prescription PDF');
+    } finally {
+      setDownloadingPdfId(null);
+    }
+  };
+
   const handleOpenReview = (apt) => {
     setSelectedAppointment(apt);
     setRating(5);
@@ -43,6 +81,32 @@ export default function AppointmentsPage() {
     setReviewSuccess(false);
     setReviewModalOpen(true);
   };
+
+  const handleOpenRefund = (apt) => {
+    setRefundAppointment(apt);
+    setRefundReason('Change of schedule / Doctor unavailable');
+    setRefundMsg('');
+    setRefundModalOpen(true);
+  };
+
+  const submitRefund = async (e) => {
+    e.preventDefault();
+    if (!refundAppointment) return;
+    try {
+      await requestRefund({
+        appointmentId: refundAppointment.id,
+        reason: refundReason
+      }).unwrap();
+      setRefundMsg('Refund initiated successfully! Funds will reflect in your account per banking timelines.');
+      setTimeout(() => {
+        setRefundModalOpen(false);
+        refetch();
+      }, 1500);
+    } catch (err) {
+      alert(err?.data?.message || 'Failed to request refund');
+    }
+  };
+
 
   const submitReview = async (e) => {
     e.preventDefault();
@@ -142,90 +206,165 @@ export default function AppointmentsPage() {
             </Link>
           </div>
         ) : (
-          appointments.map((apt) => (
-            <div key={apt.id} className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                <div className="flex items-start gap-5">
-                  <div className="h-16 w-16 bg-slate-100 rounded-full overflow-hidden shrink-0 border border-slate-200">
-                    <img 
-                      src={apt.doctor?.profileImage || "https://ui-avatars.com/api/?name=" + encodeURIComponent(apt.doctor?.name || "Doctor") + "&background=0D8ABC&color=fff"} 
-                      alt="Doctor"
-                      className="h-full w-full object-cover"
-                    />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-slate-900">{apt.doctor?.name || "Doctor"}</h3>
-                    <p className="text-sm font-bold text-teal-600 mb-2">{apt.doctor?.specializations?.[0]?.specialization || "General Physician"}</p>
-                    <div className="flex flex-wrap items-center gap-4 text-sm text-slate-500 font-medium">
-                      <span className="flex items-center gap-1.5">
-                        <Calendar className="h-4 w-4 text-slate-400" /> {new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).format(new Date(apt.scheduledAt || apt.createdAt))}
-                      </span>
-                      <span className="flex items-center gap-1.5">
-                        <Clock className="h-4 w-4 text-slate-400" /> {new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: 'numeric' }).format(new Date(apt.scheduledAt || apt.createdAt))}
-                      </span>
-                      <span className="flex items-center gap-1.5">
-                        {apt.serviceType === 'VIRTUAL' ? <Video className="h-4 w-4 text-indigo-400" /> : apt.serviceType === 'HOME_VISIT' ? <Navigation className="h-4 w-4 text-amber-400" /> : <MapPin className="h-4 w-4 text-rose-400" />} 
-                        {apt.serviceType}
-                      </span>
+          appointments.map((apt) => {
+            const isCompleted = apt.status === 'COMPLETED';
+            const isOnTheWay = apt.status === 'ON_THE_WAY';
+            const isArrived = apt.status === 'ARRIVED';
+            const isAccepted = apt.status === 'DOCTOR_ACCEPTED' || apt.status === 'PAID';
+            const isPending = apt.status === 'REQUESTED' || apt.status === 'PAYMENT_PENDING';
+            const isCancelled = apt.status === 'CANCELLED' || apt.status === 'REFUND';
+
+            return (
+              <div key={apt.id} className="bg-white rounded-3xl p-6 sm:p-7 shadow-xs border border-slate-200/80 hover:shadow-md hover:border-indigo-200 transition-all space-y-5">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                  <div className="flex items-start gap-4 sm:gap-5">
+                    <div className="h-16 w-16 bg-gradient-to-tr from-indigo-500 to-purple-600 rounded-2xl overflow-hidden shrink-0 border-2 border-white shadow-md shadow-indigo-500/20 flex items-center justify-center text-white font-black text-xl">
+                      {apt.doctor?.profileImage ? (
+                        <img 
+                          src={apt.doctor.profileImage} 
+                          alt="Doctor"
+                          className="h-full w-full object-cover"
+                        />
+                      ) : (
+                        <span>{apt.doctor?.name?.charAt(0) || "D"}</span>
+                      )}
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-xl font-black text-slate-900">{apt.doctor?.name || "Doctor"}</h3>
+                        <span className="text-[11px] font-mono px-2 py-0.5 rounded-md bg-slate-100 text-slate-500 font-bold">
+                          #{apt.id}
+                        </span>
+                      </div>
+                      <p className="text-xs font-bold text-indigo-600 mb-2">{apt.doctor?.specializations?.[0]?.specialization || "General Physician"}</p>
+                      
+                      <div className="flex flex-wrap items-center gap-3.5 text-xs text-slate-500 font-medium">
+                        <span className="flex items-center gap-1.5">
+                          <Calendar className="h-3.5 w-3.5 text-slate-400" /> {new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).format(new Date(apt.scheduledAt || apt.createdAt))}
+                        </span>
+                        <span className="flex items-center gap-1.5">
+                          <Clock className="h-3.5 w-3.5 text-slate-400" /> {new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: 'numeric' }).format(new Date(apt.scheduledAt || apt.createdAt))}
+                        </span>
+                        <span className="flex items-center gap-1.5 font-bold px-2.5 py-0.5 rounded-lg bg-slate-100 text-slate-700 text-[11px]">
+                          {apt.serviceType === 'VIRTUAL' ? <Video className="h-3 w-3 text-indigo-500" /> : apt.serviceType === 'HOME_VISIT' ? <Navigation className="h-3 w-3 text-amber-500" /> : <MapPin className="h-3 w-3 text-rose-500" />} 
+                          {apt.serviceType}
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
-                
-                <div className="flex flex-col sm:flex-row items-center gap-3 md:items-end md:flex-col h-full justify-between">
-                  <div className="w-full sm:w-auto text-center">
-                    <span className={`px-4 py-1.5 text-xs font-black uppercase tracking-wider rounded-xl inline-block w-full ${
-                      apt.status === 'COMPLETED' ? 'bg-blue-100 text-blue-700' :
-                      apt.status === 'PAID' || apt.status === 'CONFIRMED' ? 'bg-emerald-100 text-emerald-700' : 
-                      apt.status === 'REQUESTED' || apt.status === 'PAYMENT_PENDING' ? 'bg-amber-100 text-amber-700' : 
-                      apt.status === 'CANCELLED' ? 'bg-rose-100 text-rose-700' :
-                      'bg-slate-100 text-slate-700'
-                    }`}>
-                      {apt.status}
-                    </span>
-                  </div>
+                  
+                  <div className="flex flex-col sm:flex-row items-center gap-3 md:items-end md:flex-col h-full justify-between">
+                    <div className="w-full sm:w-auto text-center">
+                      <span className={`px-4 py-1.5 text-xs font-black uppercase tracking-wider rounded-xl inline-block w-full ${
+                        apt.status === 'COMPLETED' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
+                        apt.status === 'PAID' || apt.status === 'CONFIRMED' ? 'bg-indigo-50 text-indigo-700 border border-indigo-200' : 
+                        apt.status === 'DOCTOR_ACCEPTED' ? 'bg-purple-50 text-purple-700 border border-purple-200' :
+                        apt.status === 'ON_THE_WAY' ? 'bg-amber-100 text-amber-800 animate-pulse border border-amber-300' :
+                        apt.status === 'ARRIVED' ? 'bg-teal-50 text-teal-800 border border-teal-200' :
+                        apt.status === 'IN_PROGRESS' ? 'bg-blue-50 text-blue-800 border border-blue-200' :
+                        apt.status === 'REQUESTED' || apt.status === 'PAYMENT_PENDING' ? 'bg-amber-50 text-amber-700 border border-amber-200' : 
+                        apt.status === 'CANCELLED' || apt.status === 'REFUND' ? 'bg-rose-50 text-rose-700 border border-rose-200' :
+                        'bg-slate-100 text-slate-700'
+                      }`}>
+                        {apt.status === 'ON_THE_WAY' ? '🚗 Doctor on the Way' : apt.status === 'ARRIVED' ? '📍 Doctor Arrived' : apt.status}
+                      </span>
+                    </div>
 
-                  <div className="flex items-center gap-2 w-full sm:w-auto">
-                    {(apt.status === 'REQUESTED' || apt.status === 'PAYMENT_PENDING') && (
-                      <button
-                        onClick={() => handlePayNow(apt)}
-                        disabled={payingAptId === apt.id}
-                        className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-md shadow-emerald-600/30 disabled:opacity-50"
-                      >
-                        {payingAptId === apt.id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <CreditCard className="h-3.5 w-3.5" />}
-                        <span>Pay Now</span>
-                      </button>
-                    )}
-
-                    {apt.status === 'COMPLETED' && (
-                      <>
+                    <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-end">
+                      {(apt.status === 'REQUESTED' || apt.status === 'PAYMENT_PENDING') && (
                         <button
-                          onClick={() => handleOpenReview(apt)}
-                          className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 px-4 py-2 rounded-xl text-xs font-bold transition-colors"
+                          onClick={() => handlePayNow(apt)}
+                          disabled={payingAptId === apt.id}
+                          className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-md shadow-emerald-600/25 disabled:opacity-50"
                         >
-                          <Star className="h-3.5 w-3.5 fill-amber-500 text-amber-500" /> Review Doctor
+                          {payingAptId === apt.id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <CreditCard className="h-3.5 w-3.5" />}
+                          <span>Pay Now</span>
                         </button>
-                        <a
-                          href={`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1'}/appointments/${apt.id}/prescription/pdf`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 px-4 py-2 rounded-xl text-xs font-bold transition-colors"
-                        >
-                          <FileText className="h-3.5 w-3.5" /> View Rx PDF
-                        </a>
-                      </>
-                    )}
+                      )}
 
-                    <Link
-                      href={`/patient/consultation/${apt.id}`}
-                      className="flex-1 sm:flex-none bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition-colors flex items-center justify-center gap-1.5 shadow-sm"
-                    >
-                      <Video className="h-3.5 w-3.5" /> Join Consultation
-                    </Link>
+                      {/* Cancel & Refund Button (BRD Sec 13) */}
+                      {(apt.status === 'PAID' || apt.status === 'DOCTOR_ACCEPTED' || apt.status === 'REQUESTED') && (
+                        <button
+                          onClick={() => handleOpenRefund(apt)}
+                          className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-colors"
+                        >
+                          <RotateCcw className="h-3.5 w-3.5 text-rose-600" /> Cancel & Refund
+                        </button>
+                      )}
+
+                      {apt.status === 'COMPLETED' && (
+                        <>
+                          <button
+                            onClick={() => handleOpenReview(apt)}
+                            className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 px-4 py-2.5 rounded-xl text-xs font-bold transition-colors"
+                          >
+                            <Star className="h-3.5 w-3.5 fill-amber-500 text-amber-500" /> Review Doctor
+                          </button>
+                          <button
+                            onClick={() => handleDownloadPrescription(apt.id)}
+                            disabled={downloadingPdfId === apt.id}
+                            className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 px-4 py-2.5 rounded-xl text-xs font-bold transition-colors disabled:opacity-50"
+                          >
+                            {downloadingPdfId === apt.id ? (
+                              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                            ) : (
+                              <FileText className="h-3.5 w-3.5" />
+                            )}
+                            <span>{downloadingPdfId === apt.id ? 'Downloading...' : 'View Rx PDF'}</span>
+                          </button>
+                        </>
+                      )}
+
+                      <Link
+                        href={`/patient/consultation/${apt.id}`}
+                        className="flex-1 sm:flex-none bg-slate-900 hover:bg-indigo-600 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-colors flex items-center justify-center gap-1.5 shadow-sm"
+                      >
+                        <Video className="h-3.5 w-3.5" /> Enter Room
+                      </Link>
+                    </div>
                   </div>
+
                 </div>
+
+                {/* Milestone Stepper Ribbon */}
+                {!isCancelled && (
+                  <div className="pt-3 border-t border-slate-100">
+                    <div className="flex items-center justify-between text-[11px] font-bold text-slate-400">
+                      <div className={`flex items-center gap-1.5 ${isPending || isAccepted || isOnTheWay || isArrived || isCompleted ? 'text-indigo-600 font-black' : ''}`}>
+                        <div className={`h-2.5 w-2.5 rounded-full ${isPending || isAccepted || isOnTheWay || isArrived || isCompleted ? 'bg-indigo-600' : 'bg-slate-300'}`}></div>
+                        <span>1. Booked</span>
+                      </div>
+                      <div className="h-0.5 flex-1 mx-2 bg-slate-100 relative">
+                        <div className={`h-full bg-indigo-500 transition-all ${isAccepted || isOnTheWay || isArrived || isCompleted ? 'w-full' : 'w-0'}`}></div>
+                      </div>
+                      <div className={`flex items-center gap-1.5 ${isAccepted || isOnTheWay || isArrived || isCompleted ? 'text-indigo-600 font-black' : ''}`}>
+                        <div className={`h-2.5 w-2.5 rounded-full ${isAccepted || isOnTheWay || isArrived || isCompleted ? 'bg-indigo-600' : 'bg-slate-300'}`}></div>
+                        <span>2. Accepted</span>
+                      </div>
+                      {(apt.serviceType === 'HOME_VISIT' || apt.serviceType === 'EMERGENCY') && (
+                        <>
+                          <div className="h-0.5 flex-1 mx-2 bg-slate-100 relative">
+                            <div className={`h-full bg-indigo-500 transition-all ${isOnTheWay || isArrived || isCompleted ? 'w-full' : 'w-0'}`}></div>
+                          </div>
+                          <div className={`flex items-center gap-1.5 ${isOnTheWay || isArrived || isCompleted ? 'text-indigo-600 font-black' : ''}`}>
+                            <div className={`h-2.5 w-2.5 rounded-full ${isOnTheWay || isArrived || isCompleted ? 'bg-indigo-600' : 'bg-slate-300'}`}></div>
+                            <span>3. Transit</span>
+                          </div>
+                        </>
+                      )}
+                      <div className="h-0.5 flex-1 mx-2 bg-slate-100 relative">
+                        <div className={`h-full bg-emerald-500 transition-all ${isCompleted ? 'w-full' : 'w-0'}`}></div>
+                      </div>
+                      <div className={`flex items-center gap-1.5 ${isCompleted ? 'text-emerald-600 font-black' : ''}`}>
+                        <div className={`h-2.5 w-2.5 rounded-full ${isCompleted ? 'bg-emerald-600' : 'bg-slate-300'}`}></div>
+                        <span>{apt.serviceType === 'HOME_VISIT' || apt.serviceType === 'EMERGENCY' ? '4. Completed' : '3. Completed'}</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
-            </div>
-          ))
+            );
+          })
         )}
       </div>
 
@@ -297,6 +436,77 @@ export default function AppointmentsPage() {
         </div>
       )}
 
+      {/* Cancel & Refund Modal per BRD Sec 13 */}
+      {refundModalOpen && refundAppointment && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+          <div className="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl border border-slate-100 relative">
+            <button
+              onClick={() => setRefundModalOpen(false)}
+              className="absolute top-6 right-6 p-2 rounded-xl hover:bg-slate-100 text-slate-400"
+            >
+              <X className="h-5 w-5" />
+            </button>
+
+            <div className="flex items-center gap-2 mb-2 text-rose-600">
+              <RotateCcw className="h-5 w-5" />
+              <span className="text-xs font-bold uppercase tracking-wider">Appointment Cancellation & Refund</span>
+            </div>
+
+            <h3 className="text-xl font-black text-slate-900">Cancel & Refund</h3>
+            <p className="text-xs text-slate-500 mt-1">
+              Cancelling appointment with {refundAppointment.doctor?.name || 'Doctor'}. Eligible refund will be initiated to your original payment method per BRD Section 13.
+            </p>
+
+            {refundMsg ? (
+              <div className="my-6 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center gap-2">
+                <CheckCircle2 className="h-5 w-5 text-emerald-600 shrink-0" />
+                {refundMsg}
+              </div>
+            ) : (
+              <form onSubmit={submitRefund} className="mt-6 space-y-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Reason for Cancellation</label>
+                  <select
+                    value={refundReason}
+                    onChange={(e) => setRefundReason(e.target.value)}
+                    className="w-full px-4 py-3 rounded-2xl border border-slate-200 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-rose-500 bg-white"
+                  >
+                    <option value="Change of schedule / Doctor unavailable">Change of schedule / Doctor unavailable</option>
+                    <option value="Accidental booking / duplicate">Accidental booking / duplicate</option>
+                    <option value="Medical condition resolved">Medical condition resolved</option>
+                    <option value="Consulted another doctor">Consulted another doctor</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200/80 text-amber-800 text-xs font-medium flex items-start gap-2">
+                  <AlertTriangle className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
+                  <span>Full payment amount including consultation fee will be refunded. Processing may take 3-5 business days based on bank gateway.</span>
+                </div>
+
+                <div className="flex gap-3 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setRefundModalOpen(false)}
+                    className="flex-1 py-3 rounded-xl border border-slate-200 font-bold text-slate-600 text-sm"
+                  >
+                    Keep Booking
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isRefunding}
+                    className="flex-1 py-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-sm shadow-md shadow-rose-600/20 disabled:opacity-50"
+                  >
+                    {isRefunding ? 'Processing...' : 'Confirm Refund'}
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
+

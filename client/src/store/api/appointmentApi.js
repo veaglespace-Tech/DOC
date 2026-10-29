@@ -64,6 +64,11 @@ export const appointmentApi = createApi({
     }),
     getPatientPrescriptions: builder.query({
       query: () => '/patients/prescriptions',
+      transformResponse: (response) => {
+        if (Array.isArray(response)) return response;
+        if (response && Array.isArray(response.data)) return response.data;
+        return [];
+      },
       providesTags: ['Prescription']
     }),
   }),

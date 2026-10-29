@@ -135,7 +135,7 @@ export default function ClinicSettingsPage() {
                   className="w-full px-4 py-3 bg-slate-50 border border-r-0 border-slate-200 rounded-l-xl font-bold text-blue-600 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
                 />
                 <span className="px-4 py-3 bg-slate-100 border border-l-0 border-slate-200 rounded-r-xl text-xs font-bold text-slate-500 select-none">
-                  .careconnect.in
+                  .doctoroncall.in
                 </span>
               </div>
             </div>
@@ -200,16 +200,16 @@ export default function ClinicSettingsPage() {
               <ShieldCheck className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="font-bold text-slate-900 text-lg">System Protocols & Dispatch Policies</h3>
-              <p className="text-xs text-slate-500 font-medium">Automatic dispatch and emergency SOS handling</p>
+              <h3 className="font-bold text-slate-900 text-lg">System Protocols & Booking Policies</h3>
+              <p className="text-xs text-slate-500 font-medium">Automatic confirmation and online consultation handling</p>
             </div>
           </div>
 
           <div className="space-y-4">
             <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 border border-slate-200/60">
               <div>
-                <h5 className="font-bold text-slate-900 text-sm">Emergency SOS Dispatch Node</h5>
-                <p className="text-xs text-slate-500 mt-0.5">Participate in nearby 5km emergency doctor dispatch requests.</p>
+                <h5 className="font-bold text-slate-900 text-sm">Instant Online Booking Node</h5>
+                <p className="text-xs text-slate-500 mt-0.5">Allow patients to book confirmed slots without manual receptionist review.</p>
               </div>
               <button
                 type="button"

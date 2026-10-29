@@ -24,12 +24,12 @@ export default function PrivacyPolicy() {
         <div className="max-w-4xl mx-auto px-6 prose prose-slate prose-lg prose-headings:font-bold prose-headings:tracking-tight prose-a:text-teal-600">
           <h2>1. Introduction</h2>
           <p>
-            Welcome to ViolaCare. This Privacy Policy describes how we collect, use, process, and disclose your information, including personal information, in conjunction with your access to and use of the ViolaCare platform.
+            Welcome to Doctor On Call. This Privacy Policy describes how we collect, use, process, and disclose your information, including personal information, in conjunction with your access to and use of the Doctor On Call platform.
           </p>
 
           <h2>2. Information We Collect</h2>
           <p>
-            We ask for and collect the following personal information about you when you use the ViolaCare Platform. This information is necessary for the adequate performance of the contract between you and us and to allow us to comply with our legal obligations.
+            We ask for and collect the following personal information about you when you use the Doctor On Call Platform. This information is necessary for the adequate performance of the contract between you and us and to allow us to comply with our legal obligations.
           </p>
           <ul>
             <li><strong>Account Information:</strong> When you sign up for an account, we require certain information such as your first name, last name, and email address.</li>
@@ -39,7 +39,7 @@ export default function PrivacyPolicy() {
 
           <h2>3. How We Use Information</h2>
           <p>
-            We use, store, and process information, including personal information, about you to provide, understand, improve, and develop the ViolaCare Platform, create and maintain a trusted and safer environment, and comply with our legal obligations.
+            We use, store, and process information, including personal information, about you to provide, understand, improve, and develop the Doctor On Call Platform, create and maintain a trusted and safer environment, and comply with our legal obligations.
           </p>
 
           <h2>4. Data Security</h2>
@@ -49,7 +49,7 @@ export default function PrivacyPolicy() {
 
           <h2>5. Your Rights</h2>
           <p>
-            You may exercise any of the rights described in this section before your applicable ViolaCare Data Controller by sending an email to privacy@violacare.com. Please note that we may ask you to verify your identity before taking further action on your request.
+            You may exercise any of the rights described in this section before your applicable Doctor On Call Data Controller by sending an email to privacy@doctoroncall.health. Please note that we may ask you to verify your identity before taking further action on your request.
           </p>
         </div>
       </section>

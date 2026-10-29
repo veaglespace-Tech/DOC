@@ -57,17 +57,9 @@ export default function DoctorCard({ doctor }) {
         <div className="mt-8 flex items-center gap-3">
           <Link href={`/doctors/${doctor.id}`} className="flex-1">
             <button className="w-full rounded-2xl bg-gradient-to-r from-teal-500 to-emerald-500 py-3.5 text-sm font-bold text-white shadow-lg shadow-teal-500/30 transition-all hover:shadow-teal-500/50 hover:-translate-y-0.5">
-              Book Visit
+              Book Consultation
             </button>
           </Link>
-          {doctor.isEmergencyAvailable && (
-            <Link href="/patient/sos">
-              <button className="flex items-center justify-center gap-2 rounded-2xl bg-rose-50 px-5 py-3.5 text-sm font-bold text-rose-600 transition-colors hover:bg-rose-100 hover:text-rose-700 shadow-sm" title="Request Emergency Dispatch">
-                <PhoneCall className="h-5 w-5" />
-                SOS
-              </button>
-            </Link>
-          )}
         </div>
       </div>
     </motion.div>

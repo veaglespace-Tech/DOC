@@ -22,7 +22,7 @@ const {
 } = require('../templates/email.templates');
 const { SMS, WHATSAPP } = require('../templates/sms.templates');
 
-const FROM_EMAIL    = process.env.EMAIL_FROM        || 'noreply@careconnect.in';
+const FROM_EMAIL    = process.env.EMAIL_FROM        || 'noreply@doctoroncall.in';
 const TWILIO_FROM   = process.env.TWILIO_PHONE_NUMBER;
 const WHATSAPP_FROM = process.env.TWILIO_WHATSAPP_FROM || 'whatsapp:+14155238886';
 
@@ -39,7 +39,7 @@ const sendEmail = async ({ to, subject, html }) => {
 
   try {
     const info = await mailer.sendMail({
-      from:    `"CareConnect 🏥" <${FROM_EMAIL}>`,
+      from:    `"Doctor On Call 🏥" <${FROM_EMAIL}>`,
       to,
       subject,
       html,
@@ -274,7 +274,7 @@ const sendAppointmentReminder = async ({ patientPhone, patientEmail, patientName
   if (patientEmail) {
     results.push(await sendEmail({
       to:      patientEmail,
-      subject: `⏰ Reminder: Appointment with Dr. ${doctorName} | CareConnect`,
+      subject: `⏰ Reminder: Appointment with Dr. ${doctorName} | Doctor On Call`,
       html:    `<p>Hi ${patientName}, your appointment with Dr. ${doctorName} is at ${time}. Be ready!</p>`,
     }));
   }

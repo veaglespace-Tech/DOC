@@ -45,7 +45,7 @@ export default function PatientProfilePage() {
   const handleOpenEdit = () => {
     setFormData({
       name: profile.name || authUser?.name || '',
-      gender: profile.gender || 'Male',
+      gender: profile.gender ? profile.gender.toUpperCase() : 'MALE',
       dateOfBirth: profile.dateOfBirth ? new Date(profile.dateOfBirth).toISOString().split('T')[0] : '',
       bloodGroup: profile.bloodGroup || 'O+',
       address: profile.address || '',
@@ -61,7 +61,21 @@ export default function PatientProfilePage() {
     e.preventDefault();
     setErrorMsg('');
     try {
-      await updateProfile(formData).unwrap();
+      const payload = {
+        name: formData.name?.trim(),
+        gender: (formData.gender || 'MALE').toUpperCase(),
+        bloodGroup: formData.bloodGroup || undefined,
+        city: formData.city?.trim() || undefined,
+        address: formData.address?.trim() || undefined,
+      };
+      if (formData.dateOfBirth) {
+        payload.dateOfBirth = formData.dateOfBirth;
+      }
+      if (formData.emergencyContact?.trim()) {
+        payload.emergencyContact = formData.emergencyContact.replace(/[\s-]/g, '');
+      }
+
+      await updateProfile(payload).unwrap();
       setSaveSuccess(true);
       setTimeout(() => {
         setShowEditModal(false);
@@ -69,7 +83,7 @@ export default function PatientProfilePage() {
         refetch();
       }, 1000);
     } catch (err) {
-      setErrorMsg(err?.data?.message || 'Failed to update profile.');
+      setErrorMsg(err?.data?.message || err?.data?.errors?.[0]?.message || 'Failed to update profile.');
     }
   };
 
@@ -91,20 +105,23 @@ export default function PatientProfilePage() {
     <div className="mx-auto max-w-6xl animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out pb-12">
       {/* Header Section */}
       <div className="mb-8 overflow-hidden rounded-3xl bg-white shadow-sm border border-slate-100">
-        <div className="h-32 w-full bg-gradient-to-r from-teal-500 via-emerald-500 to-sky-600 relative overflow-hidden">
+        <div className="h-36 sm:h-44 w-full bg-gradient-to-r from-teal-500 via-emerald-500 to-sky-600 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-80 h-80 bg-white/10 rounded-full blur-2xl"></div>
         </div>
         
-        <div className="px-6 sm:px-8 pb-8">
-          <div className="-mt-14 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-            <div className="flex items-end gap-5">
-              <div className="flex h-24 w-24 sm:h-28 sm:w-28 items-center justify-center rounded-3xl border-4 border-white bg-teal-50 text-teal-700 shadow-lg text-4xl font-black">
+        <div className="px-6 sm:px-8 pb-8 relative z-10">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pt-2">
+            <div className="flex flex-col sm:flex-row sm:items-end gap-5">
+              <div className="-mt-16 sm:-mt-20 relative z-20 flex h-24 w-24 sm:h-28 sm:w-28 shrink-0 items-center justify-center rounded-3xl border-4 border-white bg-gradient-to-br from-teal-500 to-emerald-600 text-white shadow-xl text-4xl font-black">
                 {patientName.charAt(0).toUpperCase()}
               </div>
-              <div className="pb-2">
+              <div className="pb-1 sm:pb-2">
                 <div className="flex items-center gap-2">
-                  <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900">{patientName}</h1>
-                  <ShieldCheck className="h-6 w-6 text-teal-500" />
+                  <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">{patientName}</h1>
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-teal-50 text-teal-700 border border-teal-200/60 text-xs font-bold">
+                    <ShieldCheck className="h-3.5 w-3.5 text-teal-600" />
+                    Verified
+                  </span>
                 </div>
                 <p className="font-semibold text-slate-400 text-xs sm:text-sm font-mono mt-0.5">Patient ID: {patientId}</p>
               </div>
@@ -112,7 +129,7 @@ export default function PatientProfilePage() {
             
             <button 
               onClick={handleOpenEdit}
-              className="flex items-center justify-center gap-2 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white px-5 py-3 text-xs font-bold shadow-md transition-all hover:-translate-y-0.5"
+              className="flex items-center justify-center gap-2 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white px-5 py-3 text-xs font-bold shadow-md transition-all hover:-translate-y-0.5 shrink-0"
             >
               <Edit3 className="h-4 w-4" />
               <span>Edit Profile</span>
@@ -207,9 +224,9 @@ export default function PatientProfilePage() {
                       onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
                       className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500 text-slate-900 font-medium"
                     >
-                      <option value="Male">Male</option>
-                      <option value="Female">Female</option>
-                      <option value="Other">Other</option>
+                      <option value="MALE">Male</option>
+                      <option value="FEMALE">Female</option>
+                      <option value="OTHER">Other</option>
                     </select>
                   </div>
                   <div>

@@ -213,23 +213,6 @@ function SearchContent() {
               </label>
             </div>
 
-            {/* Emergency SOS Banner CTA */}
-            <div className="p-4 rounded-2xl bg-gradient-to-br from-rose-50 to-red-50 border border-rose-200 text-rose-900">
-              <div className="flex items-center gap-2 mb-1.5">
-                <AlertTriangle className="h-4 w-4 text-rose-600 animate-pulse" />
-                <span className="text-xs font-black uppercase tracking-wider text-rose-700">Urgent Emergency?</span>
-              </div>
-              <p className="text-[11px] text-rose-800 font-medium mb-3">
-                Need a doctor visit immediately within 5km? Launch SOS dispatch.
-              </p>
-              <Link 
-                href="/patient/sos"
-                className="block text-center w-full py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-xl shadow-md shadow-rose-600/20 transition-all"
-              >
-                Instant Doctor SOS
-              </Link>
-            </div>
-
           </div>
         </aside>
 

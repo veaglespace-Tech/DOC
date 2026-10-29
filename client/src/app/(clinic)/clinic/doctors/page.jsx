@@ -39,7 +39,7 @@ export default function ClinicDoctorsPage() {
   const [addSuccess, setAddSuccess] = useState(false);
 
   const clinic = clinicData?.data?.organization || {
-    name: 'CareConnect Multi-Speciality Clinic',
+    name: 'Doctor On Call Multi-Speciality Clinic',
     subdomain: 'citycare',
     plan: {
       name: 'Clinic Professional',
@@ -217,9 +217,9 @@ export default function ClinicDoctorsPage() {
                   <span className="font-bold text-slate-800">₹{doc.fees}</span>
                 </div>
                 <div>
-                  <span className="text-slate-400 font-medium block">Emergency SOS</span>
+                  <span className="text-slate-400 font-medium block">Home Visits</span>
                   <span className="font-bold text-emerald-600">
-                    {doc.isEmergencyAvailable ? 'Enabled' : 'Off'}
+                    {doc.isEmergencyAvailable ? 'Available' : 'Clinic Only'}
                   </span>
                 </div>
                 <div>

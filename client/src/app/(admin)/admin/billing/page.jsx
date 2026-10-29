@@ -16,13 +16,18 @@ import {
   CheckCircle2,
   Calendar,
   Clock,
-  ArrowUpRight
+  ArrowUpRight,
+  ShieldAlert
 } from 'lucide-react';
 import Link from 'next/link';
+import { useSelector } from 'react-redux';
 
 export default function AdminBillingDashboard() {
-  const { data: reportData, isLoading, error } = useGetAdminBillingReportsQuery();
+  const authState = useSelector((state) => state.auth);
+  const hasToken = !!authState?.token || (typeof window !== 'undefined' && !!localStorage.getItem('careconnect_token'));
+  const { data: reportData, isLoading, error } = useGetAdminBillingReportsQuery(undefined, { skip: !hasToken });
   const [downloadingId, setDownloadingId] = useState(null);
+  const [isExportingGst, setIsExportingGst] = useState(false);
 
   if (isLoading) {
     return (
@@ -34,9 +39,34 @@ export default function AdminBillingDashboard() {
   }
 
   if (error) {
+    const is401 = error?.status === 401;
     return (
-      <div className="p-8 max-w-4xl mx-auto my-12 text-center bg-rose-50 border border-rose-200 rounded-3xl">
-        <p className="text-sm font-bold text-rose-600">Failed to load platform billing data.</p>
+      <div className="p-8 max-w-md mx-auto my-16 text-center bg-white border border-slate-200/80 rounded-3xl shadow-xl shadow-slate-200/50">
+        <div className="h-12 w-12 mx-auto mb-4 rounded-2xl bg-rose-50 flex items-center justify-center text-rose-600 border border-rose-200/60">
+          <ShieldAlert className="h-6 w-6" />
+        </div>
+        <h3 className="text-lg font-black text-slate-900 mb-1">
+          {is401 ? 'Session Expired' : 'Billing Unavailable'}
+        </h3>
+        <p className="text-xs text-slate-500 font-medium mb-6 leading-relaxed">
+          {is401 
+            ? 'Your Super Admin session has expired. Please sign in again to view live GST and billing ledgers.'
+            : (error?.data?.message || 'Failed to load platform billing reports.')}
+        </p>
+        <div className="flex justify-center gap-3">
+          <Link
+            href="/admin/login"
+            className="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-md shadow-indigo-600/20 transition-all hover:-translate-y-0.5"
+          >
+            Sign in as Admin
+          </Link>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-4 py-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-bold transition-all"
+          >
+            Retry
+          </button>
+        </div>
       </div>
     );
   }
@@ -44,11 +74,13 @@ export default function AdminBillingDashboard() {
   const metrics = reportData?.data?.metrics;
   const recentPayments = reportData?.data?.recentPayments || [];
 
+  const totalProcessed = (Number(metrics?._sum?.grossAmount || 0) + Number(metrics?._sum?.taxAmount || 0));
+
   const statCards = [
-    { title: 'Total Processed', value: `₹${(metrics?._sum?.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, icon: IndianRupee, color: 'bg-emerald-50 text-emerald-600 border-emerald-100' },
-    { title: 'Gross Revenue (Doctors)', value: `₹${(metrics?._sum?.grossAmount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, icon: TrendingUp, color: 'bg-blue-50 text-blue-600 border-blue-100' },
-    { title: 'Platform Commission (10-20%)', value: `₹${(metrics?._sum?.platformFee || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, icon: Building2, color: 'bg-indigo-50 text-indigo-600 border-indigo-100' },
-    { title: 'GST Collected (18%)', value: `₹${(metrics?._sum?.taxAmount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, icon: ShieldCheck, color: 'bg-purple-50 text-purple-600 border-purple-100' },
+    { title: 'Total Processed', value: `₹${totalProcessed.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, icon: IndianRupee, color: 'bg-emerald-50 text-emerald-600 border-emerald-100' },
+    { title: 'Gross Revenue (Doctors)', value: `₹${(Number(metrics?._sum?.grossAmount || 0)).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, icon: TrendingUp, color: 'bg-blue-50 text-blue-600 border-blue-100' },
+    { title: 'Platform Commission (10-20%)', value: `₹${(Number(metrics?._sum?.platformFee || 0)).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, icon: Building2, color: 'bg-indigo-50 text-indigo-600 border-indigo-100' },
+    { title: 'GST Collected (18%)', value: `₹${(Number(metrics?._sum?.taxAmount || 0)).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`, icon: ShieldCheck, color: 'bg-purple-50 text-purple-600 border-purple-100' },
   ];
 
   const chartData = [
@@ -70,18 +102,50 @@ export default function AdminBillingDashboard() {
       const res = await fetch(url, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
+      if (!res.ok) {
+        const errorJson = await res.json().catch(() => ({}));
+        throw new Error(errorJson?.message || 'Failed to download invoice PDF');
+      }
       const blob = await res.blob();
       const objUrl = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = objUrl;
-      a.download = `careconnect-invoice-${paymentId}.pdf`;
+      a.download = `doctoroncall-invoice-${paymentId}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(objUrl);
+    } catch (err) {
+      console.error("Invoice Download Error", err);
+      alert(err.message || 'Invoice download failed');
+    } finally {
+      setDownloadingId(null);
+    }
+  };
+
+  const handleDownloadGstReport = async () => {
+    setIsExportingGst(true);
+    try {
+      const token = localStorage.getItem('careconnect_token') || sessionStorage.getItem('careconnect_token');
+      const url = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1'}/admin/reports/export?type=gst`;
+      
+      const res = await fetch(url, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (!res.ok) throw new Error('Failed to generate GST report');
+      
+      const blob = await res.blob();
+      const objUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = objUrl;
+      a.download = `doctoroncall-gst-gstr1-report-${Date.now()}.csv`;
       document.body.appendChild(a);
       a.click();
       a.remove();
     } catch (err) {
-      console.error("Invoice Download Error", err);
+      console.error("GST Download Error", err);
     } finally {
-      setDownloadingId(null);
+      setIsExportingGst(false);
     }
   };
 
@@ -103,16 +167,22 @@ export default function AdminBillingDashboard() {
 
         <div className="flex items-center gap-3">
           <Link
-            href="/admin"
-            className="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:text-slate-900 text-xs font-bold transition-all hover:bg-slate-50"
+            href="/admin/reports"
+            className="px-4 py-2.5 rounded-xl border border-indigo-200 text-indigo-700 hover:bg-indigo-50 text-xs font-bold transition-all flex items-center gap-2"
           >
-            ← Admin Dashboard
+            <Download className="h-4 w-4" /> All Reports
           </Link>
           <button 
-            onClick={() => alert('Monthly GST Audit Report generated and queued for download.')}
-            className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-md shadow-indigo-600/20 transition-all flex items-center gap-2 hover:-translate-y-0.5"
+            onClick={handleDownloadGstReport}
+            disabled={isExportingGst}
+            className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white text-xs font-bold rounded-xl shadow-md shadow-indigo-600/20 transition-all flex items-center gap-2 hover:-translate-y-0.5"
           >
-            <Download className="h-4 w-4" /> Download Monthly GST GSTR-1
+            {isExportingGst ? (
+              <div className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+            ) : (
+              <Download className="h-4 w-4" />
+            )}
+            Download Monthly GST GSTR-1
           </button>
         </div>
       </div>
@@ -224,13 +294,13 @@ export default function AdminBillingDashboard() {
               ) : recentPayments.map((payment) => (
                 <tr key={payment.id} className="hover:bg-slate-50/80 transition-colors">
                   <td className="px-6 py-4 font-mono text-slate-500 font-bold">
-                    {payment.razorpayPaymentId || `CC-TXN-${payment.id}`}
+                    {payment.razorpayPaymentId || `DOC-TXN-${payment.id}`}
                   </td>
                   <td className="px-6 py-4 text-slate-600">
                     {new Date(payment.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
                   </td>
                   <td className="px-6 py-4">
-                    <p className="font-bold text-slate-900">{payment.appointment?.patient?.user?.name || 'CareConnect Patient'}</p>
+                    <p className="font-bold text-slate-900">{payment.appointment?.patient?.user?.name || 'Doctor On Call Patient'}</p>
                     <p className="text-[11px] text-teal-700 font-semibold">Dr. {payment.appointment?.doctor?.user?.name || 'Attending Physician'}</p>
                   </td>
                   <td className="px-6 py-4 font-black text-slate-900 text-sm">

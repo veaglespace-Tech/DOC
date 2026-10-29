@@ -95,7 +95,7 @@ export default function LandingPage() {
                 Your health in the <span className="text-slate-500">palm of your hand.</span>
               </motion.h3>
               <motion.p variants={fadeUp} className="text-lg text-slate-600 mb-10 leading-relaxed font-medium">
-                The CareConnect patient ecosystem is built on a robust architecture. Effortlessly manage your Electronic Health Records (EHR), track live emergency doctor arrivals via GPS, and consult with top verified specialists.
+                The Doctor On Call patient ecosystem is built on a robust architecture. Effortlessly manage your Electronic Health Records (EHR), track live emergency doctor arrivals via GPS, and consult with top verified specialists.
               </motion.p>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
@@ -113,38 +113,13 @@ export default function LandingPage() {
                 <Link href="/patient" className="inline-flex items-center justify-center gap-2 rounded-full bg-slate-900 px-8 py-4 text-base font-bold text-white shadow-md transition-all hover:bg-slate-800">
                   Explore Patient Portal <ArrowRight className="h-5 w-5" />
                 </Link>
-                <Link href="/patient/sos" className="inline-flex items-center justify-center gap-2 rounded-full bg-rose-50 border border-rose-200 px-6 py-4 text-base font-bold text-rose-700 shadow-sm transition-all hover:bg-rose-100">
-                  Try Emergency SOS
+                <Link href="/search" className="inline-flex items-center justify-center gap-2 rounded-full bg-indigo-50 border border-indigo-200 px-6 py-4 text-base font-bold text-indigo-700 shadow-sm transition-all hover:bg-indigo-100">
+                  Find Doctors & Specialists
                 </Link>
               </motion.div>
             </motion.div>
             
           </div>
-        </div>
-      </section>
-
-      {/* 🌟 EMERGENCY SOS SHOWCASE BANNER */}
-      <section className="py-16 bg-gradient-to-r from-rose-950 via-slate-900 to-indigo-950 text-white relative overflow-hidden border-y border-rose-500/20">
-        <div className="absolute top-0 right-1/4 w-96 h-96 bg-rose-600/10 rounded-full blur-[140px] pointer-events-none"></div>
-        <div className="max-w-7xl mx-auto px-6 relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
-          <div>
-            <div className="inline-flex items-center gap-2 bg-rose-500/20 border border-rose-500/40 text-rose-300 px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-3">
-              <span className="h-2 w-2 rounded-full bg-rose-500 animate-ping"></span>
-              BRD Sec 7 — Instant Dispatch System
-            </div>
-            <h3 className="text-3xl lg:text-4xl font-black text-white tracking-tight">
-              Life-Saving Care in Minutes. <span className="text-rose-400">Doctor-on-Demand within 5km.</span>
-            </h3>
-            <p className="text-slate-400 max-w-2xl text-base mt-2 font-medium">
-              High-priority dispatch broadcasting simultaneously to nearby verified doctors. Live Haversine geolocation tracking from assignment to arrival at your doorstep.
-            </p>
-          </div>
-          <Link
-            href="/patient/sos"
-            className="shrink-0 px-8 py-4 rounded-2xl bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-white font-black text-base shadow-2xl shadow-rose-600/40 transition-all hover:scale-105"
-          >
-            Launch Emergency SOS Dispatch
-          </Link>
         </div>
       </section>
 
@@ -221,7 +196,7 @@ export default function LandingPage() {
               </div>
               <h2 className="text-4xl md:text-5xl font-extrabold mb-6 tracking-tight text-white">Scale your Hospital & Clinic <span className="text-teal-400">instantly.</span></h2>
               <p className="text-lg text-slate-300 mb-10 max-w-2xl mx-auto leading-relaxed">
-                Get the CareConnect Enterprise Suite. Multi-doctor management, custom branding, and automated GST compliance.
+                Get the Doctor On Call Enterprise Suite. Multi-doctor management, custom branding, and automated GST compliance.
               </p>
               <Link href="/register/clinic" className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-8 py-4 text-base font-bold text-slate-900 transition-all hover:bg-slate-100 hover:scale-105 shadow-xl shadow-white/10">
                 Register your Clinic <ArrowRight className="h-5 w-5" />

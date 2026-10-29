@@ -314,7 +314,7 @@ export default function PrescriptionBuilder({ appointmentId }) {
                     <option value="1-1-1">1-1-1 (Morning, Noon & Night)</option>
                     <option value="1-0-0">1-0-0 (Morning only)</option>
                     <option value="0-0-1">0-0-1 (Night only)</option>
-                    <option value="SOS">SOS (As and when needed)</option>
+                    <option value="PRN">PRN (As and when needed)</option>
                   </select>
                 </div>
                 <div>
@@ -356,7 +356,7 @@ export default function PrescriptionBuilder({ appointmentId }) {
               </div>
               <div className="flex items-center justify-between relative z-10">
                 <div>
-                  <h3 className="text-xl font-black tracking-wider uppercase text-teal-400">CareConnect RX</h3>
+                  <h3 className="text-xl font-black tracking-wider uppercase text-teal-400">Doctor On Call RX</h3>
                   <p className="text-xs text-slate-300">Certified Electronic Medical Prescription</p>
                 </div>
                 <div className="text-right">
@@ -372,12 +372,12 @@ export default function PrescriptionBuilder({ appointmentId }) {
                 <div>
                   <p className="font-bold text-slate-900 text-sm">Patient: {patient.name || 'Patient'}</p>
                   <p className="text-slate-500">Date: {new Date().toLocaleDateString()}</p>
-                  <p className="text-slate-400 font-mono">Appt: CC-{appointmentId}</p>
+                  <p className="text-slate-400 font-mono">Appt: DOC-{appointmentId}</p>
                 </div>
                 <div className="text-right">
                   <p className="font-bold text-slate-900 text-sm">Dr. {doctor.name || 'Doctor'}</p>
                   <p className="text-slate-500">{doctor.specializations?.[0]?.specialization || 'Consultant'}</p>
-                  <p className="text-teal-600 font-mono text-[11px]">Reg: {doctor.medicalRegNumber || 'MCI-CARECONNECT'}</p>
+                  <p className="text-teal-600 font-mono text-[11px]">Reg: {doctor.medicalRegNumber || 'MCI-DOCTOR-ON-CALL'}</p>
                 </div>
               </div>
 
