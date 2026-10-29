@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, HeartPulse, Phone, Clock, MapPin, AlertTriangle, ArrowRight, User as UserIcon, ShieldCheck } from 'lucide-react';
 import { useSelector, useDispatch } from 'react-redux';
@@ -61,15 +62,22 @@ export default function Navbar() {
           
           {/* BRAND LOGO */}
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-indigo-700 text-white shadow-lg shadow-indigo-600/30 group-hover:scale-105 transition-transform">
-              <HeartPulse className="h-5 w-5" />
+            <div className="relative h-11 w-11 rounded-2xl bg-white p-1 border border-slate-200/80 shadow-md shadow-indigo-600/10 group-hover:scale-105 transition-all overflow-hidden flex items-center justify-center">
+              <Image 
+                src="/logo.png" 
+                alt="Veagle Space Technology Logo" 
+                width={44} 
+                height={44} 
+                className="object-contain w-full h-full"
+                priority
+              />
             </div>
             <div className="flex flex-col">
-              <span className="text-2xl font-black tracking-tight text-slate-900 leading-tight">
-                Doctor<span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600"> On Call</span>
+              <span className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 leading-tight">
+                Veagle<span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600"> Space</span>
               </span>
               <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 -mt-0.5">
-                Premium Healthcare Network
+                Doctor On Call Network
               </span>
             </div>
           </Link>

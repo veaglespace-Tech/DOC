@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import RoleGuard from '@/components/auth/RoleGuard';
 import { ROLES, logout } from '@/store/slices/authSlice';
 import Link from 'next/link';
+import Image from 'next/image';
 import { 
   ShieldAlert, 
   LayoutDashboard, 
@@ -42,12 +43,18 @@ export default function AdminLayout({ children }) {
     <>
       <div className="flex h-20 items-center gap-3 px-8 border-b border-slate-100">
         <Link href="/" className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-600 to-purple-600 shadow-lg shadow-indigo-500/30 text-white">
-            <ShieldAlert className="h-5 w-5" />
+          <div className="relative h-10 w-10 rounded-2xl bg-white p-1 border border-slate-200/80 shadow-md shadow-indigo-500/10 overflow-hidden flex items-center justify-center">
+            <Image 
+              src="/logo.png" 
+              alt="Veagle Space Technology Logo" 
+              width={40} 
+              height={40} 
+              className="object-contain w-full h-full"
+            />
           </div>
           <div>
             <span className="text-lg font-black tracking-tight text-slate-900 block leading-tight">
-              Doctor<span className="text-indigo-600">Admin</span>
+              Veagle<span className="text-indigo-600"> Space</span>
             </span>
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
               Super Admin HQ

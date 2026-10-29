@@ -27,6 +27,11 @@ export const metadata = {
     address: false,
     telephone: false,
   },
+  icons: {
+    icon: '/logo.png',
+    shortcut: '/logo.png',
+    apple: '/logo.png',
+  },
   openGraph: {
     title: "Doctor On Call | India's #1 Premium Healthcare Network",
     description: "Instantly book top-rated specialists, arrange doctor visits, and consult via HD video. Your health in the palm of your hand.",

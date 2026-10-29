@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { HeartPulse, ArrowUpRight, Globe, Mail, MapPin, ShieldCheck, Phone, CheckCircle2 } from 'lucide-react';
 
 export default function Footer() {
@@ -14,12 +15,23 @@ export default function Footer() {
           
           <div className="md:col-span-5">
             <Link href="/" className="flex items-center gap-3 mb-6 group inline-flex">
-              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-tr from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-600/30">
-                <HeartPulse className="h-5 w-5" />
+              <div className="relative h-11 w-11 rounded-2xl bg-white p-1 border border-slate-700/80 shadow-lg shadow-indigo-600/20 group-hover:scale-105 transition-all overflow-hidden flex items-center justify-center">
+                <Image 
+                  src="/logo.png" 
+                  alt="Veagle Space Technology Logo" 
+                  width={44} 
+                  height={44} 
+                  className="object-contain w-full h-full"
+                />
               </div>
-              <span className="text-2xl font-black tracking-tight text-white">
-                Doctor<span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400"> On Call</span>
-              </span>
+              <div className="flex flex-col">
+                <span className="text-xl sm:text-2xl font-black tracking-tight text-white leading-tight">
+                  Veagle<span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400"> Space</span>
+                </span>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                  Doctor On Call Network
+                </span>
+              </div>
             </Link>
             <p className="text-slate-400 max-w-sm leading-relaxed mb-6 text-sm font-medium">
               Enterprise healthcare network connecting certified medical practitioners, multi-specialty clinics, and patients with instant 5km GPS emergency dispatches and encrypted Electronic Health Records (EHR).
