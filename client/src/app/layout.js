@@ -28,9 +28,14 @@ export const metadata = {
     telephone: false,
   },
   icons: {
-    icon: '/logo.png',
+    icon: [
+      { url: '/logo.png', type: 'image/png' },
+      { url: '/favicon.png', type: 'image/png' }
+    ],
     shortcut: '/logo.png',
-    apple: '/logo.png',
+    apple: [
+      { url: '/logo.png', sizes: '180x180', type: 'image/png' }
+    ],
   },
   openGraph: {
     title: "Doctor On Call | India's #1 Premium Healthcare Network",
