@@ -1,19 +1,11 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi } from '@reduxjs/toolkit/query/react';
 import { setCredentials, logout } from '../slices/authSlice';
+import { baseQuery } from './baseQuery';
 
 export const authApi = createApi({
   reducerPath: 'authApi',
   tagTypes: ['UserProfile'],
-  baseQuery: fetchBaseQuery({ 
-    baseUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1',
-    prepareHeaders: (headers, { getState }) => {
-      const token = getState().auth.token;
-      if (token) {
-        headers.set('authorization', `Bearer ${token}`);
-      }
-      return headers;
-    }
-  }),
+  baseQuery,
   endpoints: (builder) => ({
     login: builder.mutation({
       query: (credentials) => ({

@@ -11,6 +11,8 @@ import { patientApi } from './api/patientApi';
 import { emergencyApi } from './api/emergencyApi';
 import { adminApi } from './api/adminApi';
 import { saasApi } from './api/saasApi';
+import { feedbackApi } from './api/feedbackApi';
+import { chatApi } from './api/chatApi';
 
 // Redux Store Setup
 export const store = configureStore({
@@ -26,6 +28,8 @@ export const store = configureStore({
     [emergencyApi.reducerPath]: emergencyApi.reducer,
     [adminApi.reducerPath]: adminApi.reducer,
     [saasApi.reducerPath]: saasApi.reducer,
+    [feedbackApi.reducerPath]: feedbackApi.reducer,
+    [chatApi.reducerPath]: chatApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -37,7 +41,9 @@ export const store = configureStore({
       patientApi.middleware,
       emergencyApi.middleware,
       adminApi.middleware,
-      saasApi.middleware
+      saasApi.middleware,
+      feedbackApi.middleware,
+      chatApi.middleware
     ),
 });
 

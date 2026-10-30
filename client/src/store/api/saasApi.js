@@ -1,17 +1,9 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi } from '@reduxjs/toolkit/query/react';
+import { baseQuery } from './baseQuery';
 
 export const saasApi = createApi({
   reducerPath: 'saasApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1',
-    prepareHeaders: (headers, { getState }) => {
-      const token = getState().auth.token || (typeof window !== 'undefined' ? (localStorage.getItem('careconnect_token') || sessionStorage.getItem('careconnect_token')) : null);
-      if (token) {
-        headers.set('authorization', `Bearer ${token}`);
-      }
-      return headers;
-    }
-  }),
+  baseQuery,
   tagTypes: ['ClinicSaaS', 'Plans', 'ClinicAppointments', 'ClinicPatients', 'ClinicBilling'],
   endpoints: (builder) => ({
     getSubscriptionPlans: builder.query({

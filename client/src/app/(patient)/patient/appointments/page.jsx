@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useGetMyAppointmentsQuery } from '@/store/api/appointmentApi';
 import { useInitiatePaymentMutation, useVerifyPaymentMutation, useRequestRefundMutation } from '@/store/api/paymentApi';
+import { useSubmitReviewMutation } from '@/store/api/feedbackApi';
 import { 
   Calendar, 
   Clock, 
@@ -36,7 +37,7 @@ export default function AppointmentsPage() {
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [rating, setRating] = useState(5);
   const [reviewText, setReviewText] = useState('');
-  const [submittingReview, setSubmittingReview] = useState(false);
+  const [submitReviewApi, { isLoading: submittingReview }] = useSubmitReviewMutation();
   const [reviewSuccess, setReviewSuccess] = useState(false);
 
   // Refund Modal State
@@ -111,36 +112,21 @@ export default function AppointmentsPage() {
   const submitReview = async (e) => {
     e.preventDefault();
     if (!selectedAppointment) return;
-    setSubmittingReview(true);
     try {
-      const token = localStorage.getItem('careconnect_token') || sessionStorage.getItem('careconnect_token');
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1'}/feedback/review`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          appointmentId: selectedAppointment.id,
-          rating,
-          review: reviewText
-        })
-      });
+      await submitReviewApi({
+        appointmentId: selectedAppointment.id,
+        rating,
+        review: reviewText
+      }).unwrap();
 
-      const data = await res.json();
-      if (data.success) {
-        setReviewSuccess(true);
-        setTimeout(() => {
-          setReviewModalOpen(false);
-          refetch();
-        }, 1500);
-      } else {
-        alert(data.message || 'Failed to submit review');
-      }
+      setReviewSuccess(true);
+      setTimeout(() => {
+        setReviewModalOpen(false);
+        setReviewSuccess(false);
+        refetch();
+      }, 1500);
     } catch (err) {
-      alert('Error submitting review');
-    } finally {
-      setSubmittingReview(false);
+      alert(err?.data?.message || 'Failed to submit review');
     }
   };
 

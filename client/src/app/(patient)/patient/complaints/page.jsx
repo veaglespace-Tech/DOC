@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { 
   AlertCircle, 
@@ -13,65 +13,28 @@ import {
   ChevronRight,
   LifeBuoy
 } from 'lucide-react';
+import { useGetMyComplaintsQuery, useSubmitComplaintMutation } from '@/store/api/feedbackApi';
 
 export default function PatientComplaintsPage() {
-  const [complaints, setComplaints] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { data: complaints = [], isLoading, refetch } = useGetMyComplaintsQuery();
+  const [submitComplaint, { isLoading: isSubmitting }] = useSubmitComplaintMutation();
 
   // Form State
   const [category, setCategory] = useState('Doctor issue');
   const [description, setDescription] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [msg, setMsg] = useState(null);
-
-  const fetchComplaints = async () => {
-    try {
-      const token = localStorage.getItem('careconnect_token') || sessionStorage.getItem('careconnect_token');
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1'}/feedback/my-complaints`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      const data = await res.json();
-      if (data.success) {
-        setComplaints(data.data || []);
-      }
-    } catch (err) {
-      console.error('Error fetching complaints:', err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchComplaints();
-  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMsg(null);
-    setIsSubmitting(true);
     try {
-      const token = localStorage.getItem('careconnect_token') || sessionStorage.getItem('careconnect_token');
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1'}/feedback/complaint`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ category, description })
-      });
-
-      const data = await res.json();
-      if (data.success) {
-        setMsg({ type: 'success', text: 'Complaint registered successfully! Ticket #' + data.data.id });
-        setDescription('');
-        fetchComplaints();
-      } else {
-        setMsg({ type: 'error', text: data.message || 'Failed to submit complaint' });
-      }
+      const res = await submitComplaint({ category, description }).unwrap();
+      const ticketId = res?.data?.id || res?.id || 'CC';
+      setMsg({ type: 'success', text: `Complaint registered successfully! Ticket #${ticketId}` });
+      setDescription('');
+      refetch();
     } catch (err) {
-      setMsg({ type: 'error', text: 'Network error submitting complaint' });
-    } finally {
-      setIsSubmitting(false);
+      setMsg({ type: 'error', text: err?.data?.message || 'Failed to submit complaint. Please try again.' });
     }
   };
 

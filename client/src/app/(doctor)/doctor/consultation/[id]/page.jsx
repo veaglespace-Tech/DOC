@@ -19,6 +19,7 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { getClientSocket } from '@/utils/socket';
 import { useCompleteVisitMutation } from '@/store/api/appointmentApi';
+import { useGetChatConversationQuery, useSendChatMessageMutation } from '@/store/api/chatApi';
 
 export default function ConsultationRoom() {
   const params = useParams();
@@ -30,10 +31,11 @@ export default function ConsultationRoom() {
   const [activeTab, setActiveTab] = useState('notes'); // 'notes' or 'chat'
   const [notes, setNotes] = useState('');
   
-  // Real-time Chat State
+  // Real-time Chat State via RTK Query
+  const { data: conversationData } = useGetChatConversationQuery(appointmentId, { skip: !appointmentId });
+  const [sendChatMessageApi, { isLoading: isSending }] = useSendChatMessageMutation();
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
-  const [isSending, setIsSending] = useState(false);
   const [callEnded, setCallEnded] = useState(false);
   const messagesEndRef = useRef(null);
 
@@ -52,26 +54,15 @@ export default function ConsultationRoom() {
     return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   };
 
-  // 1. Fetch Chat History & Join Socket Room
+  // Sync initial conversation messages from RTK Query
   useEffect(() => {
-    const fetchChat = async () => {
-      try {
-        const token = localStorage.getItem('careconnect_token') || sessionStorage.getItem('careconnect_token');
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1'}/chat/${appointmentId}`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        const data = await res.json();
-        if (data.success && data.data?.conversation?.messages) {
-          setMessages(data.data.conversation.messages);
-        }
-      } catch (err) {
-        console.error('Error fetching chat history:', err);
-      }
-    };
+    if (conversationData?.messages) {
+      setMessages(conversationData.messages);
+    }
+  }, [conversationData]);
 
-    fetchChat();
-
-    // Socket Setup
+  // Socket Setup for Live Broadcasts
+  useEffect(() => {
     const socket = getClientSocket();
     if (socket) {
       socket.emit('join:appointment', appointmentId);
@@ -94,33 +85,22 @@ export default function ConsultationRoom() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // 2. Send Message
+  // 2. Send Message via RTK Query Mutation
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!inputMessage.trim()) return;
 
     const messageText = inputMessage.trim();
     setInputMessage('');
-    setIsSending(true);
 
     try {
-      const token = localStorage.getItem('careconnect_token') || sessionStorage.getItem('careconnect_token');
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1'}/chat/${appointmentId}/send`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ content: messageText, type: 'TEXT' })
-      });
-      const data = await res.json();
-      if (data.success && data.data) {
-        // Appended or received via socket
-      }
+      await sendChatMessageApi({
+        appointmentId,
+        content: messageText,
+        type: 'TEXT'
+      }).unwrap();
     } catch (err) {
       console.error('Error sending message:', err);
-    } finally {
-      setIsSending(false);
     }
   };
 

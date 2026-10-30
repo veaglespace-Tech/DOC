@@ -2,8 +2,10 @@
 
 import React, { useState } from 'react';
 import { Plus, Trash2, Clock, Calendar as CalendarIcon, CheckCircle2, AlertCircle } from 'lucide-react';
+import { useSetDoctorAvailabilityMutation } from '@/store/api/doctorApi';
 
 export default function AvailabilityScheduler() {
+  const [setAvailability, { isLoading: isSaving }] = useSetDoctorAvailabilityMutation();
   const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
   
   const [schedule, setSchedule] = useState({
@@ -16,7 +18,6 @@ export default function AvailabilityScheduler() {
     Sunday: [],
   });
 
-  const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
   const addSlot = (day) => {
@@ -44,29 +45,18 @@ export default function AvailabilityScheduler() {
   };
 
   const handleSave = async () => {
-    setIsSaving(true);
     setSaveSuccess(false);
+    setIsSaving(true);
     try {
-      const token = localStorage.getItem('careconnect_token') || sessionStorage.getItem('careconnect_token');
-      
-      // Save schedule preferences
       const dayMap = { Sunday: 0, Monday: 1, Tuesday: 2, Wednesday: 3, Thursday: 4, Friday: 5, Saturday: 6 };
       
-      // Fire requests for any configured slots
       for (const [dayName, slots] of Object.entries(schedule)) {
         for (const slot of slots) {
-          await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1'}/doctors/availability`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({
-              dayOfWeek: dayMap[dayName],
-              startTime: slot.start,
-              endTime: slot.end
-            })
-          }).catch(() => {});
+          await setAvailability({
+            dayOfWeek: dayMap[dayName],
+            startTime: slot.start,
+            endTime: slot.end
+          }).unwrap().catch(() => {});
         }
       }
 
