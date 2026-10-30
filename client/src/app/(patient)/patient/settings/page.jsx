@@ -14,13 +14,26 @@ import {
   User, 
   Mail, 
   Sparkles,
-  HeartPulse
+  HeartPulse,
+  KeyRound,
+  Lock,
+  AlertCircle
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSelector } from 'react-redux';
+import { useChangePasswordMutation } from '@/store/api/authApi';
 
 export default function PatientSettingsPage() {
   const { user } = useSelector((state) => state.auth);
+  const [changePassword, { isLoading: isChangingPassword }] = useChangePasswordMutation();
+
+  const [passwordForm, setPasswordForm] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  });
+  const [passSuccess, setPassSuccess] = useState(false);
+  const [passError, setPassError] = useState('');
 
   const [settings, setSettings] = useState({
     smsAlerts: true,
@@ -32,6 +45,35 @@ export default function PatientSettingsPage() {
   });
 
   const [saved, setSaved] = useState(false);
+
+  const handlePasswordChange = async (e) => {
+    e.preventDefault();
+    setPassError('');
+    setPassSuccess(false);
+
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      setPassError('New password and confirm password do not match.');
+      return;
+    }
+
+    if (passwordForm.newPassword.length < 8) {
+      setPassError('New password must be at least 8 characters long.');
+      return;
+    }
+
+    try {
+      await changePassword({
+        currentPassword: passwordForm.currentPassword,
+        newPassword: passwordForm.newPassword
+      }).unwrap();
+
+      setPassSuccess(true);
+      setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
+      setTimeout(() => setPassSuccess(false), 3500);
+    } catch (err) {
+      setPassError(err?.data?.message || 'Current password incorrect or update failed.');
+    }
+  };
 
   const handleSave = (e) => {
     e.preventDefault();
@@ -157,6 +199,86 @@ export default function PatientSettingsPage() {
               <span className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition duration-200 ease-in-out ${
                 settings.shareRecordsWithDoctors ? 'translate-x-5' : 'translate-x-0'
               }`} />
+            </button>
+          </div>
+        </div>
+
+        {/* Change Account Password */}
+        <div className="p-8 rounded-3xl bg-white border border-slate-200/80 shadow-sm space-y-5">
+          <div className="flex items-center gap-3 pb-4 border-b border-slate-100">
+            <div className="h-10 w-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+              <KeyRound className="h-5 w-5" />
+            </div>
+            <div>
+              <h3 className="font-bold text-slate-900 text-lg">Change Account Password</h3>
+              <p className="text-xs text-slate-500 font-medium">Update your secure login password</p>
+            </div>
+          </div>
+
+          {passSuccess && (
+            <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center gap-2">
+              <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
+              Password updated successfully!
+            </div>
+          )}
+
+          {passError && (
+            <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-bold flex items-center gap-2">
+              <AlertCircle className="h-4 w-4 shrink-0 text-rose-600" />
+              {passError}
+            </div>
+          )}
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2 block">
+                Current Password
+              </label>
+              <input
+                type="password"
+                value={passwordForm.currentPassword}
+                onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
+                placeholder="••••••••"
+                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-900 text-sm focus:outline-none focus:border-indigo-600"
+              />
+            </div>
+
+            <div>
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2 block">
+                New Password
+              </label>
+              <input
+                type="password"
+                value={passwordForm.newPassword}
+                onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
+                placeholder="••••••••"
+                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-900 text-sm focus:outline-none focus:border-indigo-600"
+              />
+            </div>
+
+            <div>
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2 block">
+                Confirm Password
+              </label>
+              <input
+                type="password"
+                value={passwordForm.confirmPassword}
+                onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
+                placeholder="••••••••"
+                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-900 text-sm focus:outline-none focus:border-indigo-600"
+              />
+            </div>
+          </div>
+
+          <div className="pt-2 flex justify-end">
+            <button
+              type="button"
+              onClick={handlePasswordChange}
+              disabled={isChangingPassword}
+              className="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md shadow-indigo-600/20 transition-all cursor-pointer disabled:opacity-50 flex items-center gap-2"
+            >
+              <Lock className="h-3.5 w-3.5" />
+              {isChangingPassword ? 'Updating Password...' : 'Update Password'}
             </button>
           </div>
         </div>

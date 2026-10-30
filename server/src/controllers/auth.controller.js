@@ -38,9 +38,14 @@ const getMe = asyncHandler(async (req, res) => {
   return sendSuccess(res, result, 'User profile fetched');
 });
 
+const updateMe = asyncHandler(async (req, res) => {
+  const result = await authService.updateMe(req.user.id, req.body);
+  return sendSuccess(res, result, 'User profile updated successfully');
+});
+
 const changePassword = asyncHandler(async (req, res) => {
   await authService.changePassword(req.user.id, req.body);
   return sendSuccess(res, null, 'Password changed successfully');
 });
 
-module.exports = { register, login, logout, refresh, sendOtp, verifyOtp, getMe, changePassword };
+module.exports = { register, login, logout, refresh, sendOtp, verifyOtp, getMe, updateMe, changePassword };

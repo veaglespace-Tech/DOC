@@ -12,8 +12,9 @@ import {
   Receipt, 
   LogOut, 
   Download,
-  Menu,
-  X
+  User,
+  Menu, 
+  X 
 } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter, usePathname } from 'next/navigation';
@@ -37,6 +38,7 @@ export default function AdminLayout({ children }) {
     { href: '/admin/kyc', label: 'Doctor KYC Approvals', icon: FileCheck },
     { href: '/admin/billing', label: 'GST & Platform Billing', icon: Receipt },
     { href: '/admin/reports', label: 'Reports & Downloads', icon: Download },
+    { href: '/admin/profile', label: 'Profile & Security', icon: User },
   ];
 
   const renderNavContent = () => (

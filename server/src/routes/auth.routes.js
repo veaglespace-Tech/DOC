@@ -207,6 +207,22 @@ router.get(
 
 /**
  * @swagger
+ * /auth/me:
+ *   put:
+ *     summary: Update current authenticated user profile
+ *     tags: [Auth]
+ *     responses:
+ *       200: { description: User profile updated }
+ *       401: { description: Unauthorized }
+ */
+router.put(
+  '/me',
+  authenticate,
+  controller.updateMe,
+);
+
+/**
+ * @swagger
  * /auth/change-password:
  *   put:
  *     summary: Change password (requires authentication)

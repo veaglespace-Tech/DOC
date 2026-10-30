@@ -3,6 +3,7 @@ import { setCredentials, logout } from '../slices/authSlice';
 
 export const authApi = createApi({
   reducerPath: 'authApi',
+  tagTypes: ['UserProfile'],
   baseQuery: fetchBaseQuery({ 
     baseUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1',
     prepareHeaders: (headers, { getState }) => {
@@ -72,7 +73,33 @@ export const authApi = createApi({
         }
       }
     }),
+    getMe: builder.query({
+      query: () => '/auth/me',
+      providesTags: ['UserProfile'],
+    }),
+    updateMe: builder.mutation({
+      query: (body) => ({
+        url: '/auth/me',
+        method: 'PUT',
+        body,
+      }),
+      invalidatesTags: ['UserProfile'],
+    }),
+    changePassword: builder.mutation({
+      query: (body) => ({
+        url: '/auth/change-password',
+        method: 'PUT',
+        body,
+      }),
+    }),
   }),
 });
 
-export const { useLoginMutation, useAdminLoginMutation, useRegisterMutation } = authApi;
+export const { 
+  useLoginMutation, 
+  useAdminLoginMutation, 
+  useRegisterMutation,
+  useGetMeQuery,
+  useUpdateMeMutation,
+  useChangePasswordMutation
+} = authApi;

@@ -38,6 +38,14 @@ const updateProfile = async (doctorId, data) => {
     throw Object.assign(new Error('Doctor not found'), { statusCode: 404 });
   }
 
+  // If phone is updated, also synchronize with user account
+  if (data.phone && existing.userId) {
+    await prisma.user.update({
+      where: { id: existing.userId },
+      data: { phone: data.phone }
+    }).catch(() => {});
+  }
+
   const updated = await prisma.doctor.update({
     where: { id: doctorId },
     data

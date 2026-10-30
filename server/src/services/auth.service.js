@@ -352,6 +352,32 @@ const getMe = async (userId) => {
 };
 
 // ============================================================
+// UPDATE USER PROFILE (Any authenticated role: Admin, Staff, etc.)
+// ============================================================
+
+const updateMe = async (userId, data) => {
+  const { phone, email } = data;
+  const updateData = {};
+  if (phone) updateData.phone = phone;
+  if (email) updateData.email = email;
+
+  const updatedUser = await prisma.user.update({
+    where: { id: userId },
+    data: updateData,
+    select: {
+      id: true,
+      uuid: true,
+      email: true,
+      phone: true,
+      isActive: true,
+      isVerified: true
+    }
+  });
+
+  return updatedUser;
+};
+
+// ============================================================
 // CHANGE PASSWORD
 // ============================================================
 
@@ -399,6 +425,7 @@ module.exports = {
   sendOtp,
   verifyOtp,
   getMe,
+  updateMe,
   changePassword,
   revokeAllSessions,
 };

@@ -49,7 +49,7 @@ export default function DoctorLayout({ children }) {
   const adminLinks = [
     { href: '/doctor/wallet', label: 'Wallet & Bank Payouts', icon: Wallet },
     { href: '/doctor/kyc', label: 'MCI & KYC Credentials', icon: ShieldCheck },
-    { href: '/doctor/settings', label: 'Practice Settings', icon: Settings },
+    { href: '/doctor/settings', label: 'Profile & Settings', icon: User },
   ];
 
   const renderNavContent = () => (

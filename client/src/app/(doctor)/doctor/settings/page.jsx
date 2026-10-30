@@ -26,6 +26,10 @@ export default function DoctorSettingsPage() {
   const doctor = profileResponse?.data || {};
 
   const [formData, setFormData] = useState({
+    name: '',
+    phone: '',
+    gender: 'MALE',
+    experienceYears: 5,
     bio: '',
     consultationFee: 500,
     homeVisitFee: 1200,
@@ -42,6 +46,10 @@ export default function DoctorSettingsPage() {
   useEffect(() => {
     if (doctor.id) {
       setFormData({
+        name: doctor.name || '',
+        phone: doctor.phone || doctor.user?.phone || '',
+        gender: doctor.gender || 'MALE',
+        experienceYears: doctor.experienceYears || 5,
         bio: doctor.bio || '',
         consultationFee: Number(doctor.consultationFee) || 500,
         homeVisitFee: Number(doctor.homeVisitFee) || 1200,
@@ -59,6 +67,10 @@ export default function DoctorSettingsPage() {
     e.preventDefault();
     try {
       await updateProfile({
+        name: formData.name,
+        phone: formData.phone,
+        gender: formData.gender,
+        experienceYears: Number(formData.experienceYears),
         bio: formData.bio,
         consultationFee: Number(formData.consultationFee),
         homeVisitFee: Number(formData.homeVisitFee),
@@ -100,6 +112,77 @@ export default function DoctorSettingsPage() {
 
       <form onSubmit={handleSubmit} className="space-y-8 relative z-10">
         
+        {/* Doctor Personal & Profile Details */}
+        <div className="p-8 rounded-3xl bg-white border border-slate-200/80 shadow-sm space-y-6">
+          <div className="flex items-center gap-3 pb-4 border-b border-slate-100">
+            <div className="h-10 w-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
+              <Stethoscope className="h-5 w-5" />
+            </div>
+            <div>
+              <h3 className="font-bold text-slate-900 text-lg">Doctor Profile & Personal Info</h3>
+              <p className="text-xs text-slate-500 font-medium">Update your display name, contact phone, gender and clinical experience</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2 block">
+                Full Name (with Dr. prefix)
+              </label>
+              <input
+                type="text"
+                required
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                placeholder="Dr. Rajesh Sharma"
+                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-900 text-sm focus:outline-none focus:border-purple-500"
+              />
+            </div>
+
+            <div>
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2 block">
+                Contact Phone Number
+              </label>
+              <input
+                type="text"
+                value={formData.phone}
+                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                placeholder="+91 98765 43210"
+                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl font-medium text-slate-800 text-sm focus:outline-none focus:border-purple-500"
+              />
+            </div>
+
+            <div>
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2 block">
+                Gender
+              </label>
+              <select
+                value={formData.gender}
+                onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
+                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-800 text-sm focus:outline-none focus:border-purple-500"
+              >
+                <option value="MALE">Male</option>
+                <option value="FEMALE">Female</option>
+                <option value="OTHER">Other</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2 block">
+                Experience (Years)
+              </label>
+              <input
+                type="number"
+                min="0"
+                max="60"
+                value={formData.experienceYears}
+                onChange={(e) => setFormData({ ...formData, experienceYears: e.target.value })}
+                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-900 text-sm focus:outline-none focus:border-purple-500"
+              />
+            </div>
+          </div>
+        </div>
+
         {/* Practice Bio */}
         <div className="p-8 rounded-3xl bg-white border border-slate-200/80 shadow-sm space-y-4">
           <div className="flex items-center gap-3 pb-4 border-b border-slate-100">

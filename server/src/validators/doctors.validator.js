@@ -3,12 +3,21 @@ const { z } = require('zod');
 
 const updateDoctorProfileSchema = z.object({
   name:                z.string().min(2).max(100).optional(),
-  bio:                 z.string().max(500).optional(),
-  experienceYears:     z.number().int().min(0).max(70).optional(),
-  consultationFee:     z.number().min(0).optional(),
+  phone:               z.string().optional().nullable(),
+  gender:              z.string().optional().nullable(),
+  profileImage:        z.string().optional().nullable(),
+  bio:                 z.string().max(2000).optional().nullable(),
+  experienceYears:     z.number().int().min(0).max(70).optional().nullable(),
+  consultationFee:     z.number().min(0).optional().nullable(),
+  homeVisitFee:        z.number().min(0).optional().nullable(),
+  emergencyFee:        z.number().min(0).optional().nullable(),
+  serviceRadiusKm:     z.number().min(1).max(100).optional().nullable(),
   isEmergencyAvailable: z.boolean().optional(),
-  latitude:            z.number().min(-90).max(90).optional(),
-  longitude:           z.number().min(-180).max(180).optional(),
+  bankAccountNumber:   z.string().optional().nullable(),
+  bankIfsc:            z.string().optional().nullable(),
+  bankAccountName:     z.string().optional().nullable(),
+  latitude:            z.number().min(-90).max(90).optional().nullable(),
+  longitude:           z.number().min(-180).max(180).optional().nullable(),
 });
 
 const addSpecializationSchema = z.object({
