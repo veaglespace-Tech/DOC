@@ -12,15 +12,15 @@ export default function Footer() {
 
       <div className="mx-auto max-w-7xl px-6 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
-          
+
           <div className="md:col-span-5">
             <Link href="/" className="flex items-center gap-3 mb-6 group inline-flex">
               <div className="relative h-11 w-11 rounded-2xl bg-white p-1 border border-slate-700/80 shadow-lg shadow-indigo-600/20 group-hover:scale-105 transition-all overflow-hidden flex items-center justify-center">
-                <Image 
-                  src="/logo.png" 
-                  alt="Veagle Space Technology Logo" 
-                  width={44} 
-                  height={44} 
+                <Image
+                  src="/logo.png"
+                  alt="Veagle Space Technology Logo"
+                  width={44}
+                  height={44}
                   className="object-contain w-full h-full"
                 />
               </div>
@@ -45,8 +45,8 @@ export default function Footer() {
               ].map((item, i) => {
                 const Icon = item.icon;
                 return (
-                  <div 
-                    key={i} 
+                  <div
+                    key={i}
                     title={item.label}
                     className="h-9 w-9 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-indigo-500/50 hover:bg-indigo-950/40 transition-all cursor-pointer"
                   >
@@ -56,7 +56,7 @@ export default function Footer() {
               })}
             </div>
           </div>
-          
+
           <div className="md:col-span-4 md:pl-10">
             <h4 className="font-bold text-white mb-6 text-sm tracking-wider uppercase text-slate-200">Clinical Ecosystem</h4>
             <ul className="space-y-3.5 text-slate-400 font-medium text-xs">
@@ -69,20 +69,20 @@ export default function Footer() {
               ].map((link, i) => (
                 <li key={i}>
                   <Link href={link.href} className="group flex items-center gap-2 hover:text-indigo-400 transition-colors">
-                    {link.name} 
+                    {link.name}
                     <ArrowUpRight className="h-3 w-3 opacity-0 -translate-y-0.5 translate-x-0.5 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all text-indigo-400" />
                   </Link>
                 </li>
               ))}
             </ul>
           </div>
-          
+
           <div className="md:col-span-3">
             <h4 className="font-bold text-white mb-6 text-sm tracking-wider uppercase text-slate-200">Compliance & Security</h4>
             <ul className="space-y-3.5 text-slate-400 font-medium text-xs">
               <li>
                 <div className="flex items-center gap-2 text-emerald-400 font-bold">
-                  <ShieldCheck className="h-4 w-4 text-emerald-400" /> 
+                  <ShieldCheck className="h-4 w-4 text-emerald-400" />
                   <span>HIPAA & MCI Compliant</span>
                 </div>
               </li>
@@ -99,13 +99,13 @@ export default function Footer() {
           </div>
 
         </div>
-        
+
         <div className="border-t border-slate-900 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs font-medium text-slate-500">
           <p>
             Designed &amp; Developed by{' '}
-            <a 
-              href="https://veaglespace.com/" 
-              target="_blank" 
+            <a
+              href="https://veaglespace.com/"
+              target="_blank"
               rel="noopener noreferrer"
               className="text-indigo-400 hover:text-indigo-300 font-bold hover:underline transition-colors"
             >

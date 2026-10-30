@@ -1,114 +1,229 @@
 'use client';
 
+import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { User, Stethoscope, ArrowRight, Building2 } from 'lucide-react';
+import { 
+  User, 
+  Stethoscope, 
+  ArrowRight, 
+  Building2, 
+  Sparkles, 
+  CheckCircle2, 
+  ShieldCheck, 
+  Lock, 
+  Zap, 
+  Activity 
+} from 'lucide-react';
 import Navbar from '@/components/shared/Navbar';
 import Footer from '@/components/shared/Footer';
 
 const containerVariants = {
   hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { staggerChildren: 0.15 } }
+  visible: { 
+    opacity: 1, 
+    transition: { staggerChildren: 0.12, delayChildren: 0.1 } 
+  }
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100, damping: 20 } }
+  hidden: { opacity: 0, y: 25 },
+  visible: { 
+    opacity: 1, 
+    y: 0, 
+    transition: { type: "spring", stiffness: 120, damping: 18 } 
+  }
 };
+
+const REGISTRATION_ROLES = [
+  {
+    id: 'patient',
+    name: 'Patient Account',
+    badge: 'Patients & Family',
+    tagline: 'Access 24/7 Digital Healthcare',
+    desc: 'Consult verified doctors via HD video, request emergency doctors to your doorstep within 5km, and securely store medical records.',
+    icon: User,
+    gradient: 'from-teal-500 to-emerald-600',
+    lightBg: 'bg-teal-50/80',
+    border: 'hover:border-teal-400/80',
+    shadow: 'hover:shadow-teal-500/15',
+    pill: 'bg-teal-100/80 text-teal-800 border-teal-200/80',
+    badgeDot: 'bg-teal-500',
+    features: [
+      'Fast 1-minute registration',
+      'Encrypted EHR Medical Vault',
+      'Automated GST Invoices & Receipts',
+      'Family Members Medical History'
+    ],
+    href: '/register/patient'
+  },
+  {
+    id: 'doctor',
+    name: 'Doctor Practice',
+    badge: 'Medical Practitioners',
+    tagline: 'Join Verified Healthcare Network',
+    desc: 'Set your own consultation and home visit fees, issue digital prescriptions with digital signature, and withdraw earnings in 24 hours.',
+    icon: Stethoscope,
+    gradient: 'from-purple-600 to-indigo-600',
+    lightBg: 'bg-purple-50/80',
+    border: 'hover:border-purple-400/80',
+    shadow: 'hover:shadow-purple-500/15',
+    pill: 'bg-purple-100/80 text-purple-800 border-purple-200/80',
+    badgeDot: 'bg-purple-500',
+    features: [
+      'Digital Prescription Builder (Rx)',
+      '24-Hour Automated Settlement Escrow',
+      'Clinical Handover & Availability Slots',
+      'Direct Bank Account Payouts'
+    ],
+    href: '/register/doctor'
+  },
+  {
+    id: 'clinic',
+    name: 'Clinic & Hospital SaaS',
+    badge: 'Enterprise Multi-Tenant',
+    tagline: 'Digitize Hospital & Clinic Operations',
+    desc: 'Empower attending physicians with real-time OPD token queue, comprehensive patient registry, and automated 18% GST tax ledgers.',
+    icon: Building2,
+    gradient: 'from-blue-600 to-cyan-600',
+    lightBg: 'bg-blue-50/80',
+    border: 'hover:border-blue-400/80',
+    shadow: 'hover:shadow-blue-500/15',
+    pill: 'bg-blue-100/80 text-blue-800 border-blue-200/80',
+    badgeDot: 'bg-blue-500',
+    features: [
+      'Multi-doctor quota tier management',
+      'Real-time OPD token queue stream',
+      'Subdomain routing (*.careconnect.in)',
+      'Clinic billing & SGST/CGST reports'
+    ],
+    href: '/register/clinic'
+  }
+];
 
 export default function RegisterRoleSelection() {
   return (
-    <div className="min-h-screen flex flex-col justify-between bg-slate-50 selection:bg-teal-500 selection:text-white">
+    <div className="min-h-screen flex flex-col justify-between bg-gradient-to-b from-slate-50 via-white to-slate-50 selection:bg-indigo-600 selection:text-white">
       {/* 🌟 UNIFIED TOP NAVBAR */}
       <Navbar />
 
-      <main className="flex-1 flex items-center justify-center p-6 relative overflow-hidden py-16 sm:py-20">
-        {/* Background Ornaments */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-teal-500/10 blur-[100px] rounded-full pointer-events-none"></div>
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-slate-500/10 blur-[100px] rounded-full pointer-events-none"></div>
+      <main className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8 relative overflow-hidden py-12 sm:py-16">
+        {/* Dynamic Background Ambient Lightings */}
+        <div className="absolute top-10 right-1/4 w-[500px] h-[500px] bg-gradient-to-br from-indigo-500/10 via-purple-500/5 to-transparent rounded-full blur-[140px] pointer-events-none"></div>
+        <div className="absolute bottom-10 left-1/4 w-[500px] h-[500px] bg-gradient-to-tr from-teal-500/10 via-sky-500/5 to-transparent rounded-full blur-[140px] pointer-events-none"></div>
 
         <motion.div 
-          className="max-w-6xl w-full z-10 mx-auto"
+          className="max-w-7xl w-full z-10 mx-auto"
           initial="hidden"
           animate="visible"
           variants={containerVariants}
         >
-          <motion.div variants={itemVariants} className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-100 border border-slate-200/80 text-slate-600 text-xs font-bold uppercase tracking-widest mb-4">
-              Get Started with Doctor On Call
+          {/* Header Section */}
+          <motion.div variants={itemVariants} className="text-center mb-10 sm:mb-14 max-w-3xl mx-auto">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/90 border border-slate-200 shadow-xs text-slate-700 text-xs font-black uppercase tracking-wider mb-4 backdrop-blur-md">
+              <Sparkles className="h-3.5 w-3.5 text-indigo-600" />
+              <span>Join Veagle Space Healthcare Network</span>
             </div>
-            <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 tracking-tight">Join Doctor On Call</h1>
-            <p className="mt-4 text-base sm:text-lg text-slate-500 max-w-xl mx-auto">
-              Select how you want to use the platform to begin your registration.
+            
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-[1.12]">
+              Create Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600">Free Account</span>
+            </h1>
+            
+            <p className="mt-4 text-sm sm:text-base lg:text-lg text-slate-500 max-w-2xl mx-auto font-medium leading-relaxed">
+              Select how you want to experience the platform. Whether you are a patient seeking care, a doctor growing a practice, or an enterprise clinic.
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            
-            {/* Patient Card */}
-            <motion.div variants={itemVariants} whileHover={{ y: -8, transition: { type: "spring" } }}>
-              <Link 
-                href="/register/patient" 
-                className="group block h-full rounded-[2rem] bg-white p-8 border border-slate-200/60 shadow-lg shadow-slate-200/50 hover:shadow-2xl hover:shadow-teal-500/10 hover:border-teal-500/30 transition-all duration-300 relative overflow-hidden"
-              >
-                <div className="absolute top-0 right-0 p-6 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300">
-                  <ArrowRight className="h-5 w-5 text-teal-500" />
-                </div>
-                <div className="h-16 w-16 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center mb-6 group-hover:bg-teal-500 group-hover:text-white transition-colors duration-300 shadow-xs">
-                  <User className="h-8 w-8" />
-                </div>
-                <h2 className="text-2xl font-extrabold text-slate-900 mb-3">Patient</h2>
-                <p className="text-slate-500 text-sm leading-relaxed group-hover:text-slate-600 transition-colors">
-                  Sign up to consult top doctors, maintain your digital health records, and order emergency services to your location.
-                </p>
-              </Link>
-            </motion.div>
+          {/* 3-Column Modern Role Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+            {REGISTRATION_ROLES.map((role) => {
+              const Icon = role.icon;
+              return (
+                <motion.div 
+                  key={role.id} 
+                  variants={itemVariants} 
+                  whileHover={{ y: -8, transition: { type: "spring", stiffness: 260, damping: 20 } }}
+                  className="h-full"
+                >
+                  <Link 
+                    href={role.href} 
+                    className={`group flex flex-col justify-between h-full rounded-3xl bg-white/95 backdrop-blur-xl p-7 sm:p-8 border border-slate-200/80 shadow-lg shadow-slate-100 ${role.border} ${role.shadow} transition-all duration-300 relative overflow-hidden`}
+                  >
+                    {/* Top Glow on Hover */}
+                    <div className={`absolute -top-16 -right-16 w-36 h-36 bg-gradient-to-br ${role.gradient} opacity-0 group-hover:opacity-15 rounded-full blur-2xl transition-opacity duration-500 pointer-events-none`}></div>
 
-            {/* Doctor Card */}
-            <motion.div variants={itemVariants} whileHover={{ y: -8, transition: { type: "spring" } }}>
-              <Link 
-                href="/register/doctor" 
-                className="group block h-full rounded-[2rem] bg-white p-8 border border-slate-200/60 shadow-lg shadow-slate-200/50 hover:shadow-2xl hover:shadow-slate-800/10 hover:border-slate-800/30 transition-all duration-300 relative overflow-hidden"
-              >
-                <div className="absolute top-0 right-0 p-6 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300">
-                  <ArrowRight className="h-5 w-5 text-slate-800" />
-                </div>
-                <div className="h-16 w-16 rounded-2xl bg-slate-50 text-slate-600 flex items-center justify-center mb-6 group-hover:bg-slate-900 group-hover:text-white transition-colors duration-300 shadow-xs">
-                  <Stethoscope className="h-8 w-8" />
-                </div>
-                <h2 className="text-2xl font-extrabold text-slate-900 mb-3">Doctor</h2>
-                <p className="text-slate-500 text-sm leading-relaxed group-hover:text-slate-600 transition-colors">
-                  Join our network of verified professionals. Manage your appointments, earn seamlessly, and provide digital prescriptions.
-                </p>
-              </Link>
-            </motion.div>
+                    <div>
+                      {/* Badge & Tagline */}
+                      <div className="flex items-center justify-between gap-2 mb-6">
+                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-wider border ${role.pill}`}>
+                          <span className={`h-1.5 w-1.5 rounded-full ${role.badgeDot} animate-pulse`}></span>
+                          {role.badge}
+                        </span>
 
-            {/* Clinic/Admin Card */}
-            <motion.div variants={itemVariants} whileHover={{ y: -8, transition: { type: "spring" } }}>
-              <Link 
-                href="/register/clinic" 
-                className="group block h-full rounded-[2rem] bg-slate-900 p-8 border border-slate-800 shadow-lg shadow-slate-900/50 hover:shadow-2xl hover:shadow-indigo-500/20 hover:border-indigo-500/50 transition-all duration-300 relative overflow-hidden"
-              >
-                <div className="absolute top-0 right-0 p-6 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300">
-                  <ArrowRight className="h-5 w-5 text-indigo-400" />
-                </div>
-                <div className="h-16 w-16 rounded-2xl bg-white/10 text-indigo-400 flex items-center justify-center mb-6 group-hover:bg-indigo-500 group-hover:text-white transition-colors duration-300 shadow-xs">
-                  <Building2 className="h-8 w-8" />
-                </div>
-                <h2 className="text-2xl font-extrabold text-white mb-3">Clinic SaaS</h2>
-                <p className="text-slate-400 text-sm leading-relaxed group-hover:text-slate-300 transition-colors">
-                  Onboard your entire hospital. Manage multiple doctors, view aggregate revenue analytics, and access enterprise features.
-                </p>
-              </Link>
-            </motion.div>
+                        <span className="text-xs font-bold text-slate-400 group-hover:text-slate-700 transition-colors">
+                          Instant Access &rarr;
+                        </span>
+                      </div>
 
+                      {/* Icon Avatar */}
+                      <div className={`h-16 w-16 rounded-2xl ${role.lightBg} flex items-center justify-center mb-6 group-hover:scale-105 group-hover:shadow-md transition-all duration-300`}>
+                        <div className={`h-11 w-11 rounded-xl bg-gradient-to-tr ${role.gradient} text-white flex items-center justify-center shadow-md`}>
+                          <Icon className="h-6 w-6" />
+                        </div>
+                      </div>
+
+                      {/* Title & Tagline */}
+                      <h2 className="text-2xl font-black text-slate-900 mb-1 group-hover:text-indigo-600 transition-colors tracking-tight">
+                        {role.name}
+                      </h2>
+                      <p className="text-xs font-bold text-indigo-600 mb-3">
+                        {role.tagline}
+                      </p>
+                      
+                      <p className="text-xs text-slate-500 leading-relaxed font-medium mb-6">
+                        {role.desc}
+                      </p>
+
+                      {/* Features List */}
+                      <div className="space-y-2.5 pt-5 border-t border-slate-100 mb-6">
+                        {role.features.map((feature, idx) => (
+                          <div key={idx} className="flex items-center gap-2.5 text-xs text-slate-700 font-semibold">
+                            <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
+                            <span>{feature}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Bottom Action Button */}
+                    <div className="pt-4 border-t border-slate-100">
+                      <div className="flex items-center justify-between text-xs font-black text-slate-900 group-hover:text-indigo-600 transition-colors">
+                        <span>Get Started as {role.name.split(' ')[0]}</span>
+                        <ArrowRight className="h-4 w-4 group-hover:translate-x-1.5 transition-transform" />
+                      </div>
+                    </div>
+
+                  </Link>
+                </motion.div>
+              );
+            })}
           </div>
 
-          <motion.div variants={itemVariants} className="mt-12 text-center">
-            <p className="text-slate-500 font-medium text-sm">
-              Already have an account? <Link href="/login" className="text-teal-600 hover:text-teal-700 hover:underline underline-offset-4 font-bold ml-1">Log in here</Link>
-            </p>
+          {/* Bottom Login Link */}
+          <motion.div variants={itemVariants} className="mt-12 sm:mt-14 text-center">
+            <div className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-white border border-slate-200/80 shadow-xs">
+              <span className="text-slate-500 font-medium text-xs sm:text-sm">
+                Already registered with Veagle Space Healthcare?
+              </span>
+              <Link 
+                href="/login" 
+                className="text-indigo-600 hover:text-indigo-700 font-black text-xs sm:text-sm underline underline-offset-4 ml-1 transition-colors"
+              >
+                Sign in to your portal &rarr;
+              </Link>
+            </div>
           </motion.div>
+
         </motion.div>
       </main>
 
