@@ -89,7 +89,7 @@ export default function LandingPage() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent"></div>
 
-              <div className="absolute bottom-5 left-5 right-5 sm:bottom-8 sm:left-8 sm:right-8 z-20 bg-white/95 backdrop-blur-xl border border-white/60 p-4 sm:p-5 rounded-2xl shadow-xl">
+              <div className="absolute bottom-5 left-5 right-5 sm:bottom-8 sm:left-8 sm:right-8 z-20 bg-white/95 backdrop-blur-xl border border-white/60 p-4 sm:p-5 rounded-2xl shadow-2xl shadow-slate-900/15">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-1">
                     {[...Array(5)].map((_, i) => (
@@ -130,7 +130,7 @@ export default function LandingPage() {
                   { title: 'Encrypted Records (EHR)', desc: '256-bit lifelong cloud storage' },
                   { title: 'SMS & WhatsApp Alerts', desc: 'Real-time booking and Rx updates' }
                 ].map((item, i) => (
-                  <motion.div key={i} variants={fadeUp} className="flex items-start gap-3 bg-white border border-slate-200/90 shadow-2xs rounded-2xl p-4">
+                  <motion.div key={i} variants={fadeUp} className="flex items-start gap-3 bg-white border border-slate-200/90 shadow-sm shadow-slate-200/60 hover:shadow-md hover:-translate-y-0.5 transition-all rounded-2xl p-4">
                     <div className="h-7 w-7 rounded-xl bg-indigo-50 border border-indigo-200/60 flex items-center justify-center shrink-0 mt-0.5">
                       <CheckCircle className="h-4 w-4 text-indigo-600" />
                     </div>
@@ -191,7 +191,7 @@ export default function LandingPage() {
                   { title: '24h Bank Payout Escrow', desc: '80% net physician earnings settlement' },
                   { title: 'Peer Shift Handovers', desc: 'SBAR clinical handover communication' }
                 ].map((item, i) => (
-                  <motion.div key={i} variants={fadeUp} className="flex items-start gap-3 bg-slate-50 border border-slate-200/80 shadow-2xs rounded-2xl p-4">
+                  <motion.div key={i} variants={fadeUp} className="flex items-start gap-3 bg-white border border-slate-200/90 shadow-sm shadow-slate-200/60 hover:shadow-md hover:-translate-y-0.5 transition-all rounded-2xl p-4">
                     <div className="h-7 w-7 rounded-xl bg-purple-100/80 border border-purple-200/60 flex items-center justify-center shrink-0 mt-0.5">
                       <CheckCircle className="h-4 w-4 text-purple-600" />
                     </div>
@@ -232,7 +232,7 @@ export default function LandingPage() {
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent"></div>
 
               {/* In-Image Earning Float Card */}
-              <div className="absolute top-5 right-5 sm:top-8 sm:right-8 z-20 bg-white/95 backdrop-blur-xl border border-white/60 p-4 sm:p-5 rounded-2xl shadow-xl flex items-center gap-3.5">
+              <div className="absolute top-5 right-5 sm:top-8 sm:right-8 z-20 bg-white/95 backdrop-blur-xl border border-white/60 p-4 sm:p-5 rounded-2xl shadow-2xl shadow-slate-900/15 flex items-center gap-3.5">
                 <div className="h-10 w-10 rounded-xl bg-purple-50 border border-purple-200 text-purple-600 flex items-center justify-center font-bold shrink-0">
                   <HeartPulse className="h-5 w-5" />
                 </div>

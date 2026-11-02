@@ -83,14 +83,14 @@ export default function Testimonials() {
           <div className="flex items-center gap-3">
             <button 
               onClick={() => scroll('left')}
-              className="h-11 w-11 rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-300 transition-all shadow-xs cursor-pointer active:scale-95"
+              className="h-11 w-11 rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-300 transition-all shadow-sm shadow-slate-200/60 hover:shadow-md cursor-pointer active:scale-95"
               aria-label="Previous Testimonial"
             >
               <ChevronLeft className="h-5 w-5" />
             </button>
             <button 
               onClick={() => scroll('right')}
-              className="h-11 w-11 rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-300 transition-all shadow-xs cursor-pointer active:scale-95"
+              className="h-11 w-11 rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-300 transition-all shadow-sm shadow-slate-200/60 hover:shadow-md cursor-pointer active:scale-95"
               aria-label="Next Testimonial"
             >
               <ChevronRight className="h-5 w-5" />
@@ -109,7 +109,7 @@ export default function Testimonials() {
               key={t.id}
               className="w-[320px] sm:w-[380px] shrink-0 snap-start h-full"
             >
-              <div className="h-full flex flex-col justify-between p-7 rounded-3xl bg-white border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
+              <div className="h-full flex flex-col justify-between p-7 rounded-3xl bg-white border border-slate-200/90 shadow-md shadow-slate-200/70 hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-1.5 transition-all duration-300 relative overflow-hidden group">
                 
                 <div>
                   {/* Rating Stars & Tag */}

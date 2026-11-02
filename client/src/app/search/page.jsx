@@ -151,7 +151,7 @@ function SearchContent() {
         
         {/* Sidebar Filters */}
         <aside className="w-full lg:w-72 shrink-0">
-          <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm sticky top-24 space-y-6">
+          <div className="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-md shadow-slate-200/60 sticky top-24 space-y-6">
             <div className="flex items-center justify-between border-b border-slate-100 pb-4">
               <div className="flex items-center gap-2">
                 <Filter className="h-5 w-5 text-indigo-600" />
@@ -245,7 +245,7 @@ function SearchContent() {
           ) : (
             <div className="space-y-4">
               {filteredDoctors.map(doctor => (
-                <div key={doctor.id} className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm hover:shadow-md transition-all group flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                <div key={doctor.id} className="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-md shadow-slate-200/60 hover:shadow-2xl hover:shadow-indigo-500/10 hover:border-indigo-300/80 hover:-translate-y-1 transition-all duration-300 group flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
                   
                   {/* Left: Avatar & Info */}
                   <div className="flex items-center gap-5">

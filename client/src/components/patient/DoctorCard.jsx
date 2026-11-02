@@ -10,8 +10,8 @@ export default function DoctorCard({ doctor }) {
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -8, scale: 1.02 }}
-      className="group relative overflow-hidden rounded-[2rem] bg-white/80 backdrop-blur-xl border border-white shadow-xl shadow-slate-200/50 transition-all duration-300"
+      whileHover={{ y: -6 }}
+      className="group relative overflow-hidden rounded-3xl bg-white border border-slate-200/90 shadow-md shadow-slate-200/70 hover:shadow-2xl hover:shadow-teal-500/15 hover:border-teal-300/80 transition-all duration-300"
     >
       {/* Decorative gradient corner */}
       <div className="absolute -top-10 -right-10 w-32 h-32 bg-gradient-to-bl from-teal-100 to-sky-50 rounded-full blur-2xl opacity-60 group-hover:opacity-100 transition-opacity"></div>

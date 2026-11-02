@@ -40,9 +40,9 @@ const REGISTRATION_ROLES = [
     desc: 'Book verified doctors for video calls, order doctor home visits, and store all your health records securely.',
     icon: User,
     color: 'teal',
-    iconBg: 'bg-teal-50 text-teal-600 border-teal-200',
-    btnBg: 'bg-teal-600 hover:bg-teal-700 text-white shadow-teal-600/20',
-    border: 'hover:border-teal-400/80',
+    iconBg: 'bg-teal-50 text-teal-600 border-teal-200 shadow-xs',
+    btnBg: 'bg-teal-600 hover:bg-teal-700 text-white shadow-md shadow-teal-600/25',
+    border: 'hover:border-teal-400/80 hover:shadow-teal-500/15',
     href: '/register/patient',
     btnText: 'Register as Patient'
   },
@@ -53,9 +53,9 @@ const REGISTRATION_ROLES = [
     desc: 'Grow your practice, set your consultation fees, consult patients online or at home, and get automated bank payouts.',
     icon: Stethoscope,
     color: 'purple',
-    iconBg: 'bg-purple-50 text-purple-600 border-purple-200',
-    btnBg: 'bg-purple-600 hover:bg-purple-700 text-white shadow-purple-600/20',
-    border: 'hover:border-purple-400/80',
+    iconBg: 'bg-purple-50 text-purple-600 border-purple-200 shadow-xs',
+    btnBg: 'bg-purple-600 hover:bg-purple-700 text-white shadow-md shadow-purple-600/25',
+    border: 'hover:border-purple-400/80 hover:shadow-purple-500/15',
     href: '/register/doctor',
     btnText: 'Register as Doctor'
   },
@@ -66,9 +66,9 @@ const REGISTRATION_ROLES = [
     desc: 'Empower your healthcare facility with centralized doctor scheduling, patient check-in desk, and digital records.',
     icon: Building2,
     color: 'blue',
-    iconBg: 'bg-blue-50 text-blue-600 border-blue-200',
-    btnBg: 'bg-blue-600 hover:bg-blue-700 text-white shadow-blue-600/20',
-    border: 'hover:border-blue-400/80',
+    iconBg: 'bg-blue-50 text-blue-600 border-blue-200 shadow-xs',
+    btnBg: 'bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-600/25',
+    border: 'hover:border-blue-400/80 hover:shadow-blue-500/15',
     href: '/register/clinic',
     btnText: 'Register Your Clinic'
   }
@@ -110,10 +110,10 @@ export default function RegisterRoleSelection() {
                 <motion.div 
                   key={role.id}
                   variants={itemVariants}
-                  whileHover={{ y: -4 }}
+                  whileHover={{ y: -6 }}
                   className="h-full"
                 >
-                  <div className={`h-full flex flex-col justify-between bg-white rounded-2xl p-6 sm:p-7 border border-slate-200/90 shadow-xs hover:shadow-xl transition-all duration-200 ${role.border}`}>
+                  <div className={`h-full flex flex-col justify-between bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-7 border border-slate-200/90 shadow-md shadow-slate-200/70 hover:shadow-2xl transition-all duration-300 ${role.border}`}>
                     
                     <div>
                       {/* Icon & Subtitle */}
@@ -139,7 +139,7 @@ export default function RegisterRoleSelection() {
                     {/* Direct Single Action Button */}
                     <Link
                       href={role.href}
-                      className={`flex items-center justify-between w-full px-5 py-3.5 rounded-xl text-xs sm:text-sm font-bold transition-all shadow-xs hover:scale-[1.01] active:scale-[0.99] ${role.btnBg}`}
+                      className={`flex items-center justify-between w-full px-5 py-3.5 rounded-xl text-xs sm:text-sm font-bold transition-all shadow-md hover:shadow-lg hover:scale-[1.01] active:scale-[0.99] ${role.btnBg}`}
                     >
                       <span>{role.btnText}</span>
                       <ArrowRight className="h-4 w-4" />

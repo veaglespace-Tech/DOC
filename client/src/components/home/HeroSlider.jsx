@@ -71,11 +71,11 @@ export default function HeroSlider() {
                 placeholder="Search specialty, doctor or clinic..." 
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full bg-white border border-slate-200/90 rounded-2xl py-3.5 sm:py-4 pl-4 sm:pl-5 pr-11 sm:pr-12 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 text-xs sm:text-sm shadow-xs transition-all font-medium text-slate-800 placeholder-slate-400"
+                className="w-full bg-white border border-slate-200/90 rounded-2xl py-3.5 sm:py-4 pl-4 sm:pl-5 pr-11 sm:pr-12 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 text-xs sm:text-sm shadow-sm shadow-slate-200/60 transition-all font-medium text-slate-800 placeholder-slate-400"
               />
               <button 
                 type="submit" 
-                className="absolute right-2 h-8 w-8 sm:h-10 sm:w-10 bg-indigo-600 text-white rounded-xl flex items-center justify-center hover:bg-indigo-700 transition-colors shadow-sm"
+                className="absolute right-2 h-8 w-8 sm:h-10 sm:w-10 bg-indigo-600 text-white rounded-xl flex items-center justify-center hover:bg-indigo-700 transition-colors shadow-md shadow-indigo-600/30"
                 aria-label="Search"
               >
                 <Search className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
@@ -99,7 +99,7 @@ export default function HeroSlider() {
           </div>
 
           {/* Metrics Counters (2x2 on mobile, 4 in a row on sm+) */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-0 sm:divide-x divide-slate-100 p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-white/90 backdrop-blur-md border border-slate-200/80 shadow-xs">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-0 sm:divide-x divide-slate-100 p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-white/95 backdrop-blur-md border border-slate-200/90 shadow-md shadow-slate-200/60">
             <div className="p-2 sm:px-3 text-center sm:text-left">
               <p className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">4,500+</p>
               <p className="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider mt-0.5">Patients</p>
@@ -142,7 +142,7 @@ export default function HeroSlider() {
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent"></div>
 
             {/* Bottom In-Image Live Status Pill */}
-            <div className="absolute bottom-3 left-3 right-3 sm:bottom-6 sm:left-6 sm:right-6 p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white/95 backdrop-blur-xl border border-white/60 shadow-lg flex items-center justify-between">
+            <div className="absolute bottom-3 left-3 right-3 sm:bottom-6 sm:left-6 sm:right-6 p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white/95 backdrop-blur-xl border border-white/60 shadow-xl shadow-slate-900/10 flex items-center justify-between">
               <div className="flex items-center gap-2.5 sm:gap-3">
                 <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-lg sm:rounded-xl bg-emerald-500 text-white flex items-center justify-center font-bold">
                   <ShieldCheck className="h-4 w-4 sm:h-5 sm:w-5" />
@@ -162,7 +162,7 @@ export default function HeroSlider() {
           <motion.div 
             animate={{ y: [0, -8, 0] }}
             transition={{ repeat: Infinity, duration: 4.5, ease: "easeInOut" }}
-            className="hidden lg:flex absolute top-8 right-0 lg:-right-6 bg-white/95 backdrop-blur-xl p-4 rounded-2xl shadow-xl items-center gap-3.5 border border-slate-100"
+            className="hidden lg:flex absolute top-8 right-0 lg:-right-6 bg-white/95 backdrop-blur-xl p-4 rounded-2xl shadow-xl shadow-slate-900/10 items-center gap-3.5 border border-slate-100/80"
           >
             <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-teal-50 text-teal-600">
               <Stethoscope className="h-5 w-5" />
@@ -177,7 +177,7 @@ export default function HeroSlider() {
           <motion.div 
             animate={{ y: [0, 8, 0] }}
             transition={{ repeat: Infinity, duration: 5, ease: "easeInOut", delay: 0.5 }}
-            className="hidden lg:flex absolute bottom-28 left-0 lg:-left-6 bg-white/95 backdrop-blur-xl p-4 rounded-2xl shadow-xl items-center gap-3 border border-slate-100"
+            className="hidden lg:flex absolute bottom-28 left-0 lg:-left-6 bg-white/95 backdrop-blur-xl p-4 rounded-2xl shadow-xl shadow-slate-900/10 items-center gap-3 border border-slate-100/80"
           >
             <div className="h-10 w-10 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center font-black">
               Dr

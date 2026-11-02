@@ -43,9 +43,9 @@ const ROLES_LIST = [
     desc: 'Book doctor appointments, start video calls, order home visits, and access digital prescriptions.',
     icon: User,
     color: 'teal',
-    iconBg: 'bg-teal-50 text-teal-600 border-teal-200',
-    btnBg: 'bg-teal-600 hover:bg-teal-700 text-white shadow-teal-600/20',
-    border: 'hover:border-teal-400/80',
+    iconBg: 'bg-teal-50 text-teal-600 border-teal-200 shadow-xs',
+    btnBg: 'bg-teal-600 hover:bg-teal-700 text-white shadow-md shadow-teal-600/25',
+    border: 'hover:border-teal-400/80 hover:shadow-teal-500/15',
     demoEmail: 'patient@doctoroncall.com',
     registerLink: '/register/patient'
   },
@@ -56,9 +56,9 @@ const ROLES_LIST = [
     desc: 'Manage your daily consultations, issue digital prescriptions, and view your bank earnings.',
     icon: Stethoscope,
     color: 'purple',
-    iconBg: 'bg-purple-50 text-purple-600 border-purple-200',
-    btnBg: 'bg-purple-600 hover:bg-purple-700 text-white shadow-purple-600/20',
-    border: 'hover:border-purple-400/80',
+    iconBg: 'bg-purple-50 text-purple-600 border-purple-200 shadow-xs',
+    btnBg: 'bg-purple-600 hover:bg-purple-700 text-white shadow-md shadow-purple-600/25',
+    border: 'hover:border-purple-400/80 hover:shadow-purple-500/15',
     demoEmail: 'doctor@doctoroncall.com',
     registerLink: '/register/doctor'
   },
@@ -69,9 +69,9 @@ const ROLES_LIST = [
     desc: 'Manage clinic doctors, front desk walk-in patients, OPD tokens, and billing.',
     icon: Building2,
     color: 'blue',
-    iconBg: 'bg-blue-50 text-blue-600 border-blue-200',
-    btnBg: 'bg-blue-600 hover:bg-blue-700 text-white shadow-blue-600/20',
-    border: 'hover:border-blue-400/80',
+    iconBg: 'bg-blue-50 text-blue-600 border-blue-200 shadow-xs',
+    btnBg: 'bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-600/25',
+    border: 'hover:border-blue-400/80 hover:shadow-blue-500/15',
     demoEmail: 'clinic@doctoroncall.com',
     registerLink: '/register/clinic'
   },
@@ -82,9 +82,9 @@ const ROLES_LIST = [
     desc: 'Verify doctor licenses, manage system settings, withdrawal releases, and compliance reports.',
     icon: ShieldCheck,
     color: 'slate',
-    iconBg: 'bg-slate-100 text-slate-800 border-slate-300',
-    btnBg: 'bg-slate-900 hover:bg-slate-800 text-white shadow-slate-900/20',
-    border: 'hover:border-slate-500',
+    iconBg: 'bg-slate-100 text-slate-800 border-slate-300 shadow-xs',
+    btnBg: 'bg-slate-900 hover:bg-slate-800 text-white shadow-md shadow-slate-900/25',
+    border: 'hover:border-slate-500 hover:shadow-slate-500/20',
     demoEmail: 'admin@doctoroncall.com',
     registerLink: null
   }
@@ -149,10 +149,10 @@ function SimpleLoginContent() {
                 <motion.div 
                   key={role.id} 
                   variants={itemVariants}
-                  whileHover={{ y: -4 }}
+                  whileHover={{ y: -6 }}
                   className="h-full"
                 >
-                  <div className={`h-full flex flex-col justify-between bg-white rounded-2xl p-6 border border-slate-200/90 shadow-xs hover:shadow-xl transition-all duration-200 ${role.border}`}>
+                  <div className={`h-full flex flex-col justify-between bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-7 border border-slate-200/90 shadow-md shadow-slate-200/70 hover:shadow-2xl transition-all duration-300 ${role.border}`}>
                     
                     <div>
                       {/* Icon & Subtitle */}

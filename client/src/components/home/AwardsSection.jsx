@@ -11,8 +11,8 @@ const awards = [
     icon: ShieldCheck,
     badge: "National Standard",
     color: "bg-emerald-50 text-emerald-700 border-emerald-200/80",
-    iconBg: "bg-emerald-500 text-white shadow-emerald-500/25",
-    glow: "group-hover:border-emerald-300 group-hover:shadow-emerald-500/10"
+    iconBg: "bg-emerald-500 text-white shadow-md shadow-emerald-500/25",
+    glow: "group-hover:border-emerald-400 group-hover:shadow-emerald-500/15"
   },
   {
     title: "JCI Gold Seal Alignment",
@@ -21,8 +21,8 @@ const awards = [
     icon: Award,
     badge: "International Seal",
     color: "bg-amber-50 text-amber-700 border-amber-200/80",
-    iconBg: "bg-amber-500 text-white shadow-amber-500/25",
-    glow: "group-hover:border-amber-300 group-hover:shadow-amber-500/10"
+    iconBg: "bg-amber-500 text-white shadow-md shadow-amber-500/25",
+    glow: "group-hover:border-amber-400 group-hover:shadow-amber-500/15"
   },
   {
     title: "Best Digital Healthcare 2025",
@@ -31,8 +31,8 @@ const awards = [
     icon: Star,
     badge: "Industry Winner",
     color: "bg-indigo-50 text-indigo-700 border-indigo-200/80",
-    iconBg: "bg-indigo-600 text-white shadow-indigo-600/25",
-    glow: "group-hover:border-indigo-300 group-hover:shadow-indigo-500/10"
+    iconBg: "bg-indigo-600 text-white shadow-md shadow-indigo-600/25",
+    glow: "group-hover:border-indigo-400 group-hover:shadow-indigo-500/15"
   }
 ];
 
@@ -74,7 +74,7 @@ export default function AwardsSection() {
                 whileHover={{ y: -6 }}
                 className="group h-full"
               >
-                <div className={`h-full flex flex-col justify-between p-8 rounded-3xl bg-white border border-slate-200/90 shadow-sm hover:shadow-2xl transition-all duration-300 relative overflow-hidden ${award.glow}`}>
+                <div className={`h-full flex flex-col justify-between p-8 rounded-3xl bg-white border border-slate-200/90 shadow-md shadow-slate-200/70 hover:shadow-2xl transition-all duration-300 relative overflow-hidden ${award.glow}`}>
                   
                   <div>
                     {/* Top Badge & Category */}

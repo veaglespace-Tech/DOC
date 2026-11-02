@@ -17,7 +17,7 @@ export default function VitalsCard({ profile, onEdit }) {
   ];
 
   return (
-    <div className="rounded-3xl border border-slate-100 bg-white p-6 shadow-sm transition-all hover:shadow-md">
+    <div className="rounded-3xl border border-slate-200/90 bg-white p-6 shadow-md shadow-slate-200/60 transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5">
       <div className="mb-4 flex items-center justify-between">
         <h3 className="text-base font-bold text-slate-900">Personal Health Attributes</h3>
         {onEdit && (

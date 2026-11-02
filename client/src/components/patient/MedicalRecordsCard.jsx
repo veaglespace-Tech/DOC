@@ -40,7 +40,7 @@ export default function MedicalRecordsCard() {
   };
 
   return (
-    <div className="rounded-3xl border border-slate-100 bg-white p-6 sm:p-8 shadow-sm transition-all hover:shadow-md">
+    <div className="rounded-3xl border border-slate-200/90 bg-white p-6 sm:p-8 shadow-md shadow-slate-200/60 transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5">
       <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="h-10 w-10 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center">

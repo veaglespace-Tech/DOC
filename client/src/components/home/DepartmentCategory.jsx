@@ -36,7 +36,7 @@ export default function DepartmentCategory() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.08 }}
-                  className="flex flex-col items-center justify-center p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-white border border-slate-200/80 shadow-xs hover:shadow-xl hover:border-indigo-300 transition-all group cursor-pointer"
+                  className="flex flex-col items-center justify-center p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-white border border-slate-200/90 shadow-md shadow-slate-200/60 hover:shadow-2xl hover:shadow-indigo-500/10 hover:border-indigo-300 hover:-translate-y-1.5 transition-all duration-300 group cursor-pointer"
                 >
                   <div className={`h-12 w-12 sm:h-16 sm:w-16 rounded-xl sm:rounded-2xl border flex items-center justify-center mb-3 sm:mb-4 transition-all duration-300 shadow-xs ${dept.bg} ${dept.color}`}>
                     <Icon className="h-6 w-6 sm:h-7 sm:w-7 transition-transform group-hover:scale-110" />

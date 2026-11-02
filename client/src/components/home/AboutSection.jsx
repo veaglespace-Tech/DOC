@@ -94,7 +94,7 @@ export default function AboutSection() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: idx * 0.08 }}
-                    className="bg-slate-900/80 backdrop-blur-xl rounded-3xl p-6 sm:p-7 text-white shadow-xl border border-slate-800 hover:border-slate-700 hover:-translate-y-1.5 transition-all group"
+                    className="bg-slate-900/80 backdrop-blur-xl rounded-3xl p-6 sm:p-7 text-white shadow-xl shadow-indigo-950/40 border border-slate-800 hover:border-indigo-500/40 hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-1.5 transition-all duration-300 group"
                   >
                     <div className={`h-12 w-12 rounded-2xl border flex items-center justify-center mb-5 transition-transform duration-300 group-hover:scale-110 shadow-xs ${service.accent}`}>
                       <Icon className="h-6 w-6" />

@@ -26,9 +26,9 @@ const coreServices = [
     href: '/search?type=video',
     cta: 'Consult Online',
     theme: {
-      iconBg: 'bg-indigo-50 text-indigo-600 border-indigo-200/80',
+      iconBg: 'bg-indigo-50 text-indigo-600 border-indigo-200/80 shadow-xs',
       badgeBg: 'bg-indigo-50 text-indigo-700 border-indigo-200',
-      glowHover: 'group-hover:border-indigo-300 group-hover:shadow-indigo-500/10',
+      glowHover: 'group-hover:border-indigo-400 group-hover:shadow-indigo-500/15',
       btnBg: 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-600/25',
       accentText: 'text-indigo-600',
     }
@@ -42,9 +42,9 @@ const coreServices = [
     href: '/search?type=home',
     cta: 'Book Home Visit',
     theme: {
-      iconBg: 'bg-teal-50 text-teal-600 border-teal-200/80',
+      iconBg: 'bg-teal-50 text-teal-600 border-teal-200/80 shadow-xs',
       badgeBg: 'bg-teal-50 text-teal-700 border-teal-200',
-      glowHover: 'group-hover:border-teal-300 group-hover:shadow-teal-500/10',
+      glowHover: 'group-hover:border-teal-400 group-hover:shadow-teal-500/15',
       btnBg: 'bg-teal-600 hover:bg-teal-700 text-white shadow-teal-600/25',
       accentText: 'text-teal-600',
     }
@@ -58,9 +58,9 @@ const coreServices = [
     href: '/search?type=opd',
     cta: 'Find Clinics',
     theme: {
-      iconBg: 'bg-sky-50 text-sky-600 border-sky-200/80',
+      iconBg: 'bg-sky-50 text-sky-600 border-sky-200/80 shadow-xs',
       badgeBg: 'bg-sky-50 text-sky-700 border-sky-200',
-      glowHover: 'group-hover:border-sky-300 group-hover:shadow-sky-500/10',
+      glowHover: 'group-hover:border-sky-400 group-hover:shadow-sky-500/15',
       btnBg: 'bg-sky-600 hover:bg-sky-700 text-white shadow-sky-600/25',
       accentText: 'text-sky-600',
     }
@@ -74,9 +74,9 @@ const coreServices = [
     href: '/patient/records',
     cta: 'Open Health Vault',
     theme: {
-      iconBg: 'bg-purple-50 text-purple-600 border-purple-200/80',
+      iconBg: 'bg-purple-50 text-purple-600 border-purple-200/80 shadow-xs',
       badgeBg: 'bg-purple-50 text-purple-700 border-purple-200',
-      glowHover: 'group-hover:border-purple-300 group-hover:shadow-purple-500/10',
+      glowHover: 'group-hover:border-purple-400 group-hover:shadow-purple-500/15',
       btnBg: 'bg-purple-600 hover:bg-purple-700 text-white shadow-purple-600/25',
       accentText: 'text-purple-600',
     }
@@ -90,9 +90,9 @@ const coreServices = [
     href: '/search?type=lab',
     cta: 'Explore Lab Tests',
     theme: {
-      iconBg: 'bg-amber-50 text-amber-600 border-amber-200/80',
+      iconBg: 'bg-amber-50 text-amber-600 border-amber-200/80 shadow-xs',
       badgeBg: 'bg-amber-50 text-amber-700 border-amber-200',
-      glowHover: 'group-hover:border-amber-300 group-hover:shadow-amber-500/10',
+      glowHover: 'group-hover:border-amber-400 group-hover:shadow-amber-500/15',
       btnBg: 'bg-amber-600 hover:bg-amber-700 text-white shadow-amber-600/25',
       accentText: 'text-amber-600',
     }
@@ -106,9 +106,9 @@ const coreServices = [
     href: '/patient/ai-chat',
     cta: 'Check Symptoms Free',
     theme: {
-      iconBg: 'bg-rose-50 text-rose-600 border-rose-200/80',
+      iconBg: 'bg-rose-50 text-rose-600 border-rose-200/80 shadow-xs',
       badgeBg: 'bg-rose-50 text-rose-700 border-rose-200',
-      glowHover: 'group-hover:border-rose-300 group-hover:shadow-rose-500/10',
+      glowHover: 'group-hover:border-rose-400 group-hover:shadow-rose-500/15',
       btnBg: 'bg-rose-600 hover:bg-rose-700 text-white shadow-rose-600/25',
       accentText: 'text-rose-600',
     }
@@ -155,7 +155,7 @@ export default function ServicesSlider() {
                 transition={{ duration: 0.5, delay: index * 0.08 }}
                 className="group"
               >
-                <div className={`h-full flex flex-col justify-between bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-7 border border-slate-200/90 shadow-xs hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 relative overflow-hidden ${svc.theme.glowHover}`}>
+                <div className={`h-full flex flex-col justify-between bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-7 border border-slate-200/90 shadow-md shadow-slate-200/70 hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300 relative overflow-hidden ${svc.theme.glowHover}`}>
                   
                   {/* Top Bar with Icon & Badge */}
                   <div>
@@ -204,7 +204,7 @@ export default function ServicesSlider() {
         </div>
 
         {/* Bottom Guarantee Banner */}
-        <div className="mt-14 p-6 sm:p-7 rounded-3xl bg-white border border-slate-200/90 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
+        <div className="mt-14 p-6 sm:p-7 rounded-3xl bg-white border border-slate-200/90 shadow-md shadow-slate-200/70 flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
           <div className="flex items-center gap-4">
             <div className="h-12 w-12 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-200/70 flex items-center justify-center shrink-0">
               <ShieldCheck className="h-6 w-6" />
