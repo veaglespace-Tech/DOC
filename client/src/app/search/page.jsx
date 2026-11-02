@@ -147,11 +147,11 @@ function SearchContent() {
       </section>
 
       {/* Main Content */}
-      <section className="py-12 max-w-7xl mx-auto px-6 flex flex-col lg:flex-row gap-8">
+      <section className="py-8 sm:py-12 max-w-7xl mx-auto px-4 sm:px-6 flex flex-col lg:flex-row gap-6 sm:gap-8">
         
         {/* Sidebar Filters */}
         <aside className="w-full lg:w-72 shrink-0">
-          <div className="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-md shadow-slate-200/60 sticky top-24 space-y-6">
+          <div className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-6 border border-slate-200/90 shadow-md shadow-slate-200/60 sticky top-20 sm:top-24 space-y-5 sm:space-y-6">
             <div className="flex items-center justify-between border-b border-slate-100 pb-4">
               <div className="flex items-center gap-2">
                 <Filter className="h-5 w-5 text-indigo-600" />
@@ -245,10 +245,10 @@ function SearchContent() {
           ) : (
             <div className="space-y-4">
               {filteredDoctors.map(doctor => (
-                <div key={doctor.id} className="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-md shadow-slate-200/60 hover:shadow-2xl hover:shadow-indigo-500/10 hover:border-indigo-300/80 hover:-translate-y-1 transition-all duration-300 group flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                <div key={doctor.id} className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-slate-200/90 shadow-md shadow-slate-200/60 hover:shadow-2xl hover:shadow-indigo-500/10 hover:border-indigo-300/80 hover:-translate-y-1 transition-all duration-300 group flex flex-col md:flex-row items-start md:items-center justify-between gap-5 sm:gap-6">
                   
                   {/* Left: Avatar & Info */}
-                  <div className="flex items-center gap-5">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-5 w-full md:w-auto">
                     <div className="w-20 h-20 md:w-24 md:h-24 shrink-0 relative rounded-2xl overflow-hidden bg-slate-100 shadow-inner">
                       <img src={doctor.avatar} alt={doctor.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                       <div className="absolute top-1.5 left-1.5 bg-white/95 backdrop-blur-md rounded-lg px-1.5 py-0.5 text-[10px] font-black flex items-center gap-1 shadow-sm text-slate-900">

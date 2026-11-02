@@ -152,7 +152,7 @@ function SimpleLoginContent() {
                   whileHover={{ y: -6 }}
                   className="h-full"
                 >
-                  <div className={`h-full flex flex-col justify-between bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-7 border border-slate-200/90 shadow-md shadow-slate-200/70 hover:shadow-2xl transition-all duration-300 ${role.border}`}>
+                  <div className={`h-full flex flex-col justify-between bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-7 border border-slate-200/90 shadow-md shadow-slate-200/70 hover:shadow-2xl transition-all duration-300 ${role.border}`}>
                     
                     <div>
                       {/* Icon & Subtitle */}

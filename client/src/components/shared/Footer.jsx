@@ -137,9 +137,9 @@ export default function Footer() {
             | &copy; 2026 All Rights Reserved.
           </p>
           
-          <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900 border border-slate-800 shadow-inner">
-            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-ping"></span>
-            <span className="text-slate-300 font-bold text-[11px]">All Regional Gateways Active • 99.98% SLA</span>
+          <div className="flex items-center gap-2 px-3 sm:px-3.5 py-1.5 rounded-full bg-slate-900 border border-slate-800 shadow-inner">
+            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-ping shrink-0"></span>
+            <span className="text-slate-300 font-bold text-[10px] sm:text-[11px]">All Regional Gateways Active • 99.98% SLA</span>
           </div>
         </div>
       </div>

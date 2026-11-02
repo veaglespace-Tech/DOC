@@ -204,9 +204,9 @@ export default function ServicesSlider() {
         </div>
 
         {/* Bottom Guarantee Banner */}
-        <div className="mt-14 p-6 sm:p-7 rounded-3xl bg-white border border-slate-200/90 shadow-md shadow-slate-200/70 flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
-          <div className="flex items-center gap-4">
-            <div className="h-12 w-12 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-200/70 flex items-center justify-center shrink-0">
+        <div className="mt-10 sm:mt-14 p-5 sm:p-7 rounded-2xl sm:rounded-3xl bg-white border border-slate-200/90 shadow-md shadow-slate-200/70 flex flex-col sm:flex-row items-center justify-between gap-5 sm:gap-6 text-center sm:text-left">
+          <div className="flex flex-col sm:flex-row items-center gap-3.5 sm:gap-4">
+            <div className="h-11 w-11 sm:h-12 sm:w-12 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-200/70 flex items-center justify-center shrink-0">
               <ShieldCheck className="h-6 w-6" />
             </div>
             <div>
@@ -217,7 +217,7 @@ export default function ServicesSlider() {
           
           <Link
             href="/search"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold tracking-wide transition-all shadow-md hover:scale-105 shrink-0"
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold tracking-wide transition-all shadow-md hover:scale-105 w-full sm:w-auto shrink-0"
           >
             <span>Browse All Doctors</span>
             <ArrowRight className="h-4 w-4" />

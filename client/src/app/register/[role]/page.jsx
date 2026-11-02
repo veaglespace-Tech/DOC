@@ -53,8 +53,8 @@ function DynamicRegisterForm() {
 
       <main className="flex-1 flex selection:bg-teal-500 selection:text-white">
         {/* 🌟 LEFT HALF (Form) */}
-        <div className="flex-1 flex flex-col justify-center px-8 sm:px-16 lg:px-24 xl:px-32 relative py-12">
-        <Link href="/" className="absolute top-8 left-8 flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-teal-600 transition-colors">
+        <div className="flex-1 flex flex-col justify-center px-4 sm:px-12 lg:px-20 xl:px-32 relative py-8 sm:py-12">
+        <Link href="/" className="absolute top-4 left-4 sm:top-8 sm:left-8 flex items-center gap-2 text-xs sm:text-sm font-bold text-slate-500 hover:text-teal-600 transition-colors">
           <ArrowRight className="h-4 w-4 rotate-180" /> Back to Home
         </Link>
         

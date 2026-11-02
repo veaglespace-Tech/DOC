@@ -241,7 +241,7 @@ function DynamicLoginForm() {
 
               {/* 🌟 ROLE SELECTOR TABS */}
               <div className="mb-6">
-                <div className="grid grid-cols-4 p-1 bg-slate-100 rounded-2xl border border-slate-200/80 gap-1">
+                <div className="grid grid-cols-2 sm:grid-cols-4 p-1 bg-slate-100 rounded-2xl border border-slate-200/80 gap-1">
                   {PORTALS.map((portal) => {
                     const Icon = portal.icon;
                     const isActive = activePortal.id === portal.id;

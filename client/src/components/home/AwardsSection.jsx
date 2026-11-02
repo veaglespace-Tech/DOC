@@ -38,30 +38,30 @@ const awards = [
 
 export default function AwardsSection() {
   return (
-    <section className="py-20 lg:py-28 bg-white relative overflow-hidden border-t border-slate-100">
+    <section className="py-14 sm:py-20 lg:py-28 bg-white relative overflow-hidden border-t border-slate-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
         
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-14 sm:mb-18">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-50 border border-slate-200 shadow-xs text-xs font-bold text-slate-700 uppercase tracking-widest mb-4">
+        <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-16">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-50 border border-slate-200 shadow-xs text-xs font-bold text-slate-700 uppercase tracking-widest mb-3 sm:mb-4">
             <Sparkles className="h-3.5 w-3.5 text-indigo-600" />
             Clinical Accreditations
           </div>
           
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight leading-tight">
+          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight leading-tight">
             Recognized for{' '}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700">
               Uncompromising Quality
             </span>
           </h2>
           
-          <p className="mt-4 text-sm sm:text-lg text-slate-600 font-medium leading-relaxed">
+          <p className="mt-3 sm:mt-4 text-sm sm:text-lg text-slate-600 font-medium leading-relaxed">
             Our commitment to patient safety, physician verification, and encrypted healthcare workflows is validated by leading regulatory bodies.
           </p>
         </div>
 
         {/* 3 Award Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-8">
           {awards.map((award, idx) => {
             const Icon = award.icon;
             return (
@@ -74,7 +74,7 @@ export default function AwardsSection() {
                 whileHover={{ y: -6 }}
                 className="group h-full"
               >
-                <div className={`h-full flex flex-col justify-between p-8 rounded-3xl bg-white border border-slate-200/90 shadow-md shadow-slate-200/70 hover:shadow-2xl transition-all duration-300 relative overflow-hidden ${award.glow}`}>
+                <div className={`h-full flex flex-col justify-between p-5 sm:p-8 rounded-2xl sm:rounded-3xl bg-white border border-slate-200/90 shadow-md shadow-slate-200/70 hover:shadow-2xl transition-all duration-300 relative overflow-hidden ${award.glow}`}>
                   
                   <div>
                     {/* Top Badge & Category */}
