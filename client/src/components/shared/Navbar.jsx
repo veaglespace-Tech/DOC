@@ -57,12 +57,12 @@ export default function Navbar() {
         </div>
       </div>
 
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-200/70 shadow-xs transition-all">
-        <div className="mx-auto max-w-7xl px-6 flex items-center justify-between h-20">
+      <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-slate-200/70 shadow-xs transition-all">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 flex items-center justify-between h-16 sm:h-20">
           
           {/* BRAND LOGO */}
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="relative h-11 w-11 rounded-2xl bg-white p-1 border border-slate-200/80 shadow-md shadow-indigo-600/10 group-hover:scale-105 transition-all overflow-hidden flex items-center justify-center">
+          <Link href="/" className="flex items-center gap-2.5 sm:gap-3 group">
+            <div className="relative h-9 w-9 sm:h-11 sm:w-11 rounded-xl sm:rounded-2xl bg-white p-1 border border-slate-200/80 shadow-md shadow-indigo-600/10 group-hover:scale-105 transition-all overflow-hidden flex items-center justify-center shrink-0">
               <Image 
                 src="/logo.png" 
                 alt="Veagle Space Technology Logo" 
@@ -73,10 +73,10 @@ export default function Navbar() {
               />
             </div>
             <div className="flex flex-col">
-              <span className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 leading-tight">
+              <span className="text-lg sm:text-2xl font-black tracking-tight text-slate-900 leading-tight">
                 Veagle<span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600"> Space</span>
               </span>
-              <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 -mt-0.5">
+              <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-slate-400 -mt-0.5">
                 Doctor On Call Network
               </span>
             </div>
