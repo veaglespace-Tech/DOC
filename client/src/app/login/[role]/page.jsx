@@ -400,9 +400,10 @@ function DynamicLoginForm() {
           <div className="hidden lg:flex lg:col-span-5 relative p-6 sm:p-8 flex-col justify-between overflow-hidden bg-slate-950">
             {/* Background Image with soft visibility */}
             <Image 
-              src={activePortal.image} 
-              alt="Doctor On Call Experience" 
-              fill 
+              src={activePortal.image}
+              alt="Doctor On Call Experience"
+              fill
+              sizes="(max-width: 1024px) 100vw, 42vw"
               className="object-cover opacity-25 mix-blend-luminosity"
               priority
             />

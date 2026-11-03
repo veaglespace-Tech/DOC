@@ -31,9 +31,10 @@ export default function AboutPage() {
         {/* Background Image with Overlay */}
         <div className="absolute inset-0 z-0">
           <Image 
-            src="/images/hero-clinic.jpg" 
-            alt="Luxurious Clinic Interior" 
-            fill 
+            src="/images/hero-clinic.jpg"
+            alt="Luxurious Clinic Interior"
+            fill
+            sizes="100vw"
             className="object-cover opacity-70"
             priority
           />
@@ -95,9 +96,10 @@ export default function AboutPage() {
             
             <div className="relative h-[700px] w-full rounded-[3rem] overflow-hidden shadow-2xl shadow-teal-900/50">
               <Image 
-                src="/images/about-team.jpg" 
-                alt="Doctor On Call Expert Medical Team" 
-                fill 
+                src="/images/about-team.jpg"
+                alt="Doctor On Call Expert Medical Team"
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover hover:scale-105 transition-transform duration-1000"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent"></div>
