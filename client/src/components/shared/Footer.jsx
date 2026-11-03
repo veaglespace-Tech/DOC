@@ -71,6 +71,7 @@ export default function Footer() {
                 { name: 'Doctor Practice Workspace', href: '/doctor' },
                 { name: 'Find Doctors & Specialists', href: '/search' },
                 { name: 'Enterprise Clinic Suite', href: '/clinic' },
+                { name: 'SaaS Plans & Pricing', href: '/pricing' },
                 { name: 'Super Admin Operations HQ', href: '/admin' }
               ].map((link, i) => (
                 <li key={i}>

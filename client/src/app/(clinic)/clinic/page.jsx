@@ -347,7 +347,7 @@ export default function ClinicDashboardPage() {
               <div className="text-center max-w-xl mx-auto mb-8">
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 text-teal-700 text-xs font-black uppercase tracking-wider mb-2">
                   <Sparkles className="w-3.5 h-3.5 text-teal-600" />
-                  SaaS Multi-Tenant Subscription
+                  SaaS Multi-Tenant Subscription &bull; PayU Sandbox Test
                 </div>
                 <h3 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
                   Choose the Right Plan for Your Facility
@@ -433,6 +433,13 @@ export default function ClinicDashboardPage() {
                     </div>
                   );
                 })}
+              </div>
+
+              <div className="mt-6 pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
+                <span className="font-medium">Payments powered by PayU Sandbox Test Gateway (Key: gtKFFx)</span>
+                <Link href="/pricing" className="text-teal-600 font-bold hover:underline flex items-center gap-1">
+                  View Full Public Pricing &amp; PayU Checkout &rarr;
+                </Link>
               </div>
             </motion.div>
           </div>

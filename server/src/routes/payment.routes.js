@@ -8,17 +8,26 @@ const { initiatePaymentSchema, verifyPaymentSchema } = require('../validators/pa
 // Razorpay server-to-server webhook (Public, signature-verified in controller)
 router.post('/webhook', paymentController.handleWebhook);
 
+// PayU payment callback / response webhook (Public - called by PayU redirect/POST)
+router.post('/payu/response', paymentController.handlePayUResponse);
+router.get('/payu/response', paymentController.handlePayUResponse);
+
 // Protected payment routes
 router.use(authenticate);
 
-// Initiate payment (create order)
+// PayU Test Integration Routes
+router.post('/payu/subscribe', paymentController.initiatePayUSubscription);
+router.post('/payu/initiate', paymentController.initiatePayUAppointment);
+router.post('/payu/verify', paymentController.verifyPayUPayment);
+
+// Razorpay Initiate payment (create order)
 router.post(
   '/initiate',
   validate(initiatePaymentSchema),
   paymentController.initiatePayment
 );
 
-// Verify payment signature
+// Razorpay Verify payment signature
 router.post(
   '/verify',
   validate(verifyPaymentSchema),
@@ -39,4 +48,3 @@ router.get(
 );
 
 module.exports = router;
-

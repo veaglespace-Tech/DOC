@@ -4,6 +4,7 @@ import { baseQuery } from './baseQuery';
 export const paymentApi = createApi({
   reducerPath: 'paymentApi',
   baseQuery,
+  tagTypes: ['Payment', 'Subscription'],
   endpoints: (builder) => ({
     initiatePayment: builder.mutation({
       query: (paymentData) => ({
@@ -25,6 +26,32 @@ export const paymentApi = createApi({
         method: 'POST',
         body: refundData,
       })
+    }),
+
+    // PayU India Test / Sandbox Integration endpoints
+    initiatePayUSubscription: builder.mutation({
+      query: (subData) => ({
+        url: '/payments/payu/subscribe',
+        method: 'POST',
+        body: subData,
+      }),
+      invalidatesTags: ['Subscription']
+    }),
+    initiatePayUAppointment: builder.mutation({
+      query: (aptData) => ({
+        url: '/payments/payu/initiate',
+        method: 'POST',
+        body: aptData,
+      }),
+      invalidatesTags: ['Payment']
+    }),
+    verifyPayUPayment: builder.mutation({
+      query: (verifyData) => ({
+        url: '/payments/payu/verify',
+        method: 'POST',
+        body: verifyData,
+      }),
+      invalidatesTags: ['Subscription', 'Payment']
     })
   }),
 });
@@ -32,6 +59,8 @@ export const paymentApi = createApi({
 export const { 
   useInitiatePaymentMutation, 
   useVerifyPaymentMutation,
-  useRequestRefundMutation
+  useRequestRefundMutation,
+  useInitiatePayUSubscriptionMutation,
+  useInitiatePayUAppointmentMutation,
+  useVerifyPayUPaymentMutation
 } = paymentApi;
-
