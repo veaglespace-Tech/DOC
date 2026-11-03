@@ -214,16 +214,16 @@ function DynamicLoginForm() {
       {/* 🌟 UNIFIED TOP NAVBAR */}
       <Navbar />
 
-      <main className="flex-1 flex items-center justify-center py-8 sm:py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      <main className="flex-1 flex items-center justify-center py-6 sm:py-8 px-3 sm:px-5 lg:px-6 relative overflow-hidden">
         {/* Subtle Ambient Glows */}
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-teal-500/10 blur-[130px] rounded-full pointer-events-none"></div>
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-500/10 blur-[130px] rounded-full pointer-events-none"></div>
 
         {/* 🌟 MAIN TWO-COLUMN CONTAINER */}
-        <div className="max-w-6xl w-full mx-auto bg-white rounded-3xl border border-slate-200/80 shadow-2xl shadow-slate-200/50 overflow-hidden grid grid-cols-1 lg:grid-cols-12 relative z-10">
+        <div className="max-w-5xl w-full mx-auto bg-white rounded-3xl border border-slate-200/80 shadow-2xl shadow-slate-200/50 overflow-hidden grid grid-cols-1 lg:grid-cols-12 relative z-10">
           
           {/* 🌟 LEFT COLUMN (Login Form - 7 cols) */}
-          <div className="lg:col-span-7 p-6 sm:p-10 lg:p-12 flex flex-col justify-between bg-white">
+          <div className="lg:col-span-7 p-5 sm:p-7 lg:p-8 flex flex-col justify-between bg-white">
             <div>
               {/* Role Header Info */}
               <div className="flex items-center justify-between gap-4 mb-4">
@@ -265,7 +265,7 @@ function DynamicLoginForm() {
 
               {/* Title & Subtext */}
               <div className="mb-5">
-                <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+                <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
                   {activePortal.title}
                 </h1>
                 <p className="text-xs sm:text-sm text-slate-500 font-medium mt-1">
@@ -302,7 +302,7 @@ function DynamicLoginForm() {
               </button>
 
               {/* The Form */}
-              <form className="space-y-4" onSubmit={handleLogin}>
+              <form className="space-y-3" onSubmit={handleLogin}>
                 {errorMsg && (
                   <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-xs font-bold text-rose-600 flex items-center gap-2">
                     <AlertCircle className="h-4 w-4 shrink-0" />
@@ -319,7 +319,7 @@ function DynamicLoginForm() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder={activePortal.demoEmail}
-                      className={`block w-full pl-10 pr-4 py-2.5 sm:py-3 bg-slate-50/70 border border-slate-200 rounded-2xl text-slate-900 text-sm focus:bg-white outline-none transition-all font-medium ${activePortal.theme.ring}`} 
+                      className={`block w-full pl-10 pr-4 py-2 sm:py-2.5 bg-slate-50/70 border border-slate-200 rounded-2xl text-slate-900 text-sm focus:bg-white outline-none transition-all font-medium ${activePortal.theme.ring}`} 
                       required 
                     />
                   </div>
@@ -334,7 +334,7 @@ function DynamicLoginForm() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••"
-                      className={`block w-full pl-10 pr-10 py-2.5 sm:py-3 bg-slate-50/70 border border-slate-200 rounded-2xl text-slate-900 text-sm focus:bg-white outline-none transition-all font-medium ${activePortal.theme.ring}`} 
+                      className={`block w-full pl-10 pr-10 py-2 sm:py-2.5 bg-slate-50/70 border border-slate-200 rounded-2xl text-slate-900 text-sm focus:bg-white outline-none transition-all font-medium ${activePortal.theme.ring}`} 
                       required 
                     />
                     <button
@@ -360,7 +360,7 @@ function DynamicLoginForm() {
                 <button 
                   type="submit" 
                   disabled={isLoading}
-                  className={`w-full flex justify-center items-center gap-2 py-3.5 px-4 rounded-2xl text-sm font-bold shadow-md transition-all hover:opacity-95 hover:scale-[1.005] active:scale-[0.995] disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer ${activePortal.theme.btn}`}
+                  className={`w-full flex justify-center items-center gap-2 py-2.5 sm:py-3 px-4 rounded-xl text-xs sm:text-sm font-bold shadow-md transition-all hover:opacity-95 hover:scale-[1.005] active:scale-[0.995] disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer ${activePortal.theme.btn}`}
                 >
                   {isLoading ? (
                     <div className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
@@ -372,7 +372,7 @@ function DynamicLoginForm() {
             </div>
 
             {/* Registration or Help Info */}
-            <div className="mt-6 pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+            <div className="mt-4 pt-3 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
               {activePortal.registerHref ? (
                 <p className="text-slate-500 font-medium text-center sm:text-left">
                   Don&apos;t have an account?{' '}
@@ -397,7 +397,7 @@ function DynamicLoginForm() {
           </div>
 
           {/* 🌟 RIGHT COLUMN (Branded Visual Showcase - 5 cols) */}
-          <div className="hidden lg:flex lg:col-span-5 relative p-8 sm:p-10 flex-col justify-between overflow-hidden bg-slate-950">
+          <div className="hidden lg:flex lg:col-span-5 relative p-6 sm:p-8 flex-col justify-between overflow-hidden bg-slate-950">
             {/* Background Image with soft visibility */}
             <Image 
               src={activePortal.image} 
