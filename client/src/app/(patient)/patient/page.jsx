@@ -44,7 +44,7 @@ export default function PatientDashboard() {
   const patientDisplayName = user?.name || user?.email?.split('@')[0] || 'Patient';
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8 relative">
+    <div className="max-w-7xl mx-auto space-y-5 sm:space-y-6 relative">
       {/* Background Decorative Ambient Glows */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/10 blur-[130px] rounded-full pointer-events-none -z-10"></div>
       <div className="absolute top-40 left-0 w-80 h-80 bg-purple-500/10 blur-[130px] rounded-full pointer-events-none -z-10"></div>
@@ -53,7 +53,7 @@ export default function PatientDashboard() {
       <motion.div 
         initial={{ opacity: 0, y: -15 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-gradient-to-r from-indigo-900 via-indigo-950 to-slate-900 text-white p-6 sm:p-8 rounded-3xl shadow-xl shadow-indigo-950/20 relative overflow-hidden"
+        className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-gradient-to-r from-indigo-900 via-indigo-950 to-slate-900 text-white p-5 sm:p-6 rounded-2xl shadow-lg shadow-indigo-950/20 relative overflow-hidden"
       >
         <div className="absolute -right-10 -bottom-10 w-60 h-60 bg-indigo-500/20 rounded-full blur-2xl pointer-events-none"></div>
 
@@ -62,7 +62,7 @@ export default function PatientDashboard() {
             <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
             Verified Patient Account
           </div>
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-tight">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-black text-white tracking-tight leading-tight">
             Welcome back, <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 via-purple-300 to-teal-200">{patientDisplayName}</span>
           </h1>
           <p className="text-slate-300 font-medium text-xs sm:text-sm mt-1.5 leading-relaxed">
@@ -72,13 +72,13 @@ export default function PatientDashboard() {
 
         <div className="relative z-10 flex flex-wrap items-center gap-3">
           <Link href="/patient/search">
-            <button className="flex items-center gap-2 bg-white text-slate-900 hover:bg-slate-100 px-5 py-3 rounded-2xl font-bold transition-all hover:scale-[1.02] text-xs sm:text-sm shadow-md cursor-pointer">
+            <button className="flex items-center gap-2 bg-white text-slate-900 hover:bg-slate-100 px-4 py-2.5 rounded-xl font-bold transition-all hover:scale-[1.01] text-xs shadow-md cursor-pointer">
               <Stethoscope className="h-4 w-4 text-indigo-600" />
               Find Specialist
             </button>
           </Link>
           <Link href="/patient/appointments">
-            <button className="flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white px-5 py-3 rounded-2xl font-bold transition-all hover:scale-[1.02] text-xs sm:text-sm backdrop-blur-md cursor-pointer">
+            <button className="flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white px-4 py-2.5 rounded-xl font-bold transition-all hover:scale-[1.01] text-xs backdrop-blur-md cursor-pointer">
               <Calendar className="h-4 w-4 text-teal-300" />
               My Bookings
             </button>
@@ -92,7 +92,7 @@ export default function PatientDashboard() {
         {/* AI Symptom Triage */}
         <Link 
           href="/patient/ai-chat" 
-          className="group p-5 rounded-3xl bg-gradient-to-br from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-600/20 hover:shadow-xl hover:shadow-indigo-600/30 hover:scale-[1.02] transition-all relative overflow-hidden flex flex-col justify-between"
+          className="group p-4 rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-600/20 hover:shadow-xl hover:shadow-indigo-600/30 hover:scale-[1.02] transition-all relative overflow-hidden flex flex-col justify-between"
         >
           <div className="absolute -right-4 -bottom-4 h-20 w-20 rounded-full bg-white/10 blur-xl"></div>
           <div>
@@ -110,7 +110,7 @@ export default function PatientDashboard() {
         {/* EHR Prescriptions */}
         <Link 
           href="/patient/records" 
-          className="group p-5 rounded-3xl bg-white border border-slate-200/80 shadow-xs hover:shadow-md hover:border-teal-300/80 hover:scale-[1.02] transition-all flex flex-col justify-between"
+          className="group p-4 rounded-2xl bg-white border border-slate-200/80 shadow-xs hover:shadow-md hover:border-teal-300/80 hover:scale-[1.02] transition-all flex flex-col justify-between"
         >
           <div>
             <div className="h-10 w-10 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center mb-3">
@@ -127,7 +127,7 @@ export default function PatientDashboard() {
         {/* My Appointments */}
         <Link 
           href="/patient/appointments" 
-          className="group p-5 rounded-3xl bg-white border border-slate-200/80 shadow-xs hover:shadow-md hover:border-purple-300/80 hover:scale-[1.02] transition-all flex flex-col justify-between"
+          className="group p-4 rounded-2xl bg-white border border-slate-200/80 shadow-xs hover:shadow-md hover:border-purple-300/80 hover:scale-[1.02] transition-all flex flex-col justify-between"
         >
           <div>
             <div className="h-10 w-10 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center mb-3">
@@ -144,7 +144,7 @@ export default function PatientDashboard() {
         {/* Payment Receipts */}
         <Link 
           href="/patient/wallet" 
-          className="group p-5 rounded-3xl bg-white border border-slate-200/80 shadow-xs hover:shadow-md hover:border-emerald-300/80 hover:scale-[1.02] transition-all flex flex-col justify-between"
+          className="group p-4 rounded-2xl bg-white border border-slate-200/80 shadow-xs hover:shadow-md hover:border-emerald-300/80 hover:scale-[1.02] transition-all flex flex-col justify-between"
         >
           <div>
             <div className="h-10 w-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-3">
@@ -163,7 +163,7 @@ export default function PatientDashboard() {
       {/* 🌟 METRICS STATS CARDS */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         
-        <div className="bg-white rounded-3xl p-5 shadow-xs border border-slate-200/80 flex items-center gap-4 hover:shadow-md transition-shadow">
+        <div className="bg-white rounded-2xl p-4 shadow-xs border border-slate-200/80 flex items-center gap-4 hover:shadow-md transition-shadow">
           <div className="h-12 w-12 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 shrink-0">
             <Calendar className="h-6 w-6" />
           </div>
@@ -175,7 +175,7 @@ export default function PatientDashboard() {
           </div>
         </div>
 
-        <div className="bg-white rounded-3xl p-5 shadow-xs border border-slate-200/80 flex items-center gap-4 hover:shadow-md transition-shadow">
+        <div className="bg-white rounded-2xl p-4 shadow-xs border border-slate-200/80 flex items-center gap-4 hover:shadow-md transition-shadow">
           <div className="h-12 w-12 bg-purple-50 rounded-2xl flex items-center justify-center text-purple-600 shrink-0">
             <Activity className="h-6 w-6" />
           </div>
@@ -187,14 +187,14 @@ export default function PatientDashboard() {
           </div>
         </div>
 
-        <div className="bg-white rounded-3xl p-5 shadow-xs border border-slate-200/80 flex items-center gap-4 hover:shadow-md transition-shadow">
+        <div className="bg-white rounded-2xl p-4 shadow-xs border border-slate-200/80 flex items-center gap-4 hover:shadow-md transition-shadow">
           <div className="h-12 w-12 bg-teal-50 rounded-2xl flex items-center justify-center text-teal-600 shrink-0">
             <Pill className="h-6 w-6" />
           </div>
           <div>
             <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">EHR Prescriptions</p>
             <p className="text-2xl sm:text-3xl font-black text-slate-900 mt-0.5">
-              {dashboardData.newReports || 2}
+              {dashboardData.newReports !== undefined ? dashboardData.newReports : (dashboardData.recordsCount || recentVisits.length || 0)}
             </p>
           </div>
         </div>
@@ -221,7 +221,7 @@ export default function PatientDashboard() {
           
           <div className="space-y-3.5">
             {upcomingAppointments.length === 0 ? (
-              <div className="bg-white border border-slate-200/80 rounded-3xl p-8 sm:p-10 text-center shadow-xs">
+              <div className="bg-white border border-slate-200/80 rounded-2xl p-6 sm:p-8 text-center shadow-xs">
                 <div className="h-14 w-14 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-400 mx-auto mb-3">
                   <Calendar className="h-7 w-7" />
                 </div>
@@ -237,7 +237,7 @@ export default function PatientDashboard() {
                 </Link>
               </div>
             ) : upcomingAppointments.map((apt) => (
-              <div key={apt.id} className="bg-white rounded-3xl p-5 shadow-xs border border-slate-200/80 hover:shadow-md transition-all">
+              <div key={apt.id} className="bg-white rounded-2xl p-4 shadow-xs border border-slate-200/80 hover:shadow-md transition-all">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div className="flex items-start gap-3.5">
                     <div className="h-11 w-11 bg-gradient-to-br from-indigo-500 to-purple-600 text-white rounded-2xl flex items-center justify-center font-bold text-base shrink-0 shadow-sm">
@@ -288,7 +288,7 @@ export default function PatientDashboard() {
             </Link>
           </div>
 
-          <div className="bg-white rounded-3xl shadow-xs border border-slate-200/80 overflow-hidden divide-y divide-slate-100">
+          <div className="bg-white rounded-2xl shadow-xs border border-slate-200/80 overflow-hidden divide-y divide-slate-100">
             {recentVisits.length === 0 ? (
               <div className="p-8 text-center text-slate-400">
                 <div className="h-12 w-12 bg-teal-50 text-teal-500 rounded-2xl flex items-center justify-center mx-auto mb-2.5">
