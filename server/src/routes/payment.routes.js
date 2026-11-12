@@ -12,6 +12,12 @@ router.post('/webhook', paymentController.handleWebhook);
 router.post('/payu/response', paymentController.handlePayUResponse);
 router.get('/payu/response', paymentController.handlePayUResponse);
 
+// Public / Pre-auth Coupon validation
+router.post('/coupon/apply', paymentController.applyCoupon);
+
+// Download SaaS GST Tax Invoice PDF
+router.get('/saas/invoice/:txnid', paymentController.downloadSaaSInvoice);
+
 // Protected payment routes
 router.use(authenticate);
 

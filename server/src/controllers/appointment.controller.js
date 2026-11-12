@@ -32,6 +32,30 @@ exports.createAppointment = async (req, res, next) => {
       });
     }
 
+    // Travel Buffer: If serviceType is HOME_VISIT, enforce 30 mins travel window between doctor appointments
+    if (serviceType === 'HOME_VISIT') {
+      const requestedTime = new Date(scheduledAt).getTime();
+      const bufferMs = 30 * 60 * 1000;
+
+      const conflictingAppointments = await prisma.appointment.findMany({
+        where: {
+          doctorId: doctor.id,
+          status: { in: ['CONFIRMED', 'REQUESTED', 'IN_PROGRESS'] },
+          scheduledAt: {
+            gte: new Date(requestedTime - bufferMs),
+            lte: new Date(requestedTime + bufferMs)
+          }
+        }
+      });
+
+      if (conflictingAppointments.length > 0) {
+        return res.status(409).json({
+          success: false,
+          message: "Doctor has another consultation near this time. A 30-minute travel buffer window is required for doorstep home visits. Please select a different slot."
+        });
+      }
+    }
+
     // Generate token number (e.g., T-1234)
     const tokenNumber = `T-${Math.floor(1000 + Math.random() * 9000)}`;
 

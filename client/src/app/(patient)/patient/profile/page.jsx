@@ -18,6 +18,8 @@ import {
 import VitalsCard from '@/components/patient/VitalsCard';
 import AllergiesCard from '@/components/patient/AllergiesCard';
 import MedicalRecordsCard from '@/components/patient/MedicalRecordsCard';
+import VitalsTrendChart from '@/components/patient/VitalsTrendChart';
+import FamilyMembersCard from '@/components/patient/FamilyMembersCard';
 import { useGetPatientProfileQuery, useUpdatePatientProfileMutation } from '@/store/api/patientApi';
 
 export default function PatientProfilePage() {
@@ -154,16 +156,22 @@ export default function PatientProfilePage() {
       </div>
 
       {/* Main Content Grid */}
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-        {/* Left Column - Vitals & Allergies */}
-        <div className="space-y-8 lg:col-span-1">
-          <VitalsCard profile={profile} onEdit={handleOpenEdit} />
-          <AllergiesCard />
-        </div>
+      <div className="space-y-8">
+        {/* Longitudinal Vitals Trends (Full Width or 2-Col) */}
+        <VitalsTrendChart />
 
-        {/* Right Column - Medical History / EHR */}
-        <div className="lg:col-span-2">
-          <MedicalRecordsCard />
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+          {/* Left Column - Personal Vitals, Family & Allergies */}
+          <div className="space-y-8 lg:col-span-1">
+            <VitalsCard profile={profile} onEdit={handleOpenEdit} />
+            <FamilyMembersCard familyMembers={profile.familyMembers || []} />
+            <AllergiesCard />
+          </div>
+
+          {/* Right Column - Medical History / EHR */}
+          <div className="lg:col-span-2">
+            <MedicalRecordsCard />
+          </div>
         </div>
       </div>
 

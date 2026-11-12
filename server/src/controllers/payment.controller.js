@@ -1,3 +1,4 @@
+const { generateSaaSInvoicePDF } = require('../services/invoice.service');
 const { PrismaClient } = require('@prisma/client');
 const crypto = require('crypto');
 const prisma = new PrismaClient();
@@ -815,6 +816,88 @@ exports.verifyPayUPayment = async (req, res, next) => {
       message: 'PayU Test transaction verified successfully.',
       data: { txnid, status: 'CAPTURED' }
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Validate and apply promotional coupons (e.g. DOC50, WELCOME100, HEALTH20)
+ */
+exports.applyCoupon = async (req, res, next) => {
+  try {
+    const { code, amount } = req.body;
+    if (!code) {
+      return res.status(400).json({ success: false, message: 'Coupon code is required' });
+    }
+
+    const cleanCode = code.trim().toUpperCase();
+    const baseAmount = parseFloat(amount || 0);
+
+    const VALID_COUPONS = {
+      'DOC50': { discountPercent: 50, maxDiscount: 250, description: '50% off up to Rs. 250 on first consultation' },
+      'WELCOME100': { flatDiscount: 100, minAmount: 300, description: 'Flat Rs. 100 off on consultations' },
+      'HEALTH20': { discountPercent: 20, maxDiscount: 1000, description: '20% off on SaaS & clinical plans' }
+    };
+
+    const coupon = VALID_COUPONS[cleanCode];
+    if (!coupon) {
+      return res.status(404).json({ success: false, message: 'Invalid or expired coupon code' });
+    }
+
+    if (coupon.minAmount && baseAmount < coupon.minAmount) {
+      return res.status(400).json({
+        success: false,
+        message: 'Coupon requires a minimum order amount of Rs. ' + coupon.minAmount
+      });
+    }
+
+    let discount = 0;
+    if (coupon.flatDiscount) {
+      discount = Math.min(coupon.flatDiscount, baseAmount);
+    } else if (coupon.discountPercent) {
+      discount = (baseAmount * coupon.discountPercent) / 100;
+      if (coupon.maxDiscount) {
+        discount = Math.min(discount, coupon.maxDiscount);
+      }
+    }
+
+    const finalAmount = Math.max(0, Number((baseAmount - discount).toFixed(2)));
+
+    res.status(200).json({
+      success: true,
+      message: "Coupon '" + cleanCode + "' applied successfully!",
+      data: {
+        code: cleanCode,
+        discountAmount: Number(discount.toFixed(2)),
+        originalAmount: baseAmount,
+        finalAmount,
+        description: coupon.description
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Download automated B2B GST Tax Invoice PDF for SaaS Subscription
+ */
+exports.downloadSaaSInvoice = async (req, res, next) => {
+  try {
+    const { txnid } = req.params;
+    const { planName = 'Clinic Professional', price = 2999, term = 'monthly' } = req.query;
+
+    const pdfBuffer = await generateSaaSInvoicePDF({
+      planName,
+      priceMonthly: parseFloat(price),
+      billingCycle: term,
+      txnid: txnid || ('DOC_SAAS_' + Date.now())
+    });
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'attachment; filename="Invoice_' + (txnid || 'SaaS') + '.pdf"');
+    res.send(pdfBuffer);
   } catch (error) {
     next(error);
   }

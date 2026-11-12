@@ -4,7 +4,7 @@ import { baseQuery } from './baseQuery';
 export const patientApi = createApi({
   reducerPath: 'patientApi',
   baseQuery,
-  tagTypes: ['Patient', 'PatientProfile', 'MedicalRecord'],
+  tagTypes: ['Patient', 'PatientProfile', 'MedicalRecord', 'FamilyMembers'],
   endpoints: (builder) => ({
     getPatientDashboard: builder.query({
       query: () => '/patients/dashboard',
@@ -21,6 +21,21 @@ export const patientApi = createApi({
         body: data,
       }),
       invalidatesTags: ['PatientProfile', 'Patient']
+    }),
+    addFamilyMember: builder.mutation({
+      query: (data) => ({
+        url: '/patients/family',
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: ['PatientProfile']
+    }),
+    deleteFamilyMember: builder.mutation({
+      query: (id) => ({
+        url: `/patients/family/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['PatientProfile']
     }),
     getMedicalRecords: builder.query({
       query: () => '/patients/medical-records',
@@ -41,6 +56,8 @@ export const {
   useGetPatientDashboardQuery,
   useGetPatientProfileQuery,
   useUpdatePatientProfileMutation,
+  useAddFamilyMemberMutation,
+  useDeleteFamilyMemberMutation,
   useGetMedicalRecordsQuery,
   useAddMedicalRecordMutation,
 } = patientApi;

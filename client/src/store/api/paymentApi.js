@@ -52,6 +52,15 @@ export const paymentApi = createApi({
         body: verifyData,
       }),
       invalidatesTags: ['Subscription', 'Payment']
+    }),
+
+    // Promotional Coupon Engine
+    applyCoupon: builder.mutation({
+      query: (couponData) => ({
+        url: '/payments/coupon/apply',
+        method: 'POST',
+        body: couponData,
+      })
     })
   }),
 });
@@ -62,5 +71,6 @@ export const {
   useRequestRefundMutation,
   useInitiatePayUSubscriptionMutation,
   useInitiatePayUAppointmentMutation,
-  useVerifyPayUPaymentMutation
+  useVerifyPayUPaymentMutation,
+  useApplyCouponMutation
 } = paymentApi;

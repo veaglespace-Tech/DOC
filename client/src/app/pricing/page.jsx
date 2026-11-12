@@ -19,12 +19,14 @@ import {
   CheckCircle2, 
   AlertCircle,
   ExternalLink,
-  ChevronDown
+  ChevronDown,
+  Tag,
+  FileDown
 } from 'lucide-react';
 import Navbar from '@/components/shared/Navbar';
 import Footer from '@/components/shared/Footer';
 import { useGetSubscriptionPlansQuery } from '@/store/api/saasApi';
-import { useInitiatePayUSubscriptionMutation, useVerifyPayUPaymentMutation } from '@/store/api/paymentApi';
+import { useInitiatePayUSubscriptionMutation, useVerifyPayUPaymentMutation, useApplyCouponMutation } from '@/store/api/paymentApi';
 import { useSelector } from 'react-redux';
 
 export default function PricingPage() {
@@ -38,6 +40,31 @@ export default function PricingPage() {
   const [payuParams, setPayuParams] = useState(null);
   const [statusMessage, setStatusMessage] = useState('');
   const [faqOpenIndex, setFaqOpenIndex] = useState(null);
+  const [couponCode, setCouponCode] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState(null);
+  const [couponError, setCouponError] = useState('');
+  const [applyCoupon, { isLoading: isApplyingCoupon }] = useApplyCouponMutation();
+
+  const handleApplyCoupon = async () => {
+    if (!couponCode.trim()) return;
+    setCouponError('');
+    try {
+      const baseMonthly = calculatePrice(selectedPlan.priceMonthly);
+      const isAnnual = billingCycle === 'yearly';
+      const effectiveBase = isAnnual ? baseMonthly * 12 : baseMonthly;
+
+      const res = await applyCoupon({
+        code: couponCode.trim(),
+        amount: effectiveBase
+      }).unwrap();
+
+      if (res.success) {
+        setAppliedCoupon(res.data);
+      }
+    } catch (err) {
+      setCouponError(err?.data?.message || 'Invalid or expired coupon code');
+    }
+  };
 
   const { data: plansData, isLoading: isPlansLoading } = useGetSubscriptionPlansQuery();
   const [initiatePayU, { isLoading: isInitiating }] = useInitiatePayUSubscriptionMutation();
@@ -104,6 +131,9 @@ export default function PricingPage() {
     setPaymentStep('INIT');
     setStatusMessage('');
     setPayuParams(null);
+    setAppliedCoupon(null);
+    setCouponCode('');
+    setCouponError('');
 
     // If free tier, activate directly
     if (plan.priceMonthly === 0) {
@@ -585,7 +615,19 @@ export default function PricingPage() {
                     </div>
                   </div>
 
-                  <div className="mt-6 flex gap-3">
+                  <div className="mt-4">
+                    <a
+                      href={'http://localhost:5000/api/v1/payments/saas/invoice/' + (payuParams?.txnid || 'DOC_SAAS') + '?planName=' + encodeURIComponent(selectedPlan.name) + '&price=' + calculatePrice(selectedPlan.priceMonthly) + '&term=' + billingCycle}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full mb-3 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-teal-300 font-bold text-xs flex items-center justify-center gap-2 border border-teal-500/30 transition-all cursor-pointer"
+                    >
+                      <FileDown className="h-4 w-4" />
+                      <span>Download Official GST Tax Invoice (PDF)</span>
+                    </a>
+                  </div>
+
+                  <div className="mt-4 flex gap-3">
                     <Link
                       href="/clinic"
                       className="flex-1 py-3 rounded-xl bg-teal-400 hover:bg-teal-300 text-slate-950 font-black text-xs text-center transition-all"
@@ -621,33 +663,79 @@ export default function PricingPage() {
                   {/* Summary Box */}
                   {(() => {
                     const price = calculatePrice(selectedPlan.priceMonthly);
-                    const { net, gst, total } = getTaxBreakdown(price);
+                    const isAnnual = billingCycle === 'yearly';
+                    const effectiveBase = isAnnual ? price * 12 : price;
+                    const discount = appliedCoupon?.discountAmount || 0;
+                    const taxableBase = Math.max(0, effectiveBase - discount);
+                    const { net, gst, total } = getTaxBreakdown(taxableBase);
 
                     return (
-                      <div className="space-y-3 p-4 rounded-2xl bg-slate-800/80 border border-slate-700 text-xs mb-5">
+                      <div className="space-y-2.5 p-4 rounded-2xl bg-slate-800/80 border border-slate-700 text-xs mb-4">
                         <div className="flex justify-between items-center">
                           <span className="text-slate-400 font-medium">Selected Tier:</span>
                           <span className="font-bold text-white text-sm">{selectedPlan.name}</span>
                         </div>
                         <div className="flex justify-between items-center">
                           <span className="text-slate-400 font-medium">Billing Term:</span>
-                          <span className="font-bold text-teal-400 uppercase">{billingCycle}</span>
+                          <span className="font-bold text-teal-400 uppercase">{billingCycle} {isAnnual ? '(12 Months)' : '(1 Month)'}</span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="text-slate-400 font-medium">Base Price:</span>
+                          <span className="text-slate-400 font-medium">Standard License Fee:</span>
+                          <span className="text-slate-200">₹{effectiveBase.toLocaleString('en-IN')}</span>
+                        </div>
+                        {appliedCoupon && (
+                          <div className="flex justify-between items-center text-emerald-400 font-bold">
+                            <span>Coupon Discount ({appliedCoupon.code}):</span>
+                            <span>-₹{appliedCoupon.discountAmount.toLocaleString('en-IN')}</span>
+                          </div>
+                        )}
+                        <div className="flex justify-between items-center">
+                          <span className="text-slate-400 font-medium">Taxable Base:</span>
                           <span className="text-slate-200">₹{net.toLocaleString('en-IN')}</span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="text-slate-400 font-medium">GST (18%):</span>
+                          <span className="text-slate-400 font-medium">GST (18% B2B):</span>
                           <span className="text-slate-200">₹{gst.toLocaleString('en-IN')}</span>
                         </div>
                         <div className="flex justify-between items-center pt-2 border-t border-slate-700/80 font-black text-sm text-white">
-                          <span>Total Amount:</span>
+                          <span>Total Amount Payable:</span>
                           <span className="text-teal-300">₹{total.toLocaleString('en-IN')}</span>
                         </div>
                       </div>
                     );
                   })()}
+
+                  {/* Coupon Box */}
+                  <div className="mb-4">
+                    <div className="flex gap-2">
+                      <div className="relative flex-1">
+                        <Tag className="h-4 w-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                        <input
+                          type="text"
+                          placeholder="Promo code (e.g. HEALTH20, DOC50)"
+                          value={couponCode}
+                          onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                          className="w-full pl-9 pr-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 font-mono focus:outline-none focus:border-teal-500"
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        onClick={handleApplyCoupon}
+                        disabled={isApplyingCoupon || !couponCode.trim()}
+                        className="px-3.5 py-2 rounded-xl bg-teal-500/20 hover:bg-teal-500/30 text-teal-300 border border-teal-500/40 text-xs font-bold transition-colors disabled:opacity-50"
+                      >
+                        {isApplyingCoupon ? '...' : 'Apply'}
+                      </button>
+                    </div>
+                    {couponError && (
+                      <p className="text-[11px] text-rose-400 font-semibold mt-1">{couponError}</p>
+                    )}
+                    {appliedCoupon && (
+                      <p className="text-[11px] text-emerald-400 font-semibold mt-1">
+                        ✓ {appliedCoupon.description} (Saved ₹{appliedCoupon.discountAmount})
+                      </p>
+                    )}
+                  </div>
 
                   {/* Sandbox credentials hint */}
                   <div className="p-3.5 rounded-xl bg-indigo-950/40 border border-indigo-700/40 text-xs text-indigo-300 mb-5 space-y-1">

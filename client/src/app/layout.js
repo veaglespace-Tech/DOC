@@ -1,15 +1,5 @@
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import StoreProvider from "@/store/StoreProvider";
 
 export const metadata = {
   metadataBase: new URL('https://doctoroncall.health'),
@@ -48,7 +38,7 @@ export const metadata = {
         url: '/images/hero-clinic.jpg',
         width: 1200,
         height: 630,
-        alt: 'Doctor On Call Premium Healthcare',
+        alt: 'Doctor On Call Premium Healthcare Clinic',
       },
     ],
     locale: 'en_IN',
@@ -56,7 +46,7 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: "Doctor On Call | Advanced Medical Network",
+    title: "Doctor On Call | Premium Doctor Visits & Telehealth",
     description: "Book home visits, video consults, and access top healthcare specialists.",
     images: ['/images/hero-clinic.jpg'],
   },
@@ -73,16 +63,14 @@ export const metadata = {
   },
 };
 
-import StoreProvider from "@/store/StoreProvider";
-
 export default function RootLayout({ children }) {
   return (
     <html
       lang="en"
       data-scroll-behavior="smooth"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className="h-full antialiased font-sans"
     >
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col font-sans">
         <StoreProvider>{children}</StoreProvider>
       </body>
     </html>
